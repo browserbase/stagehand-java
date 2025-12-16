@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.0 (2025-12-16)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/browserbase/stagehand-java/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **api:** manual updates ([a5a66d6](https://github.com/browserbase/stagehand-java/commit/a5a66d64628b1f18f987d1d2b96d529d4a623f27))
+* **api:** manual updates ([2b8487b](https://github.com/browserbase/stagehand-java/commit/2b8487b08f12aca78e9b8e252779be34c06ffe11))
+
 ## 0.1.0 (2025-12-16)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/browserbase/stagehand-java/compare/v0.0.1...v0.1.0)
