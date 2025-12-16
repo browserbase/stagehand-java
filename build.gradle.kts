@@ -8,7 +8,7 @@ repositories {
 }
 
 allprojects {
-    group = "com.stagehand.api"
+    group = "com.browserbase.api"
     version = "0.0.1" // x-release-please-version
 }
 
