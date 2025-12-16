@@ -72,16 +72,10 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -108,16 +102,10 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -144,16 +132,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -180,16 +162,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -216,16 +192,10 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -252,16 +222,10 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -288,16 +252,10 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -324,16 +282,10 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -360,16 +312,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -396,16 +342,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -432,16 +372,10 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -468,16 +402,10 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -504,16 +432,10 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -540,16 +462,10 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -576,16 +492,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -612,16 +522,10 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)
@@ -646,16 +550,10 @@ internal class ErrorHandlingTest {
             assertThrows<StagehandException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .env(SessionStartParams.Env.LOCAL)
-                        .apiKey("apiKey")
+                        .browserbaseApiKey("BROWSERBASE_API_KEY")
+                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                         .domSettleTimeout(0L)
-                        .localBrowserLaunchOptions(
-                            SessionStartParams.LocalBrowserLaunchOptions.builder()
-                                .headless(true)
-                                .build()
-                        )
                         .model("openai/gpt-4o")
-                        .projectId("projectId")
                         .selfHeal(true)
                         .systemPrompt("systemPrompt")
                         .verbose(1L)

@@ -48,17 +48,18 @@ This library requires Java 8 or later.
 ```java
 import com.browserbase.api.client.StagehandClient;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
-import com.browserbase.api.models.sessions.SessionStartParams;
-import com.browserbase.api.models.sessions.SessionStartResponse;
+import com.browserbase.api.models.sessions.SessionActParams;
+import com.browserbase.api.models.sessions.SessionActResponse;
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
-SessionStartParams params = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+SessionActParams params = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build();
-SessionStartResponse response = client.sessions().start(params);
+SessionActResponse response = client.sessions().act(params);
 ```
 
 ## Client configuration
@@ -131,7 +132,7 @@ The `withOptions()` method does not affect the original client or service.
 
 To send a request to the Stagehand API, build an instance of some `Params` class and pass it to the corresponding client method. When the response is received, it will be deserialized into an instance of a Java class.
 
-For example, `client.sessions().start(...)` should be called with an instance of `SessionStartParams`, and it will return an instance of `SessionStartResponse`.
+For example, `client.sessions().act(...)` should be called with an instance of `SessionActParams`, and it will return an instance of `SessionActResponse`.
 
 ## Immutability
 
@@ -148,18 +149,19 @@ The default client is synchronous. To switch to asynchronous execution, call the
 ```java
 import com.browserbase.api.client.StagehandClient;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
-import com.browserbase.api.models.sessions.SessionStartParams;
-import com.browserbase.api.models.sessions.SessionStartResponse;
+import com.browserbase.api.models.sessions.SessionActParams;
+import com.browserbase.api.models.sessions.SessionActResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
-SessionStartParams params = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+SessionActParams params = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build();
-CompletableFuture<SessionStartResponse> response = client.async().sessions().start(params);
+CompletableFuture<SessionActResponse> response = client.async().sessions().act(params);
 ```
 
 Or create an asynchronous client from the beginning:
@@ -167,18 +169,19 @@ Or create an asynchronous client from the beginning:
 ```java
 import com.browserbase.api.client.StagehandClientAsync;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync;
-import com.browserbase.api.models.sessions.SessionStartParams;
-import com.browserbase.api.models.sessions.SessionStartResponse;
+import com.browserbase.api.models.sessions.SessionActParams;
+import com.browserbase.api.models.sessions.SessionActResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stagehand.apiKey` and `stagehand.baseUrl` system properties
 // Or configures using the `STAGEHAND_API_KEY` and `STAGEHAND_BASE_URL` environment variables
 StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
-SessionStartParams params = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+SessionActParams params = SessionActParams.builder()
+    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .input("click the first link on the page")
     .build();
-CompletableFuture<SessionStartResponse> response = client.sessions().start(params);
+CompletableFuture<SessionActResponse> response = client.sessions().act(params);
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods return `CompletableFuture`s.
@@ -196,7 +199,8 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .env(SessionStartParams.Env.LOCAL)
+    .browserbaseApiKey("BROWSERBASE_API_KEY")
+    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
@@ -427,9 +431,9 @@ To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQu
 
 ```java
 import com.browserbase.api.core.JsonValue;
-import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionActParams;
 
-SessionStartParams params = SessionStartParams.builder()
+SessionActParams params = SessionActParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
     .putAdditionalQueryParam("secret_query_param", "42")
     .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
@@ -442,10 +446,10 @@ To set undocumented parameters on _nested_ headers, query params, or body classe
 
 ```java
 import com.browserbase.api.core.JsonValue;
-import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionActParams;
 
-SessionStartParams params = SessionStartParams.builder()
-    .localBrowserLaunchOptions(SessionStartParams.LocalBrowserLaunchOptions.builder()
+SessionActParams params = SessionActParams.builder()
+    .options(SessionActParams.Options.builder()
         .putAdditionalProperty("secretProperty", JsonValue.from("42"))
         .build())
     .build();
@@ -457,10 +461,10 @@ To set a documented parameter or property to an undocumented or not yet supporte
 
 ```java
 import com.browserbase.api.core.JsonValue;
-import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionActParams;
 
-SessionStartParams params = SessionStartParams.builder()
-    .env(JsonValue.from(42))
+SessionActParams params = SessionActParams.builder()
+    .input(JsonValue.from(42))
     .build();
 ```
 
@@ -509,10 +513,11 @@ To forcibly omit a required parameter or property, pass [`JsonMissing`](stagehan
 
 ```java
 import com.browserbase.api.core.JsonMissing;
-import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionActParams;
 
-SessionStartParams params = SessionStartParams.builder()
-    .env(JsonMissing.of())
+SessionActParams params = SessionActParams.builder()
+    .input("click the sign in button")
+    .sessionId(JsonMissing.of())
     .build();
 ```
 
@@ -524,7 +529,7 @@ To access undocumented response properties, call the `_additionalProperties()` m
 import com.browserbase.api.core.JsonValue;
 import java.util.Map;
 
-Map<String, JsonValue> additionalProperties = client.sessions().start(params)._additionalProperties();
+Map<String, JsonValue> additionalProperties = client.sessions().act(params)._additionalProperties();
 JsonValue secretPropertyValue = additionalProperties.get("secretProperty");
 
 String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
@@ -552,22 +557,22 @@ To access a property's raw JSON value, which may be undocumented, call its `_` p
 
 ```java
 import com.browserbase.api.core.JsonField;
-import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionActParams;
 import java.util.Optional;
 
-JsonField<SessionStartParams.Env> env = client.sessions().start(params)._env();
+JsonField<SessionActParams.Input> input = client.sessions().act(params)._input();
 
-if (env.isMissing()) {
+if (input.isMissing()) {
   // The property is absent from the JSON response
-} else if (env.isNull()) {
+} else if (input.isNull()) {
   // The property was set to literal null
 } else {
   // Check if value was provided as a string
   // Other methods include `asNumber()`, `asBoolean()`, etc.
-  Optional<String> jsonString = env.asString();
+  Optional<String> jsonString = input.asString();
 
   // Try to deserialize into a custom type
-  MyClass myObject = env.asUnknown().orElseThrow().convert(MyClass.class);
+  MyClass myObject = input.asUnknown().orElseThrow().convert(MyClass.class);
 }
 ```
 
@@ -580,17 +585,17 @@ By default, the SDK will not throw an exception in this case. It will throw [`St
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.browserbase.api.models.sessions.SessionStartResponse;
+import com.browserbase.api.models.sessions.SessionActResponse;
 
-SessionStartResponse response = client.sessions().start(params).validate();
+SessionActResponse response = client.sessions().act(params).validate();
 ```
 
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.browserbase.api.models.sessions.SessionStartResponse;
+import com.browserbase.api.models.sessions.SessionActResponse;
 
-SessionStartResponse response = client.sessions().start(
+SessionActResponse response = client.sessions().act(
   params, RequestOptions.builder().responseValidation(true).build()
 );
 ```
