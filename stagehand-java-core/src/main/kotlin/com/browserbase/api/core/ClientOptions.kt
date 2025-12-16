@@ -93,8 +93,11 @@ private constructor(
      * Defaults to 2.
      */
     @get:JvmName("maxRetries") val maxRetries: Int,
+    /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
     @get:JvmName("browserbaseApiKey") val browserbaseApiKey: String,
+    /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
     @get:JvmName("browserbaseProjectId") val browserbaseProjectId: String,
+    /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
     @get:JvmName("modelApiKey") val modelApiKey: String,
 ) {
 
@@ -278,14 +281,17 @@ private constructor(
          */
         fun maxRetries(maxRetries: Int) = apply { this.maxRetries = maxRetries }
 
+        /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
         fun browserbaseApiKey(browserbaseApiKey: String) = apply {
             this.browserbaseApiKey = browserbaseApiKey
         }
 
+        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
         fun browserbaseProjectId(browserbaseProjectId: String) = apply {
             this.browserbaseProjectId = browserbaseProjectId
         }
 
+        /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
         fun modelApiKey(modelApiKey: String) = apply { this.modelApiKey = modelApiKey }
 
         fun headers(headers: Headers) = apply {

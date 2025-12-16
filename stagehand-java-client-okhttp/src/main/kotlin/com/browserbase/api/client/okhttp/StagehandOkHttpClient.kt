@@ -195,14 +195,17 @@ class StagehandOkHttpClient private constructor() {
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
 
+        /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
         fun browserbaseApiKey(browserbaseApiKey: String) = apply {
             clientOptions.browserbaseApiKey(browserbaseApiKey)
         }
 
+        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
         fun browserbaseProjectId(browserbaseProjectId: String) = apply {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
 
+        /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
         fun modelApiKey(modelApiKey: String) = apply { clientOptions.modelApiKey(modelApiKey) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
