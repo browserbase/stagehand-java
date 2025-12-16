@@ -56,7 +56,7 @@ import com.browserbase.api.models.sessions.SessionActResponse;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .sessionId("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 SessionActResponse response = client.sessions().act(params);
@@ -162,7 +162,7 @@ import java.util.concurrent.CompletableFuture;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .sessionId("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.async().sessions().act(params);
@@ -182,7 +182,7 @@ import java.util.concurrent.CompletableFuture;
 StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+    .sessionId("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.sessions().act(params);
@@ -203,8 +203,8 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .browserbaseApiKey("BROWSERBASE_API_KEY")
-    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
+    .browserbaseApiKey("<your API key here>")
+    .browserbaseProjectId("<your project ID here>")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
