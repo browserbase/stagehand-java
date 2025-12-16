@@ -35,7 +35,7 @@ jobs:
           GPG_SIGNING_KEY_ID="$(gpg --with-colons --list-keys | awk -F : -- '/^pub:/ { getline; print "0x" substr($10, length($10) - 7) }')"
           ./gradlew publish --no-configuration-cache
         env:
-          SONATYPE_USERNAME: ${{ secrets.BROWSERBASE_SONATYPE_USERNAME || secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.BROWSERBASE_SONATYPE_PASSWORD || secrets.SONATYPE_PASSWORD }}
-          GPG_SIGNING_KEY: ${{ secrets.BROWSERBASE_SONATYPE_GPG_SIGNING_KEY || secrets.GPG_SIGNING_KEY }}
-          GPG_SIGNING_PASSWORD: ${{ secrets.BROWSERBASE_SONATYPE_GPG_SIGNING_PASSWORD || secrets.GPG_SIGNING_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.STAGEHAND_SONATYPE_USERNAME || secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.STAGEHAND_SONATYPE_PASSWORD || secrets.SONATYPE_PASSWORD }}
+          GPG_SIGNING_KEY: ${{ secrets.STAGEHAND_SONATYPE_GPG_SIGNING_KEY || secrets.GPG_SIGNING_KEY }}
+          GPG_SIGNING_PASSWORD: ${{ secrets.STAGEHAND_SONATYPE_GPG_SIGNING_PASSWORD || secrets.GPG_SIGNING_PASSWORD }}
