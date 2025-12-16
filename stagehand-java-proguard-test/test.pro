@@ -1,5 +1,5 @@
 # Specify the entrypoint where ProGuard starts to determine what's reachable.
--keep class com.stagehand.api.proguard.** { *; }
+-keep class com.browserbase.api.proguard.** { *; }
 
 # For the testing framework.
 -keep class org.junit.** { *; }

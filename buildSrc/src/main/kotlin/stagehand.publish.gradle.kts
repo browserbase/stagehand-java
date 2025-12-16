@@ -9,9 +9,9 @@ configure<PublishingExtension> {
             from(components["java"])
 
             pom {
-                name.set("Stagehand P2P Server API")
-                description.set("HTTP API for remote Stagehand browser automation. This API allows clients to\nconnect to a Stagehand server and execute browser automation tasks remotely.\n\nAll endpoints except /sessions/start require an active session ID. Responses are\nstreamed using Server-Sent Events (SSE) when the `x-stream-response: true`\nheader is provided.")
-                url.set("https://browserbase.com")
+                name.set("Stagehand API")
+                description.set("Stagehand SDK for AI browser automation [ALPHA]. This API allows clients to\nexecute browser automation tasks remotely on the Browserbase cloud.\n\nAll endpoints except /sessions/start require an active session ID. Responses are\nstreamed using Server-Sent Events (SSE) when the `x-stream-response: true`\nheader is provided.\n\nThis SDK is currently ALPHA software and is not production ready! Please try it\nand give us your feedback, stay tuned for upcoming release announcements!")
+                url.set("https://docs.stagehand.dev")
 
                 licenses {
                     license {
@@ -26,9 +26,9 @@ configure<PublishingExtension> {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/stainless-sdks/stagehand-java.git")
-                    developerConnection.set("scm:git:git://github.com/stainless-sdks/stagehand-java.git")
-                    url.set("https://github.com/stainless-sdks/stagehand-java")
+                    connection.set("scm:git:git://github.com/browserbase/stagehand-java.git")
+                    developerConnection.set("scm:git:git://github.com/browserbase/stagehand-java.git")
+                    url.set("https://github.com/browserbase/stagehand-java")
                 }
 
                 versionMapping {
