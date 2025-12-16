@@ -32,7 +32,7 @@ subprojects {
 // Avoid race conditions between `dokkaJavadocCollector` and `dokkaJavadocJar` tasks
 tasks.named("dokkaJavadocCollector").configure {
     subprojects.flatMap { it.tasks }
-        .filter { it.project.name != "stagehand-java" && it.name == "dokkaJavadocJar" }
+        .filter { it.project.name != "browserbase-java" && it.name == "dokkaJavadocJar" }
         .forEach { mustRunAfter(it) }
 }
 

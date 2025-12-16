@@ -1,11 +1,11 @@
-rootProject.name = "stagehand-java-root"
+rootProject.name = "browserbase-java-root"
 
 val projectNames = rootDir.listFiles()
     ?.asSequence()
     .orEmpty()
     .filter { file ->
         file.isDirectory &&
-        file.name.startsWith("stagehand-java") &&
+        file.name.startsWith("browserbase-java") &&
         file.listFiles()?.asSequence().orEmpty().any { it.name == "build.gradle.kts" }
     }
     .map { it.name }
