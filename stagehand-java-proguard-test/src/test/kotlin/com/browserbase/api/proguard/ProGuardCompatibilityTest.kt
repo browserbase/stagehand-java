@@ -45,7 +45,12 @@ internal class ProGuardCompatibilityTest {
 
     @Test
     fun client() {
-        val client = StagehandOkHttpClient.builder().apiKey("My API Key").build()
+        val client =
+            StagehandOkHttpClient.builder()
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
 
         assertThat(client).isNotNull()
         assertThat(client.sessions()).isNotNull()
