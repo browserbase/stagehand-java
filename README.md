@@ -203,8 +203,8 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .browserbaseApiKey("<your API key here>")
-    .browserbaseProjectId("<your project ID here>")
+    .browserbaseApiKey("BROWSERBASE_API_KEY")
+    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
