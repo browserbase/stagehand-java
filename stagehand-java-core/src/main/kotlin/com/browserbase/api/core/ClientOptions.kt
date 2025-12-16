@@ -95,7 +95,7 @@ private constructor(
     @get:JvmName("maxRetries") val maxRetries: Int,
     @get:JvmName("browserbaseApiKey") val browserbaseApiKey: String,
     @get:JvmName("browserbaseProjectId") val browserbaseProjectId: String,
-    private val modelApiKey: String?,
+    @get:JvmName("modelApiKey") val modelApiKey: String,
 ) {
 
     init {
@@ -111,8 +111,6 @@ private constructor(
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
-    fun modelApiKey(): Optional<String> = Optional.ofNullable(modelApiKey)
-
     fun toBuilder() = Builder().from(this)
 
     companion object {
@@ -127,6 +125,7 @@ private constructor(
          * .httpClient()
          * .browserbaseApiKey()
          * .browserbaseProjectId()
+         * .modelApiKey()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -287,10 +286,7 @@ private constructor(
             this.browserbaseProjectId = browserbaseProjectId
         }
 
-        fun modelApiKey(modelApiKey: String?) = apply { this.modelApiKey = modelApiKey }
-
-        /** Alias for calling [Builder.modelApiKey] with `modelApiKey.orElse(null)`. */
-        fun modelApiKey(modelApiKey: Optional<String>) = modelApiKey(modelApiKey.getOrNull())
+        fun modelApiKey(modelApiKey: String) = apply { this.modelApiKey = modelApiKey }
 
         fun headers(headers: Headers) = apply {
             this.headers.clear()
@@ -383,7 +379,7 @@ private constructor(
          * |----------------------|--------------------------------|------------------------|--------|--------------------------------------------|
          * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                           |
          * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                           |
-         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |false   |-                                           |
+         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                           |
          * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com/v1"`|
          *
          * System properties take precedence over environment variables.
@@ -413,6 +409,7 @@ private constructor(
          * .httpClient()
          * .browserbaseApiKey()
          * .browserbaseProjectId()
+         * .modelApiKey()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -422,6 +419,7 @@ private constructor(
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
             val browserbaseApiKey = checkRequired("browserbaseApiKey", browserbaseApiKey)
             val browserbaseProjectId = checkRequired("browserbaseProjectId", browserbaseProjectId)
+            val modelApiKey = checkRequired("modelApiKey", modelApiKey)
 
             val headers = Headers.builder()
             val queryParams = QueryParams.builder()
@@ -442,7 +440,7 @@ private constructor(
                     headers.put("x-bb-project-id", it)
                 }
             }
-            modelApiKey?.let {
+            modelApiKey.let {
                 if (!it.isEmpty()) {
                     headers.put("x-model-api-key", it)
                 }

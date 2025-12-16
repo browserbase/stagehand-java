@@ -203,10 +203,7 @@ class StagehandOkHttpClient private constructor() {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
 
-        fun modelApiKey(modelApiKey: String?) = apply { clientOptions.modelApiKey(modelApiKey) }
-
-        /** Alias for calling [Builder.modelApiKey] with `modelApiKey.orElse(null)`. */
-        fun modelApiKey(modelApiKey: Optional<String>) = modelApiKey(modelApiKey.getOrNull())
+        fun modelApiKey(modelApiKey: String) = apply { clientOptions.modelApiKey(modelApiKey) }
 
         fun headers(headers: Headers) = apply { clientOptions.headers(headers) }
 
