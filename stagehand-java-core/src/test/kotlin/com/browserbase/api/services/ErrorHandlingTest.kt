@@ -54,7 +54,9 @@ internal class ErrorHandlingTest {
         client =
             StagehandOkHttpClient.builder()
                 .baseUrl(wmRuntimeInfo.httpBaseUrl)
-                .apiKey("My API Key")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
                 .build()
     }
 
