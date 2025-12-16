@@ -2,7 +2,6 @@
 
 package com.browserbase.api.models.sessions
 
-import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
@@ -19,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
-import kotlin.jvm.optionals.getOrNull
 
 /**
  * Initializes a new Stagehand session with a browser instance. Returns a session ID that must be
@@ -33,20 +31,20 @@ private constructor(
 ) : Params {
 
     /**
-     * Environment to run the browser in
+     * API key for Browserbase Cloud
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun env(): Env = body.env()
+    fun browserbaseApiKey(): String = body.browserbaseApiKey()
 
     /**
-     * API key for Browserbase (required when env=BROWSERBASE)
+     * Project ID for Browserbase
      *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun apiKey(): Optional<String> = body.apiKey()
+    fun browserbaseProjectId(): String = body.browserbaseProjectId()
 
     /**
      * Timeout in ms to wait for DOM to settle
@@ -57,29 +55,12 @@ private constructor(
     fun domSettleTimeout(): Optional<Long> = body.domSettleTimeout()
 
     /**
-     * Options for local browser launch
-     *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun localBrowserLaunchOptions(): Optional<LocalBrowserLaunchOptions> =
-        body.localBrowserLaunchOptions()
-
-    /**
-     * AI model to use for actions
+     * AI model to use for actions (must be prefixed with provider/)
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
     fun model(): Optional<String> = body.model()
-
-    /**
-     * Project ID for Browserbase (required when env=BROWSERBASE)
-     *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun projectId(): Optional<String> = body.projectId()
 
     /**
      * Enable self-healing for failed actions
@@ -106,18 +87,20 @@ private constructor(
     fun verbose(): Optional<Long> = body.verbose()
 
     /**
-     * Returns the raw JSON value of [env].
+     * Returns the raw JSON value of [browserbaseApiKey].
      *
-     * Unlike [env], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [browserbaseApiKey], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    fun _env(): JsonField<Env> = body._env()
+    fun _browserbaseApiKey(): JsonField<String> = body._browserbaseApiKey()
 
     /**
-     * Returns the raw JSON value of [apiKey].
+     * Returns the raw JSON value of [browserbaseProjectId].
      *
-     * Unlike [apiKey], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [browserbaseProjectId], this method doesn't throw if the JSON field has an unexpected
+     * type.
      */
-    fun _apiKey(): JsonField<String> = body._apiKey()
+    fun _browserbaseProjectId(): JsonField<String> = body._browserbaseProjectId()
 
     /**
      * Returns the raw JSON value of [domSettleTimeout].
@@ -128,27 +111,11 @@ private constructor(
     fun _domSettleTimeout(): JsonField<Long> = body._domSettleTimeout()
 
     /**
-     * Returns the raw JSON value of [localBrowserLaunchOptions].
-     *
-     * Unlike [localBrowserLaunchOptions], this method doesn't throw if the JSON field has an
-     * unexpected type.
-     */
-    fun _localBrowserLaunchOptions(): JsonField<LocalBrowserLaunchOptions> =
-        body._localBrowserLaunchOptions()
-
-    /**
      * Returns the raw JSON value of [model].
      *
      * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _model(): JsonField<String> = body._model()
-
-    /**
-     * Returns the raw JSON value of [projectId].
-     *
-     * Unlike [projectId], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _projectId(): JsonField<String> = body._projectId()
 
     /**
      * Returns the raw JSON value of [selfHeal].
@@ -188,7 +155,8 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .env()
+         * .browserbaseApiKey()
+         * .browserbaseProjectId()
          * ```
          */
         @JvmStatic fun builder() = Builder()
@@ -213,36 +181,46 @@ private constructor(
          *
          * This is generally only useful if you are already constructing the body separately.
          * Otherwise, it's more convenient to use the top-level setters instead:
-         * - [env]
-         * - [apiKey]
+         * - [browserbaseApiKey]
+         * - [browserbaseProjectId]
          * - [domSettleTimeout]
-         * - [localBrowserLaunchOptions]
          * - [model]
+         * - [selfHeal]
          * - etc.
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Environment to run the browser in */
-        fun env(env: Env) = apply { body.env(env) }
+        /** API key for Browserbase Cloud */
+        fun browserbaseApiKey(browserbaseApiKey: String) = apply {
+            body.browserbaseApiKey(browserbaseApiKey)
+        }
 
         /**
-         * Sets [Builder.env] to an arbitrary JSON value.
+         * Sets [Builder.browserbaseApiKey] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.env] with a well-typed [Env] value instead. This method
-         * is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.browserbaseApiKey] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun env(env: JsonField<Env>) = apply { body.env(env) }
+        fun browserbaseApiKey(browserbaseApiKey: JsonField<String>) = apply {
+            body.browserbaseApiKey(browserbaseApiKey)
+        }
 
-        /** API key for Browserbase (required when env=BROWSERBASE) */
-        fun apiKey(apiKey: String) = apply { body.apiKey(apiKey) }
+        /** Project ID for Browserbase */
+        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+            body.browserbaseProjectId(browserbaseProjectId)
+        }
 
         /**
-         * Sets [Builder.apiKey] to an arbitrary JSON value.
+         * Sets [Builder.browserbaseProjectId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.apiKey] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
+         * You should usually call [Builder.browserbaseProjectId] with a well-typed [String] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
          */
-        fun apiKey(apiKey: JsonField<String>) = apply { body.apiKey(apiKey) }
+        fun browserbaseProjectId(browserbaseProjectId: JsonField<String>) = apply {
+            body.browserbaseProjectId(browserbaseProjectId)
+        }
 
         /** Timeout in ms to wait for DOM to settle */
         fun domSettleTimeout(domSettleTimeout: Long) = apply {
@@ -260,24 +238,7 @@ private constructor(
             body.domSettleTimeout(domSettleTimeout)
         }
 
-        /** Options for local browser launch */
-        fun localBrowserLaunchOptions(localBrowserLaunchOptions: LocalBrowserLaunchOptions) =
-            apply {
-                body.localBrowserLaunchOptions(localBrowserLaunchOptions)
-            }
-
-        /**
-         * Sets [Builder.localBrowserLaunchOptions] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.localBrowserLaunchOptions] with a well-typed
-         * [LocalBrowserLaunchOptions] value instead. This method is primarily for setting the field
-         * to an undocumented or not yet supported value.
-         */
-        fun localBrowserLaunchOptions(
-            localBrowserLaunchOptions: JsonField<LocalBrowserLaunchOptions>
-        ) = apply { body.localBrowserLaunchOptions(localBrowserLaunchOptions) }
-
-        /** AI model to use for actions */
+        /** AI model to use for actions (must be prefixed with provider/) */
         fun model(model: String) = apply { body.model(model) }
 
         /**
@@ -287,18 +248,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun model(model: JsonField<String>) = apply { body.model(model) }
-
-        /** Project ID for Browserbase (required when env=BROWSERBASE) */
-        fun projectId(projectId: String) = apply { body.projectId(projectId) }
-
-        /**
-         * Sets [Builder.projectId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.projectId] with a well-typed [String] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun projectId(projectId: JsonField<String>) = apply { body.projectId(projectId) }
 
         /** Enable self-healing for failed actions */
         fun selfHeal(selfHeal: Boolean) = apply { body.selfHeal(selfHeal) }
@@ -461,7 +410,8 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .env()
+         * .browserbaseApiKey()
+         * .browserbaseProjectId()
          * ```
          *
          * @throws IllegalStateException if any required field is unset.
@@ -483,12 +433,10 @@ private constructor(
     class Body
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val env: JsonField<Env>,
-        private val apiKey: JsonField<String>,
+        private val browserbaseApiKey: JsonField<String>,
+        private val browserbaseProjectId: JsonField<String>,
         private val domSettleTimeout: JsonField<Long>,
-        private val localBrowserLaunchOptions: JsonField<LocalBrowserLaunchOptions>,
         private val model: JsonField<String>,
-        private val projectId: JsonField<String>,
         private val selfHeal: JsonField<Boolean>,
         private val systemPrompt: JsonField<String>,
         private val verbose: JsonField<Long>,
@@ -497,18 +445,16 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("env") @ExcludeMissing env: JsonField<Env> = JsonMissing.of(),
-            @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("BROWSERBASE_API_KEY")
+            @ExcludeMissing
+            browserbaseApiKey: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("BROWSERBASE_PROJECT_ID")
+            @ExcludeMissing
+            browserbaseProjectId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("domSettleTimeout")
             @ExcludeMissing
             domSettleTimeout: JsonField<Long> = JsonMissing.of(),
-            @JsonProperty("localBrowserLaunchOptions")
-            @ExcludeMissing
-            localBrowserLaunchOptions: JsonField<LocalBrowserLaunchOptions> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("projectId")
-            @ExcludeMissing
-            projectId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("selfHeal")
             @ExcludeMissing
             selfHeal: JsonField<Boolean> = JsonMissing.of(),
@@ -517,12 +463,10 @@ private constructor(
             systemPrompt: JsonField<String> = JsonMissing.of(),
             @JsonProperty("verbose") @ExcludeMissing verbose: JsonField<Long> = JsonMissing.of(),
         ) : this(
-            env,
-            apiKey,
+            browserbaseApiKey,
+            browserbaseProjectId,
             domSettleTimeout,
-            localBrowserLaunchOptions,
             model,
-            projectId,
             selfHeal,
             systemPrompt,
             verbose,
@@ -530,20 +474,21 @@ private constructor(
         )
 
         /**
-         * Environment to run the browser in
+         * API key for Browserbase Cloud
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun env(): Env = env.getRequired("env")
+        fun browserbaseApiKey(): String = browserbaseApiKey.getRequired("BROWSERBASE_API_KEY")
 
         /**
-         * API key for Browserbase (required when env=BROWSERBASE)
+         * Project ID for Browserbase
          *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
-        fun apiKey(): Optional<String> = apiKey.getOptional("apiKey")
+        fun browserbaseProjectId(): String =
+            browserbaseProjectId.getRequired("BROWSERBASE_PROJECT_ID")
 
         /**
          * Timeout in ms to wait for DOM to settle
@@ -554,29 +499,12 @@ private constructor(
         fun domSettleTimeout(): Optional<Long> = domSettleTimeout.getOptional("domSettleTimeout")
 
         /**
-         * Options for local browser launch
-         *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun localBrowserLaunchOptions(): Optional<LocalBrowserLaunchOptions> =
-            localBrowserLaunchOptions.getOptional("localBrowserLaunchOptions")
-
-        /**
-         * AI model to use for actions
+         * AI model to use for actions (must be prefixed with provider/)
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun model(): Optional<String> = model.getOptional("model")
-
-        /**
-         * Project ID for Browserbase (required when env=BROWSERBASE)
-         *
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun projectId(): Optional<String> = projectId.getOptional("projectId")
 
         /**
          * Enable self-healing for failed actions
@@ -603,18 +531,24 @@ private constructor(
         fun verbose(): Optional<Long> = verbose.getOptional("verbose")
 
         /**
-         * Returns the raw JSON value of [env].
+         * Returns the raw JSON value of [browserbaseApiKey].
          *
-         * Unlike [env], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [browserbaseApiKey], this method doesn't throw if the JSON field has an unexpected
+         * type.
          */
-        @JsonProperty("env") @ExcludeMissing fun _env(): JsonField<Env> = env
+        @JsonProperty("BROWSERBASE_API_KEY")
+        @ExcludeMissing
+        fun _browserbaseApiKey(): JsonField<String> = browserbaseApiKey
 
         /**
-         * Returns the raw JSON value of [apiKey].
+         * Returns the raw JSON value of [browserbaseProjectId].
          *
-         * Unlike [apiKey], this method doesn't throw if the JSON field has an unexpected type.
+         * Unlike [browserbaseProjectId], this method doesn't throw if the JSON field has an
+         * unexpected type.
          */
-        @JsonProperty("apiKey") @ExcludeMissing fun _apiKey(): JsonField<String> = apiKey
+        @JsonProperty("BROWSERBASE_PROJECT_ID")
+        @ExcludeMissing
+        fun _browserbaseProjectId(): JsonField<String> = browserbaseProjectId
 
         /**
          * Returns the raw JSON value of [domSettleTimeout].
@@ -627,29 +561,11 @@ private constructor(
         fun _domSettleTimeout(): JsonField<Long> = domSettleTimeout
 
         /**
-         * Returns the raw JSON value of [localBrowserLaunchOptions].
-         *
-         * Unlike [localBrowserLaunchOptions], this method doesn't throw if the JSON field has an
-         * unexpected type.
-         */
-        @JsonProperty("localBrowserLaunchOptions")
-        @ExcludeMissing
-        fun _localBrowserLaunchOptions(): JsonField<LocalBrowserLaunchOptions> =
-            localBrowserLaunchOptions
-
-        /**
          * Returns the raw JSON value of [model].
          *
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<String> = model
-
-        /**
-         * Returns the raw JSON value of [projectId].
-         *
-         * Unlike [projectId], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("projectId") @ExcludeMissing fun _projectId(): JsonField<String> = projectId
 
         /**
          * Returns the raw JSON value of [selfHeal].
@@ -694,7 +610,8 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .env()
+             * .browserbaseApiKey()
+             * .browserbaseProjectId()
              * ```
              */
             @JvmStatic fun builder() = Builder()
@@ -703,13 +620,10 @@ private constructor(
         /** A builder for [Body]. */
         class Builder internal constructor() {
 
-            private var env: JsonField<Env>? = null
-            private var apiKey: JsonField<String> = JsonMissing.of()
+            private var browserbaseApiKey: JsonField<String>? = null
+            private var browserbaseProjectId: JsonField<String>? = null
             private var domSettleTimeout: JsonField<Long> = JsonMissing.of()
-            private var localBrowserLaunchOptions: JsonField<LocalBrowserLaunchOptions> =
-                JsonMissing.of()
             private var model: JsonField<String> = JsonMissing.of()
-            private var projectId: JsonField<String> = JsonMissing.of()
             private var selfHeal: JsonField<Boolean> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var verbose: JsonField<Long> = JsonMissing.of()
@@ -717,41 +631,45 @@ private constructor(
 
             @JvmSynthetic
             internal fun from(body: Body) = apply {
-                env = body.env
-                apiKey = body.apiKey
+                browserbaseApiKey = body.browserbaseApiKey
+                browserbaseProjectId = body.browserbaseProjectId
                 domSettleTimeout = body.domSettleTimeout
-                localBrowserLaunchOptions = body.localBrowserLaunchOptions
                 model = body.model
-                projectId = body.projectId
                 selfHeal = body.selfHeal
                 systemPrompt = body.systemPrompt
                 verbose = body.verbose
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Environment to run the browser in */
-            fun env(env: Env) = env(JsonField.of(env))
+            /** API key for Browserbase Cloud */
+            fun browserbaseApiKey(browserbaseApiKey: String) =
+                browserbaseApiKey(JsonField.of(browserbaseApiKey))
 
             /**
-             * Sets [Builder.env] to an arbitrary JSON value.
+             * Sets [Builder.browserbaseApiKey] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.env] with a well-typed [Env] value instead. This
-             * method is primarily for setting the field to an undocumented or not yet supported
-             * value.
-             */
-            fun env(env: JsonField<Env>) = apply { this.env = env }
-
-            /** API key for Browserbase (required when env=BROWSERBASE) */
-            fun apiKey(apiKey: String) = apiKey(JsonField.of(apiKey))
-
-            /**
-             * Sets [Builder.apiKey] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.apiKey] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
+             * You should usually call [Builder.browserbaseApiKey] with a well-typed [String] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun apiKey(apiKey: JsonField<String>) = apply { this.apiKey = apiKey }
+            fun browserbaseApiKey(browserbaseApiKey: JsonField<String>) = apply {
+                this.browserbaseApiKey = browserbaseApiKey
+            }
+
+            /** Project ID for Browserbase */
+            fun browserbaseProjectId(browserbaseProjectId: String) =
+                browserbaseProjectId(JsonField.of(browserbaseProjectId))
+
+            /**
+             * Sets [Builder.browserbaseProjectId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.browserbaseProjectId] with a well-typed [String]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun browserbaseProjectId(browserbaseProjectId: JsonField<String>) = apply {
+                this.browserbaseProjectId = browserbaseProjectId
+            }
 
             /** Timeout in ms to wait for DOM to settle */
             fun domSettleTimeout(domSettleTimeout: Long) =
@@ -768,22 +686,7 @@ private constructor(
                 this.domSettleTimeout = domSettleTimeout
             }
 
-            /** Options for local browser launch */
-            fun localBrowserLaunchOptions(localBrowserLaunchOptions: LocalBrowserLaunchOptions) =
-                localBrowserLaunchOptions(JsonField.of(localBrowserLaunchOptions))
-
-            /**
-             * Sets [Builder.localBrowserLaunchOptions] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.localBrowserLaunchOptions] with a well-typed
-             * [LocalBrowserLaunchOptions] value instead. This method is primarily for setting the
-             * field to an undocumented or not yet supported value.
-             */
-            fun localBrowserLaunchOptions(
-                localBrowserLaunchOptions: JsonField<LocalBrowserLaunchOptions>
-            ) = apply { this.localBrowserLaunchOptions = localBrowserLaunchOptions }
-
-            /** AI model to use for actions */
+            /** AI model to use for actions (must be prefixed with provider/) */
             fun model(model: String) = model(JsonField.of(model))
 
             /**
@@ -794,18 +697,6 @@ private constructor(
              * supported value.
              */
             fun model(model: JsonField<String>) = apply { this.model = model }
-
-            /** Project ID for Browserbase (required when env=BROWSERBASE) */
-            fun projectId(projectId: String) = projectId(JsonField.of(projectId))
-
-            /**
-             * Sets [Builder.projectId] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.projectId] with a well-typed [String] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun projectId(projectId: JsonField<String>) = apply { this.projectId = projectId }
 
             /** Enable self-healing for failed actions */
             fun selfHeal(selfHeal: Boolean) = selfHeal(JsonField.of(selfHeal))
@@ -871,19 +762,18 @@ private constructor(
              *
              * The following fields are required:
              * ```java
-             * .env()
+             * .browserbaseApiKey()
+             * .browserbaseProjectId()
              * ```
              *
              * @throws IllegalStateException if any required field is unset.
              */
             fun build(): Body =
                 Body(
-                    checkRequired("env", env),
-                    apiKey,
+                    checkRequired("browserbaseApiKey", browserbaseApiKey),
+                    checkRequired("browserbaseProjectId", browserbaseProjectId),
                     domSettleTimeout,
-                    localBrowserLaunchOptions,
                     model,
-                    projectId,
                     selfHeal,
                     systemPrompt,
                     verbose,
@@ -898,12 +788,10 @@ private constructor(
                 return@apply
             }
 
-            env().validate()
-            apiKey()
+            browserbaseApiKey()
+            browserbaseProjectId()
             domSettleTimeout()
-            localBrowserLaunchOptions().ifPresent { it.validate() }
             model()
-            projectId()
             selfHeal()
             systemPrompt()
             verbose()
@@ -926,12 +814,10 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (env.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (apiKey.asKnown().isPresent) 1 else 0) +
+            (if (browserbaseApiKey.asKnown().isPresent) 1 else 0) +
+                (if (browserbaseProjectId.asKnown().isPresent) 1 else 0) +
                 (if (domSettleTimeout.asKnown().isPresent) 1 else 0) +
-                (localBrowserLaunchOptions.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (model.asKnown().isPresent) 1 else 0) +
-                (if (projectId.asKnown().isPresent) 1 else 0) +
                 (if (selfHeal.asKnown().isPresent) 1 else 0) +
                 (if (systemPrompt.asKnown().isPresent) 1 else 0) +
                 (if (verbose.asKnown().isPresent) 1 else 0)
@@ -942,12 +828,10 @@ private constructor(
             }
 
             return other is Body &&
-                env == other.env &&
-                apiKey == other.apiKey &&
+                browserbaseApiKey == other.browserbaseApiKey &&
+                browserbaseProjectId == other.browserbaseProjectId &&
                 domSettleTimeout == other.domSettleTimeout &&
-                localBrowserLaunchOptions == other.localBrowserLaunchOptions &&
                 model == other.model &&
-                projectId == other.projectId &&
                 selfHeal == other.selfHeal &&
                 systemPrompt == other.systemPrompt &&
                 verbose == other.verbose &&
@@ -956,12 +840,10 @@ private constructor(
 
         private val hashCode: Int by lazy {
             Objects.hash(
-                env,
-                apiKey,
+                browserbaseApiKey,
+                browserbaseProjectId,
                 domSettleTimeout,
-                localBrowserLaunchOptions,
                 model,
-                projectId,
                 selfHeal,
                 systemPrompt,
                 verbose,
@@ -972,280 +854,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{env=$env, apiKey=$apiKey, domSettleTimeout=$domSettleTimeout, localBrowserLaunchOptions=$localBrowserLaunchOptions, model=$model, projectId=$projectId, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, additionalProperties=$additionalProperties}"
-    }
-
-    /** Environment to run the browser in */
-    class Env @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val LOCAL = of("LOCAL")
-
-            @JvmField val BROWSERBASE = of("BROWSERBASE")
-
-            @JvmStatic fun of(value: String) = Env(JsonField.of(value))
-        }
-
-        /** An enum containing [Env]'s known values. */
-        enum class Known {
-            LOCAL,
-            BROWSERBASE,
-        }
-
-        /**
-         * An enum containing [Env]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [Env] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            LOCAL,
-            BROWSERBASE,
-            /** An enum member indicating that [Env] was instantiated with an unknown value. */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                LOCAL -> Value.LOCAL
-                BROWSERBASE -> Value.BROWSERBASE
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                LOCAL -> Known.LOCAL
-                BROWSERBASE -> Known.BROWSERBASE
-                else -> throw StagehandInvalidDataException("Unknown Env: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow {
-                StagehandInvalidDataException("Value is not a String")
-            }
-
-        private var validated: Boolean = false
-
-        fun validate(): Env = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: StagehandInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is Env && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
-    /** Options for local browser launch */
-    class LocalBrowserLaunchOptions
-    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
-    private constructor(
-        private val headless: JsonField<Boolean>,
-        private val additionalProperties: MutableMap<String, JsonValue>,
-    ) {
-
-        @JsonCreator
-        private constructor(
-            @JsonProperty("headless")
-            @ExcludeMissing
-            headless: JsonField<Boolean> = JsonMissing.of()
-        ) : this(headless, mutableMapOf())
-
-        /**
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun headless(): Optional<Boolean> = headless.getOptional("headless")
-
-        /**
-         * Returns the raw JSON value of [headless].
-         *
-         * Unlike [headless], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("headless") @ExcludeMissing fun _headless(): JsonField<Boolean> = headless
-
-        @JsonAnySetter
-        private fun putAdditionalProperty(key: String, value: JsonValue) {
-            additionalProperties.put(key, value)
-        }
-
-        @JsonAnyGetter
-        @ExcludeMissing
-        fun _additionalProperties(): Map<String, JsonValue> =
-            Collections.unmodifiableMap(additionalProperties)
-
-        fun toBuilder() = Builder().from(this)
-
-        companion object {
-
-            /**
-             * Returns a mutable builder for constructing an instance of
-             * [LocalBrowserLaunchOptions].
-             */
-            @JvmStatic fun builder() = Builder()
-        }
-
-        /** A builder for [LocalBrowserLaunchOptions]. */
-        class Builder internal constructor() {
-
-            private var headless: JsonField<Boolean> = JsonMissing.of()
-            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
-
-            @JvmSynthetic
-            internal fun from(localBrowserLaunchOptions: LocalBrowserLaunchOptions) = apply {
-                headless = localBrowserLaunchOptions.headless
-                additionalProperties = localBrowserLaunchOptions.additionalProperties.toMutableMap()
-            }
-
-            fun headless(headless: Boolean) = headless(JsonField.of(headless))
-
-            /**
-             * Sets [Builder.headless] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.headless] with a well-typed [Boolean] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun headless(headless: JsonField<Boolean>) = apply { this.headless = headless }
-
-            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.clear()
-                putAllAdditionalProperties(additionalProperties)
-            }
-
-            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
-                additionalProperties.put(key, value)
-            }
-
-            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
-                this.additionalProperties.putAll(additionalProperties)
-            }
-
-            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
-
-            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
-                keys.forEach(::removeAdditionalProperty)
-            }
-
-            /**
-             * Returns an immutable instance of [LocalBrowserLaunchOptions].
-             *
-             * Further updates to this [Builder] will not mutate the returned instance.
-             */
-            fun build(): LocalBrowserLaunchOptions =
-                LocalBrowserLaunchOptions(headless, additionalProperties.toMutableMap())
-        }
-
-        private var validated: Boolean = false
-
-        fun validate(): LocalBrowserLaunchOptions = apply {
-            if (validated) {
-                return@apply
-            }
-
-            headless()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: StagehandInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = (if (headless.asKnown().isPresent) 1 else 0)
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is LocalBrowserLaunchOptions &&
-                headless == other.headless &&
-                additionalProperties == other.additionalProperties
-        }
-
-        private val hashCode: Int by lazy { Objects.hash(headless, additionalProperties) }
-
-        override fun hashCode(): Int = hashCode
-
-        override fun toString() =
-            "LocalBrowserLaunchOptions{headless=$headless, additionalProperties=$additionalProperties}"
+            "Body{browserbaseApiKey=$browserbaseApiKey, browserbaseProjectId=$browserbaseProjectId, domSettleTimeout=$domSettleTimeout, model=$model, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

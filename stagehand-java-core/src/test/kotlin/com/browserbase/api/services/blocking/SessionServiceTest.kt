@@ -234,16 +234,10 @@ internal class SessionServiceTest {
         val response =
             sessionService.start(
                 SessionStartParams.builder()
-                    .env(SessionStartParams.Env.LOCAL)
-                    .apiKey("apiKey")
+                    .browserbaseApiKey("BROWSERBASE_API_KEY")
+                    .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
                     .domSettleTimeout(0L)
-                    .localBrowserLaunchOptions(
-                        SessionStartParams.LocalBrowserLaunchOptions.builder()
-                            .headless(true)
-                            .build()
-                    )
                     .model("openai/gpt-4o")
-                    .projectId("projectId")
                     .selfHeal(true)
                     .systemPrompt("systemPrompt")
                     .verbose(1L)
