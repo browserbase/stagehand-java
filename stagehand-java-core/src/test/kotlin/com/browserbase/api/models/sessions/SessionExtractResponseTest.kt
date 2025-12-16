@@ -22,7 +22,7 @@ internal class SessionExtractResponseTest {
         val sessionExtractResponse = SessionExtractResponse.ofExtraction(extraction)
 
         assertThat(sessionExtractResponse.extraction()).contains(extraction)
-        assertThat(sessionExtractResponse.unionMember1()).isEmpty
+        assertThat(sessionExtractResponse.custom()).isEmpty
     }
 
     @Test
@@ -43,24 +43,24 @@ internal class SessionExtractResponseTest {
     }
 
     @Test
-    fun ofUnionMember1() {
-        val unionMember1 =
-            SessionExtractResponse.UnionMember1.builder()
+    fun ofCustom() {
+        val custom =
+            SessionExtractResponse.Custom.builder()
                 .putAdditionalProperty("foo", JsonValue.from("bar"))
                 .build()
 
-        val sessionExtractResponse = SessionExtractResponse.ofUnionMember1(unionMember1)
+        val sessionExtractResponse = SessionExtractResponse.ofCustom(custom)
 
         assertThat(sessionExtractResponse.extraction()).isEmpty
-        assertThat(sessionExtractResponse.unionMember1()).contains(unionMember1)
+        assertThat(sessionExtractResponse.custom()).contains(custom)
     }
 
     @Test
-    fun ofUnionMember1Roundtrip() {
+    fun ofCustomRoundtrip() {
         val jsonMapper = jsonMapper()
         val sessionExtractResponse =
-            SessionExtractResponse.ofUnionMember1(
-                SessionExtractResponse.UnionMember1.builder()
+            SessionExtractResponse.ofCustom(
+                SessionExtractResponse.Custom.builder()
                     .putAdditionalProperty("foo", JsonValue.from("bar"))
                     .build()
             )
