@@ -9,8 +9,8 @@ configure<PublishingExtension> {
             from(components["java"])
 
             pom {
-                name.set("Stagehand P2P Server API")
-                description.set("HTTP API for remote Stagehand browser automation. This API allows clients to\nconnect to a Stagehand server and execute browser automation tasks remotely.\n\nAll endpoints except /sessions/start require an active session ID. Responses are\nstreamed using Server-Sent Events (SSE) when the `x-stream-response: true`\nheader is provided.")
+                name.set("Stagehand API")
+                description.set("Stagehand SDK for AI browser automation. This API allows clients to execute\nbrowser automation tasks remotely on the Browserbase cloud.\n\nAll endpoints except /sessions/start require an active session ID. Responses are\nstreamed using Server-Sent Events (SSE) when the `x-stream-response: true`\nheader is provided.")
                 url.set("https://docs.stagehand.dev")
 
                 licenses {
