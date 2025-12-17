@@ -2,11 +2,36 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.BaseDeserializer
+import com.browserbase.api.core.BaseSerializer
+import com.browserbase.api.core.Enum
+import com.browserbase.api.core.ExcludeMissing
+import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
+import com.browserbase.api.core.allMaxBy
+import com.browserbase.api.core.checkKnown
+import com.browserbase.api.core.checkRequired
+import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
+import com.browserbase.api.core.toImmutable
+import com.browserbase.api.errors.StagehandInvalidDataException
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -14,27 +39,75 @@ import kotlin.jvm.optionals.getOrNull
 /** Executes a browser action using natural language instructions or a predefined Action object. */
 class SessionActParams
 private constructor(
-    private val id: JsonValue?,
-    private val xLanguage: JsonValue?,
-    private val xSdkVersion: JsonValue?,
-    private val xSentAt: JsonValue?,
-    private val xStreamResponse: JsonValue?,
-    private val body: JsonValue,
+    private val id: String?,
+    private val xLanguage: XLanguage?,
+    private val xSdkVersion: String?,
+    private val xSentAt: OffsetDateTime?,
+    private val xStreamResponse: XStreamResponse?,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun id(): Optional<JsonValue> = Optional.ofNullable(id)
+    /** Unique session identifier */
+    fun id(): Optional<String> = Optional.ofNullable(id)
 
-    fun xLanguage(): Optional<JsonValue> = Optional.ofNullable(xLanguage)
+    /** Client SDK language */
+    fun xLanguage(): Optional<XLanguage> = Optional.ofNullable(xLanguage)
 
-    fun xSdkVersion(): Optional<JsonValue> = Optional.ofNullable(xSdkVersion)
+    /** Version of the Stagehand SDK */
+    fun xSdkVersion(): Optional<String> = Optional.ofNullable(xSdkVersion)
 
-    fun xSentAt(): Optional<JsonValue> = Optional.ofNullable(xSentAt)
+    /** ISO timestamp when request was sent */
+    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
 
-    fun xStreamResponse(): Optional<JsonValue> = Optional.ofNullable(xStreamResponse)
+    /** Whether to stream the response via SSE */
+    fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
 
-    fun body(): JsonValue = body
+    /**
+     * Natural language instruction or Action object
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+     */
+    fun input(): Input = body.input()
+
+    /**
+     * Target frame ID for the action
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun frameId(): Optional<String> = body.frameId()
+
+    /**
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun options(): Optional<Options> = body.options()
+
+    /**
+     * Returns the raw JSON value of [input].
+     *
+     * Unlike [input], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _input(): JsonField<Input> = body._input()
+
+    /**
+     * Returns the raw JSON value of [frameId].
+     *
+     * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _frameId(): JsonField<String> = body._frameId()
+
+    /**
+     * Returns the raw JSON value of [options].
+     *
+     * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _options(): JsonField<Options> = body._options()
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -46,21 +119,26 @@ private constructor(
 
     companion object {
 
-        @JvmStatic fun none(): SessionActParams = builder().build()
-
-        /** Returns a mutable builder for constructing an instance of [SessionActParams]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionActParams].
+         *
+         * The following fields are required:
+         * ```java
+         * .input()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
     /** A builder for [SessionActParams]. */
     class Builder internal constructor() {
 
-        private var id: JsonValue? = null
-        private var xLanguage: JsonValue? = null
-        private var xSdkVersion: JsonValue? = null
-        private var xSentAt: JsonValue? = null
-        private var xStreamResponse: JsonValue? = null
-        private var body: JsonValue = JsonMissing.of()
+        private var id: String? = null
+        private var xLanguage: XLanguage? = null
+        private var xSdkVersion: String? = null
+        private var xSentAt: OffsetDateTime? = null
+        private var xStreamResponse: XStreamResponse? = null
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -71,40 +149,111 @@ private constructor(
             xSdkVersion = sessionActParams.xSdkVersion
             xSentAt = sessionActParams.xSentAt
             xStreamResponse = sessionActParams.xStreamResponse
-            body = sessionActParams.body
+            body = sessionActParams.body.toBuilder()
             additionalHeaders = sessionActParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionActParams.additionalQueryParams.toBuilder()
         }
 
-        fun id(id: JsonValue?) = apply { this.id = id }
+        /** Unique session identifier */
+        fun id(id: String?) = apply { this.id = id }
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
-        fun id(id: Optional<JsonValue>) = id(id.getOrNull())
+        fun id(id: Optional<String>) = id(id.getOrNull())
 
-        fun xLanguage(xLanguage: JsonValue?) = apply { this.xLanguage = xLanguage }
+        /** Client SDK language */
+        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
 
         /** Alias for calling [Builder.xLanguage] with `xLanguage.orElse(null)`. */
-        fun xLanguage(xLanguage: Optional<JsonValue>) = xLanguage(xLanguage.getOrNull())
+        fun xLanguage(xLanguage: Optional<XLanguage>) = xLanguage(xLanguage.getOrNull())
 
-        fun xSdkVersion(xSdkVersion: JsonValue?) = apply { this.xSdkVersion = xSdkVersion }
+        /** Version of the Stagehand SDK */
+        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
 
         /** Alias for calling [Builder.xSdkVersion] with `xSdkVersion.orElse(null)`. */
-        fun xSdkVersion(xSdkVersion: Optional<JsonValue>) = xSdkVersion(xSdkVersion.getOrNull())
+        fun xSdkVersion(xSdkVersion: Optional<String>) = xSdkVersion(xSdkVersion.getOrNull())
 
-        fun xSentAt(xSentAt: JsonValue?) = apply { this.xSentAt = xSentAt }
+        /** ISO timestamp when request was sent */
+        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
 
         /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<JsonValue>) = xSentAt(xSentAt.getOrNull())
+        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
-        fun xStreamResponse(xStreamResponse: JsonValue?) = apply {
+        /** Whether to stream the response via SSE */
+        fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
         }
 
         /** Alias for calling [Builder.xStreamResponse] with `xStreamResponse.orElse(null)`. */
-        fun xStreamResponse(xStreamResponse: Optional<JsonValue>) =
+        fun xStreamResponse(xStreamResponse: Optional<XStreamResponse>) =
             xStreamResponse(xStreamResponse.getOrNull())
 
-        fun body(body: JsonValue) = apply { this.body = body }
+        /**
+         * Sets the entire request body.
+         *
+         * This is generally only useful if you are already constructing the body separately.
+         * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [input]
+         * - [frameId]
+         * - [options]
+         */
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        /** Natural language instruction or Action object */
+        fun input(input: Input) = apply { body.input(input) }
+
+        /**
+         * Sets [Builder.input] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.input] with a well-typed [Input] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun input(input: JsonField<Input>) = apply { body.input(input) }
+
+        /** Alias for calling [input] with `Input.ofString(string)`. */
+        fun input(string: String) = apply { body.input(string) }
+
+        /** Alias for calling [input] with `Input.ofAction(action)`. */
+        fun input(action: Input.ActionInput) = apply { body.input(action) }
+
+        /** Target frame ID for the action */
+        fun frameId(frameId: String) = apply { body.frameId(frameId) }
+
+        /**
+         * Sets [Builder.frameId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.frameId] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun frameId(frameId: JsonField<String>) = apply { body.frameId(frameId) }
+
+        fun options(options: Options) = apply { body.options(options) }
+
+        /**
+         * Sets [Builder.options] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.options] with a well-typed [Options] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun options(options: JsonField<Options>) = apply { body.options(options) }
+
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            body.additionalProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            body.putAdditionalProperty(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                body.putAllAdditionalProperties(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            body.removeAllAdditionalProperties(keys)
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -208,6 +357,13 @@ private constructor(
          * Returns an immutable instance of [SessionActParams].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .input()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SessionActParams =
             SessionActParams(
@@ -216,23 +372,1340 @@ private constructor(
                 xSdkVersion,
                 xSentAt,
                 xStreamResponse,
-                body,
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
     }
 
-    fun _body(): JsonValue = body
+    fun _body(): Body = body
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> id?.toString() ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
-    override fun _headers(): Headers = Headers.builder().apply { putAll(additionalHeaders) }.build()
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                xLanguage?.let { put("x-language", it.toString()) }
+                xSdkVersion?.let { put("x-sdk-version", it) }
+                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                xStreamResponse?.let { put("x-stream-response", it.toString()) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
+
+    class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val input: JsonField<Input>,
+        private val frameId: JsonField<String>,
+        private val options: JsonField<Options>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("input") @ExcludeMissing input: JsonField<Input> = JsonMissing.of(),
+            @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("options") @ExcludeMissing options: JsonField<Options> = JsonMissing.of(),
+        ) : this(input, frameId, options, mutableMapOf())
+
+        /**
+         * Natural language instruction or Action object
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun input(): Input = input.getRequired("input")
+
+        /**
+         * Target frame ID for the action
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun frameId(): Optional<String> = frameId.getOptional("frameId")
+
+        /**
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun options(): Optional<Options> = options.getOptional("options")
+
+        /**
+         * Returns the raw JSON value of [input].
+         *
+         * Unlike [input], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("input") @ExcludeMissing fun _input(): JsonField<Input> = input
+
+        /**
+         * Returns the raw JSON value of [frameId].
+         *
+         * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("frameId") @ExcludeMissing fun _frameId(): JsonField<String> = frameId
+
+        /**
+         * Returns the raw JSON value of [options].
+         *
+         * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("options") @ExcludeMissing fun _options(): JsonField<Options> = options
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Body].
+             *
+             * The following fields are required:
+             * ```java
+             * .input()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Body]. */
+        class Builder internal constructor() {
+
+            private var input: JsonField<Input>? = null
+            private var frameId: JsonField<String> = JsonMissing.of()
+            private var options: JsonField<Options> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(body: Body) = apply {
+                input = body.input
+                frameId = body.frameId
+                options = body.options
+                additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            /** Natural language instruction or Action object */
+            fun input(input: Input) = input(JsonField.of(input))
+
+            /**
+             * Sets [Builder.input] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.input] with a well-typed [Input] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun input(input: JsonField<Input>) = apply { this.input = input }
+
+            /** Alias for calling [input] with `Input.ofString(string)`. */
+            fun input(string: String) = input(Input.ofString(string))
+
+            /** Alias for calling [input] with `Input.ofAction(action)`. */
+            fun input(action: Input.ActionInput) = input(Input.ofAction(action))
+
+            /** Target frame ID for the action */
+            fun frameId(frameId: String) = frameId(JsonField.of(frameId))
+
+            /**
+             * Sets [Builder.frameId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.frameId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun frameId(frameId: JsonField<String>) = apply { this.frameId = frameId }
+
+            fun options(options: Options) = options(JsonField.of(options))
+
+            /**
+             * Sets [Builder.options] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.options] with a well-typed [Options] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun options(options: JsonField<Options>) = apply { this.options = options }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Body].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .input()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Body =
+                Body(
+                    checkRequired("input", input),
+                    frameId,
+                    options,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Body = apply {
+            if (validated) {
+                return@apply
+            }
+
+            input().validate()
+            frameId()
+            options().ifPresent { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (input.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (frameId.asKnown().isPresent) 1 else 0) +
+                (options.asKnown().getOrNull()?.validity() ?: 0)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Body &&
+                input == other.input &&
+                frameId == other.frameId &&
+                options == other.options &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(input, frameId, options, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Body{input=$input, frameId=$frameId, options=$options, additionalProperties=$additionalProperties}"
+    }
+
+    /** Natural language instruction or Action object */
+    @JsonDeserialize(using = Input.Deserializer::class)
+    @JsonSerialize(using = Input.Serializer::class)
+    class Input
+    private constructor(
+        private val string: String? = null,
+        private val action: ActionInput? = null,
+        private val _json: JsonValue? = null,
+    ) {
+
+        fun string(): Optional<String> = Optional.ofNullable(string)
+
+        /** Action object returned by observe and used by act */
+        fun action(): Optional<ActionInput> = Optional.ofNullable(action)
+
+        fun isString(): Boolean = string != null
+
+        fun isAction(): Boolean = action != null
+
+        fun asString(): String = string.getOrThrow("string")
+
+        /** Action object returned by observe and used by act */
+        fun asAction(): ActionInput = action.getOrThrow("action")
+
+        fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
+
+        fun <T> accept(visitor: Visitor<T>): T =
+            when {
+                string != null -> visitor.visitString(string)
+                action != null -> visitor.visitAction(action)
+                else -> visitor.unknown(_json)
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): Input = apply {
+            if (validated) {
+                return@apply
+            }
+
+            accept(
+                object : Visitor<Unit> {
+                    override fun visitString(string: String) {}
+
+                    override fun visitAction(action: ActionInput) {
+                        action.validate()
+                    }
+                }
+            )
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            accept(
+                object : Visitor<Int> {
+                    override fun visitString(string: String) = 1
+
+                    override fun visitAction(action: ActionInput) = action.validity()
+
+                    override fun unknown(json: JsonValue?) = 0
+                }
+            )
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Input && string == other.string && action == other.action
+        }
+
+        override fun hashCode(): Int = Objects.hash(string, action)
+
+        override fun toString(): String =
+            when {
+                string != null -> "Input{string=$string}"
+                action != null -> "Input{action=$action}"
+                _json != null -> "Input{_unknown=$_json}"
+                else -> throw IllegalStateException("Invalid Input")
+            }
+
+        companion object {
+
+            @JvmStatic fun ofString(string: String) = Input(string = string)
+
+            /** Action object returned by observe and used by act */
+            @JvmStatic fun ofAction(action: ActionInput) = Input(action = action)
+        }
+
+        /** An interface that defines how to map each variant of [Input] to a value of type [T]. */
+        interface Visitor<out T> {
+
+            fun visitString(string: String): T
+
+            /** Action object returned by observe and used by act */
+            fun visitAction(action: ActionInput): T
+
+            /**
+             * Maps an unknown variant of [Input] to a value of type [T].
+             *
+             * An instance of [Input] can contain an unknown variant if it was deserialized from
+             * data that doesn't match any known variant. For example, if the SDK is on an older
+             * version than the API, then the API may respond with new variants that the SDK is
+             * unaware of.
+             *
+             * @throws StagehandInvalidDataException in the default implementation.
+             */
+            fun unknown(json: JsonValue?): T {
+                throw StagehandInvalidDataException("Unknown Input: $json")
+            }
+        }
+
+        internal class Deserializer : BaseDeserializer<Input>(Input::class) {
+
+            override fun ObjectCodec.deserialize(node: JsonNode): Input {
+                val json = JsonValue.fromJsonNode(node)
+
+                val bestMatches =
+                    sequenceOf(
+                            tryDeserialize(node, jacksonTypeRef<ActionInput>())?.let {
+                                Input(action = it, _json = json)
+                            },
+                            tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                Input(string = it, _json = json)
+                            },
+                        )
+                        .filterNotNull()
+                        .allMaxBy { it.validity() }
+                        .toList()
+                return when (bestMatches.size) {
+                    // This can happen if what we're deserializing is completely incompatible with
+                    // all the possible variants (e.g. deserializing from array).
+                    0 -> Input(_json = json)
+                    1 -> bestMatches.single()
+                    // If there's more than one match with the highest validity, then use the first
+                    // completely valid match, or simply the first match if none are completely
+                    // valid.
+                    else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                }
+            }
+        }
+
+        internal class Serializer : BaseSerializer<Input>(Input::class) {
+
+            override fun serialize(
+                value: Input,
+                generator: JsonGenerator,
+                provider: SerializerProvider,
+            ) {
+                when {
+                    value.string != null -> generator.writeObject(value.string)
+                    value.action != null -> generator.writeObject(value.action)
+                    value._json != null -> generator.writeObject(value._json)
+                    else -> throw IllegalStateException("Invalid Input")
+                }
+            }
+        }
+
+        /** Action object returned by observe and used by act */
+        class ActionInput
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val description: JsonField<String>,
+            private val selector: JsonField<String>,
+            private val arguments: JsonField<List<String>>,
+            private val method: JsonField<String>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("description")
+                @ExcludeMissing
+                description: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("selector")
+                @ExcludeMissing
+                selector: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("arguments")
+                @ExcludeMissing
+                arguments: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("method") @ExcludeMissing method: JsonField<String> = JsonMissing.of(),
+            ) : this(description, selector, arguments, method, mutableMapOf())
+
+            /**
+             * Human-readable description of the action
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun description(): String = description.getRequired("description")
+
+            /**
+             * CSS selector or XPath for the element
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun selector(): String = selector.getRequired("selector")
+
+            /**
+             * Arguments to pass to the method
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun arguments(): Optional<List<String>> = arguments.getOptional("arguments")
+
+            /**
+             * The method to execute (click, fill, etc.)
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun method(): Optional<String> = method.getOptional("method")
+
+            /**
+             * Returns the raw JSON value of [description].
+             *
+             * Unlike [description], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("description")
+            @ExcludeMissing
+            fun _description(): JsonField<String> = description
+
+            /**
+             * Returns the raw JSON value of [selector].
+             *
+             * Unlike [selector], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("selector") @ExcludeMissing fun _selector(): JsonField<String> = selector
+
+            /**
+             * Returns the raw JSON value of [arguments].
+             *
+             * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("arguments")
+            @ExcludeMissing
+            fun _arguments(): JsonField<List<String>> = arguments
+
+            /**
+             * Returns the raw JSON value of [method].
+             *
+             * Unlike [method], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("method") @ExcludeMissing fun _method(): JsonField<String> = method
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [ActionInput].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .description()
+                 * .selector()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [ActionInput]. */
+            class Builder internal constructor() {
+
+                private var description: JsonField<String>? = null
+                private var selector: JsonField<String>? = null
+                private var arguments: JsonField<MutableList<String>>? = null
+                private var method: JsonField<String> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(actionInput: ActionInput) = apply {
+                    description = actionInput.description
+                    selector = actionInput.selector
+                    arguments = actionInput.arguments.map { it.toMutableList() }
+                    method = actionInput.method
+                    additionalProperties = actionInput.additionalProperties.toMutableMap()
+                }
+
+                /** Human-readable description of the action */
+                fun description(description: String) = description(JsonField.of(description))
+
+                /**
+                 * Sets [Builder.description] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.description] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun description(description: JsonField<String>) = apply {
+                    this.description = description
+                }
+
+                /** CSS selector or XPath for the element */
+                fun selector(selector: String) = selector(JsonField.of(selector))
+
+                /**
+                 * Sets [Builder.selector] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.selector] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun selector(selector: JsonField<String>) = apply { this.selector = selector }
+
+                /** Arguments to pass to the method */
+                fun arguments(arguments: List<String>) = arguments(JsonField.of(arguments))
+
+                /**
+                 * Sets [Builder.arguments] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.arguments] with a well-typed `List<String>`
+                 * value instead. This method is primarily for setting the field to an undocumented
+                 * or not yet supported value.
+                 */
+                fun arguments(arguments: JsonField<List<String>>) = apply {
+                    this.arguments = arguments.map { it.toMutableList() }
+                }
+
+                /**
+                 * Adds a single [String] to [arguments].
+                 *
+                 * @throws IllegalStateException if the field was previously set to a non-list.
+                 */
+                fun addArgument(argument: String) = apply {
+                    arguments =
+                        (arguments ?: JsonField.of(mutableListOf())).also {
+                            checkKnown("arguments", it).add(argument)
+                        }
+                }
+
+                /** The method to execute (click, fill, etc.) */
+                fun method(method: String) = method(JsonField.of(method))
+
+                /**
+                 * Sets [Builder.method] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.method] with a well-typed [String] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun method(method: JsonField<String>) = apply { this.method = method }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [ActionInput].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .description()
+                 * .selector()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): ActionInput =
+                    ActionInput(
+                        checkRequired("description", description),
+                        checkRequired("selector", selector),
+                        (arguments ?: JsonMissing.of()).map { it.toImmutable() },
+                        method,
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): ActionInput = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                description()
+                selector()
+                arguments()
+                method()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (description.asKnown().isPresent) 1 else 0) +
+                    (if (selector.asKnown().isPresent) 1 else 0) +
+                    (arguments.asKnown().getOrNull()?.size ?: 0) +
+                    (if (method.asKnown().isPresent) 1 else 0)
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ActionInput &&
+                    description == other.description &&
+                    selector == other.selector &&
+                    arguments == other.arguments &&
+                    method == other.method &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(description, selector, arguments, method, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "ActionInput{description=$description, selector=$selector, arguments=$arguments, method=$method, additionalProperties=$additionalProperties}"
+        }
+    }
+
+    class Options
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val model: JsonField<ModelConfig>,
+        private val timeout: JsonField<Double>,
+        private val variables: JsonField<Variables>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
+            @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
+            @JsonProperty("variables")
+            @ExcludeMissing
+            variables: JsonField<Variables> = JsonMissing.of(),
+        ) : this(model, timeout, variables, mutableMapOf())
+
+        /**
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun model(): Optional<ModelConfig> = model.getOptional("model")
+
+        /**
+         * Timeout in ms for the action
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun timeout(): Optional<Double> = timeout.getOptional("timeout")
+
+        /**
+         * Variables to substitute in the action instruction
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun variables(): Optional<Variables> = variables.getOptional("variables")
+
+        /**
+         * Returns the raw JSON value of [model].
+         *
+         * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
+
+        /**
+         * Returns the raw JSON value of [timeout].
+         *
+         * Unlike [timeout], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Double> = timeout
+
+        /**
+         * Returns the raw JSON value of [variables].
+         *
+         * Unlike [variables], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("variables")
+        @ExcludeMissing
+        fun _variables(): JsonField<Variables> = variables
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Options]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Options]. */
+        class Builder internal constructor() {
+
+            private var model: JsonField<ModelConfig> = JsonMissing.of()
+            private var timeout: JsonField<Double> = JsonMissing.of()
+            private var variables: JsonField<Variables> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(options: Options) = apply {
+                model = options.model
+                timeout = options.timeout
+                variables = options.variables
+                additionalProperties = options.additionalProperties.toMutableMap()
+            }
+
+            fun model(model: ModelConfig) = model(JsonField.of(model))
+
+            /**
+             * Sets [Builder.model] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.model] with a well-typed [ModelConfig] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
+
+            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
+            fun model(string: String) = model(ModelConfig.ofString(string))
+
+            /** Alias for calling [model] with `ModelConfig.ofUnionMember1(unionMember1)`. */
+            fun model(unionMember1: ModelConfig.UnionMember1) =
+                model(ModelConfig.ofUnionMember1(unionMember1))
+
+            /** Timeout in ms for the action */
+            fun timeout(timeout: Double) = timeout(JsonField.of(timeout))
+
+            /**
+             * Sets [Builder.timeout] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.timeout] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
+
+            /** Variables to substitute in the action instruction */
+            fun variables(variables: Variables) = variables(JsonField.of(variables))
+
+            /**
+             * Sets [Builder.variables] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.variables] with a well-typed [Variables] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun variables(variables: JsonField<Variables>) = apply { this.variables = variables }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Options].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Options =
+                Options(model, timeout, variables, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Options = apply {
+            if (validated) {
+                return@apply
+            }
+
+            model().ifPresent { it.validate() }
+            timeout()
+            variables().ifPresent { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (model.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (timeout.asKnown().isPresent) 1 else 0) +
+                (variables.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Variables to substitute in the action instruction */
+        class Variables
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Variables]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Variables]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(variables: Variables) = apply {
+                    additionalProperties = variables.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Variables].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Variables = Variables(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Variables = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Variables && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Variables{additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Options &&
+                model == other.model &&
+                timeout == other.timeout &&
+                variables == other.variables &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(model, timeout, variables, additionalProperties)
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Options{model=$model, timeout=$timeout, variables=$variables, additionalProperties=$additionalProperties}"
+    }
+
+    /** Client SDK language */
+    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val TYPESCRIPT = of("typescript")
+
+            @JvmField val PYTHON = of("python")
+
+            @JvmField val PLAYGROUND = of("playground")
+
+            @JvmStatic fun of(value: String) = XLanguage(JsonField.of(value))
+        }
+
+        /** An enum containing [XLanguage]'s known values. */
+        enum class Known {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+        }
+
+        /**
+         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+            /**
+             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TYPESCRIPT -> Value.TYPESCRIPT
+                PYTHON -> Value.PYTHON
+                PLAYGROUND -> Value.PLAYGROUND
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TYPESCRIPT -> Known.TYPESCRIPT
+                PYTHON -> Known.PYTHON
+                PLAYGROUND -> Known.PLAYGROUND
+                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                StagehandInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): XLanguage = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is XLanguage && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Whether to stream the response via SSE */
+    class XStreamResponse @JsonCreator private constructor(private val value: JsonField<String>) :
+        Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val TRUE = of("true")
+
+            @JvmField val FALSE = of("false")
+
+            @JvmStatic fun of(value: String) = XStreamResponse(JsonField.of(value))
+        }
+
+        /** An enum containing [XStreamResponse]'s known values. */
+        enum class Known {
+            TRUE,
+            FALSE,
+        }
+
+        /**
+         * An enum containing [XStreamResponse]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [XStreamResponse] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TRUE,
+            FALSE,
+            /**
+             * An enum member indicating that [XStreamResponse] was instantiated with an unknown
+             * value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TRUE -> Value.TRUE
+                FALSE -> Value.FALSE
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TRUE -> Known.TRUE
+                FALSE -> Known.FALSE
+                else -> throw StagehandInvalidDataException("Unknown XStreamResponse: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                StagehandInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): XStreamResponse = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is XStreamResponse && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

@@ -16,13 +16,14 @@ import com.browserbase.api.errors.StagehandException
 import com.browserbase.api.errors.UnauthorizedException
 import com.browserbase.api.errors.UnexpectedStatusCodeException
 import com.browserbase.api.errors.UnprocessableEntityException
-import com.browserbase.api.models.sessions.SessionStartParams
+import com.browserbase.api.models.sessions.SessionActParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.status
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
@@ -61,7 +62,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart400() {
+    fun sessionsAct400() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -72,13 +73,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -89,7 +106,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart400WithRawResponse() {
+    fun sessionsAct400WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -100,13 +117,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<BadRequestException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -117,7 +150,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart401() {
+    fun sessionsAct401() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -128,13 +161,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -145,7 +194,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart401WithRawResponse() {
+    fun sessionsAct401WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -156,13 +205,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnauthorizedException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -173,7 +238,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart403() {
+    fun sessionsAct403() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -184,13 +249,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -201,7 +282,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart403WithRawResponse() {
+    fun sessionsAct403WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -212,13 +293,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<PermissionDeniedException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -229,7 +326,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart404() {
+    fun sessionsAct404() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -240,13 +337,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -257,7 +370,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart404WithRawResponse() {
+    fun sessionsAct404WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -268,13 +381,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<NotFoundException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -285,7 +414,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart422() {
+    fun sessionsAct422() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -296,13 +425,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -313,7 +458,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart422WithRawResponse() {
+    fun sessionsAct422WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -324,13 +469,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnprocessableEntityException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -341,7 +502,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart429() {
+    fun sessionsAct429() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -352,13 +513,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -369,7 +546,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart429WithRawResponse() {
+    fun sessionsAct429WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -380,13 +557,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<RateLimitException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -397,7 +590,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart500() {
+    fun sessionsAct500() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -408,13 +601,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -425,7 +634,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart500WithRawResponse() {
+    fun sessionsAct500WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -436,13 +645,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<InternalServerException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -453,7 +678,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart999() {
+    fun sessionsAct999() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -464,13 +689,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -481,7 +722,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStart999WithRawResponse() {
+    fun sessionsAct999WithRawResponse() {
         val sessionService = client.sessions().withRawResponse()
         stubFor(
             post(anyUrl())
@@ -492,13 +733,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<UnexpectedStatusCodeException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }
@@ -509,7 +766,7 @@ internal class ErrorHandlingTest {
     }
 
     @Test
-    fun sessionsStartInvalidJsonBody() {
+    fun sessionsActInvalidJsonBody() {
         val sessionService = client.sessions()
         stubFor(
             post(anyUrl())
@@ -518,13 +775,29 @@ internal class ErrorHandlingTest {
 
         val e =
             assertThrows<StagehandException> {
-                sessionService.start(
-                    SessionStartParams.builder()
-                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                        .body(JsonValue.from(mapOf<String, Any>()))
+                sessionService.act(
+                    SessionActParams.builder()
+                        .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                        .xSdkVersion("3.0.6")
+                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                        .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                        .input("Click the login button")
+                        .frameId("frameId")
+                        .options(
+                            SessionActParams.Options.builder()
+                                .model("string")
+                                .timeout(30000.0)
+                                .variables(
+                                    SessionActParams.Options.Variables.builder()
+                                        .putAdditionalProperty(
+                                            "username",
+                                            JsonValue.from("john_doe"),
+                                        )
+                                        .build()
+                                )
+                                .build()
+                        )
                         .build()
                 )
             }

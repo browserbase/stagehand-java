@@ -11,13 +11,82 @@ internal class SessionActResponseTest {
 
     @Test
     fun create() {
-        val sessionActResponse = SessionActResponse.builder().build()
+        val sessionActResponse =
+            SessionActResponse.builder()
+                .data(
+                    SessionActResponse.Data.builder()
+                        .result(
+                            SessionActResponse.Data.Result.builder()
+                                .actionDescription("Clicked button with text 'Login'")
+                                .addAction(
+                                    Action.builder()
+                                        .description("Click the submit button")
+                                        .selector("[data-testid='submit-button']")
+                                        .addArgument("Hello World")
+                                        .method("click")
+                                        .build()
+                                )
+                                .message("Successfully clicked the login button")
+                                .success(true)
+                                .build()
+                        )
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionActResponse.Success.TRUE)
+                .build()
+
+        assertThat(sessionActResponse.data())
+            .isEqualTo(
+                SessionActResponse.Data.builder()
+                    .result(
+                        SessionActResponse.Data.Result.builder()
+                            .actionDescription("Clicked button with text 'Login'")
+                            .addAction(
+                                Action.builder()
+                                    .description("Click the submit button")
+                                    .selector("[data-testid='submit-button']")
+                                    .addArgument("Hello World")
+                                    .method("click")
+                                    .build()
+                            )
+                            .message("Successfully clicked the login button")
+                            .success(true)
+                            .build()
+                    )
+                    .actionId("actionId")
+                    .build()
+            )
+        assertThat(sessionActResponse.success()).isEqualTo(SessionActResponse.Success.TRUE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionActResponse = SessionActResponse.builder().build()
+        val sessionActResponse =
+            SessionActResponse.builder()
+                .data(
+                    SessionActResponse.Data.builder()
+                        .result(
+                            SessionActResponse.Data.Result.builder()
+                                .actionDescription("Clicked button with text 'Login'")
+                                .addAction(
+                                    Action.builder()
+                                        .description("Click the submit button")
+                                        .selector("[data-testid='submit-button']")
+                                        .addArgument("Hello World")
+                                        .method("click")
+                                        .build()
+                                )
+                                .message("Successfully clicked the login button")
+                                .success(true)
+                                .build()
+                        )
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionActResponse.Success.TRUE)
+                .build()
 
         val roundtrippedSessionActResponse =
             jsonMapper.readValue(

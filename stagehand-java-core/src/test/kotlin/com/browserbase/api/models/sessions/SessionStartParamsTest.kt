@@ -4,6 +4,7 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,11 +13,148 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .xLanguage(JsonValue.from(mapOf<String, Any>()))
-            .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-            .xSentAt(JsonValue.from(mapOf<String, Any>()))
-            .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-            .body(JsonValue.from(mapOf<String, Any>()))
+            .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
+            .xSdkVersion("3.0.6")
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+            .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
+            .modelName("gpt-4o")
+            .actTimeoutMs(30000.0)
+            .browser(
+                SessionStartParams.Browser.builder()
+                    .cdpUrl("ws://localhost:9222")
+                    .launchOptions(
+                        SessionStartParams.Browser.LaunchOptions.builder()
+                            .acceptDownloads(true)
+                            .addArg("string")
+                            .cdpUrl("cdpUrl")
+                            .chromiumSandbox(true)
+                            .connectTimeoutMs(0.0)
+                            .deviceScaleFactor(0.0)
+                            .devtools(true)
+                            .downloadsPath("downloadsPath")
+                            .executablePath("executablePath")
+                            .hasTouch(true)
+                            .headless(true)
+                            .ignoreDefaultArgs(true)
+                            .ignoreHttpsErrors(true)
+                            .locale("locale")
+                            .preserveUserDataDir(true)
+                            .proxy(
+                                SessionStartParams.Browser.LaunchOptions.Proxy.builder()
+                                    .server("server")
+                                    .bypass("bypass")
+                                    .password("password")
+                                    .username("username")
+                                    .build()
+                            )
+                            .userDataDir("userDataDir")
+                            .viewport(
+                                SessionStartParams.Browser.LaunchOptions.Viewport.builder()
+                                    .height(0.0)
+                                    .width(0.0)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .type(SessionStartParams.Browser.Type.LOCAL)
+                    .build()
+            )
+            .browserbaseSessionCreateParams(
+                SessionStartParams.BrowserbaseSessionCreateParams.builder()
+                    .browserSettings(
+                        SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings.builder()
+                            .advancedStealth(true)
+                            .blockAds(true)
+                            .context(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Context
+                                    .builder()
+                                    .id("id")
+                                    .persist(true)
+                                    .build()
+                            )
+                            .extensionId("extensionId")
+                            .fingerprint(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Fingerprint
+                                    .builder()
+                                    .addBrowser(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Browser
+                                            .CHROME
+                                    )
+                                    .addDevice(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Device
+                                            .DESKTOP
+                                    )
+                                    .httpVersion(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .HttpVersion
+                                            ._1
+                                    )
+                                    .addLocale("string")
+                                    .addOperatingSystem(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .OperatingSystem
+                                            .ANDROID
+                                    )
+                                    .screen(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Screen
+                                            .builder()
+                                            .maxHeight(0.0)
+                                            .maxWidth(0.0)
+                                            .minHeight(0.0)
+                                            .minWidth(0.0)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .logSession(true)
+                            .recordSession(true)
+                            .solveCaptchas(true)
+                            .viewport(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Viewport
+                                    .builder()
+                                    .height(0.0)
+                                    .width(0.0)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .extensionId("extensionId")
+                    .keepAlive(true)
+                    .projectId("projectId")
+                    .proxies(true)
+                    .region(SessionStartParams.BrowserbaseSessionCreateParams.Region.US_WEST_2)
+                    .timeout(0.0)
+                    .userMetadata(
+                        SessionStartParams.BrowserbaseSessionCreateParams.UserMetadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .build()
+            )
+            .browserbaseSessionId("browserbaseSessionID")
+            .debugDom(true)
+            .domSettleTimeoutMs(5000.0)
+            .experimental(true)
+            .selfHeal(true)
+            .systemPrompt("systemPrompt")
+            .verbose(SessionStartParams.Verbose._1)
+            .waitForCaptchaSolves(true)
             .build()
     }
 
@@ -24,21 +162,170 @@ internal class SessionStartParamsTest {
     fun headers() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                .body(JsonValue.from(mapOf<String, Any>()))
+                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
+                .modelName("gpt-4o")
+                .actTimeoutMs(30000.0)
+                .browser(
+                    SessionStartParams.Browser.builder()
+                        .cdpUrl("ws://localhost:9222")
+                        .launchOptions(
+                            SessionStartParams.Browser.LaunchOptions.builder()
+                                .acceptDownloads(true)
+                                .addArg("string")
+                                .cdpUrl("cdpUrl")
+                                .chromiumSandbox(true)
+                                .connectTimeoutMs(0.0)
+                                .deviceScaleFactor(0.0)
+                                .devtools(true)
+                                .downloadsPath("downloadsPath")
+                                .executablePath("executablePath")
+                                .hasTouch(true)
+                                .headless(true)
+                                .ignoreDefaultArgs(true)
+                                .ignoreHttpsErrors(true)
+                                .locale("locale")
+                                .preserveUserDataDir(true)
+                                .proxy(
+                                    SessionStartParams.Browser.LaunchOptions.Proxy.builder()
+                                        .server("server")
+                                        .bypass("bypass")
+                                        .password("password")
+                                        .username("username")
+                                        .build()
+                                )
+                                .userDataDir("userDataDir")
+                                .viewport(
+                                    SessionStartParams.Browser.LaunchOptions.Viewport.builder()
+                                        .height(0.0)
+                                        .width(0.0)
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .type(SessionStartParams.Browser.Type.LOCAL)
+                        .build()
+                )
+                .browserbaseSessionCreateParams(
+                    SessionStartParams.BrowserbaseSessionCreateParams.builder()
+                        .browserSettings(
+                            SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                .builder()
+                                .advancedStealth(true)
+                                .blockAds(true)
+                                .context(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Context
+                                        .builder()
+                                        .id("id")
+                                        .persist(true)
+                                        .build()
+                                )
+                                .extensionId("extensionId")
+                                .fingerprint(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Fingerprint
+                                        .builder()
+                                        .addBrowser(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Browser
+                                                .CHROME
+                                        )
+                                        .addDevice(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Device
+                                                .DESKTOP
+                                        )
+                                        .httpVersion(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .HttpVersion
+                                                ._1
+                                        )
+                                        .addLocale("string")
+                                        .addOperatingSystem(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .OperatingSystem
+                                                .ANDROID
+                                        )
+                                        .screen(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Screen
+                                                .builder()
+                                                .maxHeight(0.0)
+                                                .maxWidth(0.0)
+                                                .minHeight(0.0)
+                                                .minWidth(0.0)
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .logSession(true)
+                                .recordSession(true)
+                                .solveCaptchas(true)
+                                .viewport(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Viewport
+                                        .builder()
+                                        .height(0.0)
+                                        .width(0.0)
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .extensionId("extensionId")
+                        .keepAlive(true)
+                        .projectId("projectId")
+                        .proxies(true)
+                        .region(SessionStartParams.BrowserbaseSessionCreateParams.Region.US_WEST_2)
+                        .timeout(0.0)
+                        .userMetadata(
+                            SessionStartParams.BrowserbaseSessionCreateParams.UserMetadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .build()
+                )
+                .browserbaseSessionId("browserbaseSessionID")
+                .debugDom(true)
+                .domSettleTimeoutMs(5000.0)
+                .experimental(true)
+                .selfHeal(true)
+                .systemPrompt("systemPrompt")
+                .verbose(SessionStartParams.Verbose._1)
+                .waitForCaptchaSolves(true)
                 .build()
 
         val headers = params._headers()
 
-        assertThat(headers).isEqualTo(Headers.builder().build())
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("x-language", "typescript")
+                    .put("x-sdk-version", "3.0.6")
+                    .put("x-sent-at", "2025-01-15T10:30:00.000Z")
+                    .put("x-stream-response", "true")
+                    .build()
+            )
     }
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionStartParams.builder().build()
+        val params = SessionStartParams.builder().modelName("gpt-4o").build()
 
         val headers = params._headers()
 
@@ -49,22 +336,304 @@ internal class SessionStartParamsTest {
     fun body() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(JsonValue.from(mapOf<String, Any>()))
-                .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
-                .xSentAt(JsonValue.from(mapOf<String, Any>()))
-                .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
-                .body(JsonValue.from(mapOf<String, Any>()))
+                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
+                .modelName("gpt-4o")
+                .actTimeoutMs(30000.0)
+                .browser(
+                    SessionStartParams.Browser.builder()
+                        .cdpUrl("ws://localhost:9222")
+                        .launchOptions(
+                            SessionStartParams.Browser.LaunchOptions.builder()
+                                .acceptDownloads(true)
+                                .addArg("string")
+                                .cdpUrl("cdpUrl")
+                                .chromiumSandbox(true)
+                                .connectTimeoutMs(0.0)
+                                .deviceScaleFactor(0.0)
+                                .devtools(true)
+                                .downloadsPath("downloadsPath")
+                                .executablePath("executablePath")
+                                .hasTouch(true)
+                                .headless(true)
+                                .ignoreDefaultArgs(true)
+                                .ignoreHttpsErrors(true)
+                                .locale("locale")
+                                .preserveUserDataDir(true)
+                                .proxy(
+                                    SessionStartParams.Browser.LaunchOptions.Proxy.builder()
+                                        .server("server")
+                                        .bypass("bypass")
+                                        .password("password")
+                                        .username("username")
+                                        .build()
+                                )
+                                .userDataDir("userDataDir")
+                                .viewport(
+                                    SessionStartParams.Browser.LaunchOptions.Viewport.builder()
+                                        .height(0.0)
+                                        .width(0.0)
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .type(SessionStartParams.Browser.Type.LOCAL)
+                        .build()
+                )
+                .browserbaseSessionCreateParams(
+                    SessionStartParams.BrowserbaseSessionCreateParams.builder()
+                        .browserSettings(
+                            SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                .builder()
+                                .advancedStealth(true)
+                                .blockAds(true)
+                                .context(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Context
+                                        .builder()
+                                        .id("id")
+                                        .persist(true)
+                                        .build()
+                                )
+                                .extensionId("extensionId")
+                                .fingerprint(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Fingerprint
+                                        .builder()
+                                        .addBrowser(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Browser
+                                                .CHROME
+                                        )
+                                        .addDevice(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Device
+                                                .DESKTOP
+                                        )
+                                        .httpVersion(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .HttpVersion
+                                                ._1
+                                        )
+                                        .addLocale("string")
+                                        .addOperatingSystem(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .OperatingSystem
+                                                .ANDROID
+                                        )
+                                        .screen(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Fingerprint
+                                                .Screen
+                                                .builder()
+                                                .maxHeight(0.0)
+                                                .maxWidth(0.0)
+                                                .minHeight(0.0)
+                                                .minWidth(0.0)
+                                                .build()
+                                        )
+                                        .build()
+                                )
+                                .logSession(true)
+                                .recordSession(true)
+                                .solveCaptchas(true)
+                                .viewport(
+                                    SessionStartParams.BrowserbaseSessionCreateParams
+                                        .BrowserSettings
+                                        .Viewport
+                                        .builder()
+                                        .height(0.0)
+                                        .width(0.0)
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .extensionId("extensionId")
+                        .keepAlive(true)
+                        .projectId("projectId")
+                        .proxies(true)
+                        .region(SessionStartParams.BrowserbaseSessionCreateParams.Region.US_WEST_2)
+                        .timeout(0.0)
+                        .userMetadata(
+                            SessionStartParams.BrowserbaseSessionCreateParams.UserMetadata.builder()
+                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                .build()
+                        )
+                        .build()
+                )
+                .browserbaseSessionId("browserbaseSessionID")
+                .debugDom(true)
+                .domSettleTimeoutMs(5000.0)
+                .experimental(true)
+                .selfHeal(true)
+                .systemPrompt("systemPrompt")
+                .verbose(SessionStartParams.Verbose._1)
+                .waitForCaptchaSolves(true)
                 .build()
 
         val body = params._body()
 
-        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(body.modelName()).isEqualTo("gpt-4o")
+        assertThat(body.actTimeoutMs()).contains(30000.0)
+        assertThat(body.browser())
+            .contains(
+                SessionStartParams.Browser.builder()
+                    .cdpUrl("ws://localhost:9222")
+                    .launchOptions(
+                        SessionStartParams.Browser.LaunchOptions.builder()
+                            .acceptDownloads(true)
+                            .addArg("string")
+                            .cdpUrl("cdpUrl")
+                            .chromiumSandbox(true)
+                            .connectTimeoutMs(0.0)
+                            .deviceScaleFactor(0.0)
+                            .devtools(true)
+                            .downloadsPath("downloadsPath")
+                            .executablePath("executablePath")
+                            .hasTouch(true)
+                            .headless(true)
+                            .ignoreDefaultArgs(true)
+                            .ignoreHttpsErrors(true)
+                            .locale("locale")
+                            .preserveUserDataDir(true)
+                            .proxy(
+                                SessionStartParams.Browser.LaunchOptions.Proxy.builder()
+                                    .server("server")
+                                    .bypass("bypass")
+                                    .password("password")
+                                    .username("username")
+                                    .build()
+                            )
+                            .userDataDir("userDataDir")
+                            .viewport(
+                                SessionStartParams.Browser.LaunchOptions.Viewport.builder()
+                                    .height(0.0)
+                                    .width(0.0)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .type(SessionStartParams.Browser.Type.LOCAL)
+                    .build()
+            )
+        assertThat(body.browserbaseSessionCreateParams())
+            .contains(
+                SessionStartParams.BrowserbaseSessionCreateParams.builder()
+                    .browserSettings(
+                        SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings.builder()
+                            .advancedStealth(true)
+                            .blockAds(true)
+                            .context(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Context
+                                    .builder()
+                                    .id("id")
+                                    .persist(true)
+                                    .build()
+                            )
+                            .extensionId("extensionId")
+                            .fingerprint(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Fingerprint
+                                    .builder()
+                                    .addBrowser(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Browser
+                                            .CHROME
+                                    )
+                                    .addDevice(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Device
+                                            .DESKTOP
+                                    )
+                                    .httpVersion(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .HttpVersion
+                                            ._1
+                                    )
+                                    .addLocale("string")
+                                    .addOperatingSystem(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .OperatingSystem
+                                            .ANDROID
+                                    )
+                                    .screen(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Fingerprint
+                                            .Screen
+                                            .builder()
+                                            .maxHeight(0.0)
+                                            .maxWidth(0.0)
+                                            .minHeight(0.0)
+                                            .minWidth(0.0)
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .logSession(true)
+                            .recordSession(true)
+                            .solveCaptchas(true)
+                            .viewport(
+                                SessionStartParams.BrowserbaseSessionCreateParams.BrowserSettings
+                                    .Viewport
+                                    .builder()
+                                    .height(0.0)
+                                    .width(0.0)
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .extensionId("extensionId")
+                    .keepAlive(true)
+                    .projectId("projectId")
+                    .proxies(true)
+                    .region(SessionStartParams.BrowserbaseSessionCreateParams.Region.US_WEST_2)
+                    .timeout(0.0)
+                    .userMetadata(
+                        SessionStartParams.BrowserbaseSessionCreateParams.UserMetadata.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                            .build()
+                    )
+                    .build()
+            )
+        assertThat(body.browserbaseSessionId()).contains("browserbaseSessionID")
+        assertThat(body.debugDom()).contains(true)
+        assertThat(body.domSettleTimeoutMs()).contains(5000.0)
+        assertThat(body.experimental()).contains(true)
+        assertThat(body.selfHeal()).contains(true)
+        assertThat(body.systemPrompt()).contains("systemPrompt")
+        assertThat(body.verbose()).contains(SessionStartParams.Verbose._1)
+        assertThat(body.waitForCaptchaSolves()).contains(true)
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = SessionStartParams.builder().build()
+        val params = SessionStartParams.builder().modelName("gpt-4o").build()
 
         val body = params._body()
+
+        assertThat(body.modelName()).isEqualTo("gpt-4o")
     }
 }

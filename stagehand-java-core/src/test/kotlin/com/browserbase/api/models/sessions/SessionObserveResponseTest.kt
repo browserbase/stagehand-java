@@ -11,13 +11,61 @@ internal class SessionObserveResponseTest {
 
     @Test
     fun create() {
-        val sessionObserveResponse = SessionObserveResponse.builder().build()
+        val sessionObserveResponse =
+            SessionObserveResponse.builder()
+                .data(
+                    SessionObserveResponse.Data.builder()
+                        .addResult(
+                            Action.builder()
+                                .description("Click the submit button")
+                                .selector("[data-testid='submit-button']")
+                                .addArgument("Hello World")
+                                .method("click")
+                                .build()
+                        )
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionObserveResponse.Success.TRUE)
+                .build()
+
+        assertThat(sessionObserveResponse.data())
+            .isEqualTo(
+                SessionObserveResponse.Data.builder()
+                    .addResult(
+                        Action.builder()
+                            .description("Click the submit button")
+                            .selector("[data-testid='submit-button']")
+                            .addArgument("Hello World")
+                            .method("click")
+                            .build()
+                    )
+                    .actionId("actionId")
+                    .build()
+            )
+        assertThat(sessionObserveResponse.success()).isEqualTo(SessionObserveResponse.Success.TRUE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionObserveResponse = SessionObserveResponse.builder().build()
+        val sessionObserveResponse =
+            SessionObserveResponse.builder()
+                .data(
+                    SessionObserveResponse.Data.builder()
+                        .addResult(
+                            Action.builder()
+                                .description("Click the submit button")
+                                .selector("[data-testid='submit-button']")
+                                .addArgument("Hello World")
+                                .method("click")
+                                .build()
+                        )
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionObserveResponse.Success.TRUE)
+                .build()
 
         val roundtrippedSessionObserveResponse =
             jsonMapper.readValue(

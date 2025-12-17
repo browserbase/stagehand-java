@@ -3,15 +3,14 @@
 package com.browserbase.api.services.async
 
 import com.browserbase.api.core.ClientOptions
-import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.RequestOptions
 import com.browserbase.api.core.http.HttpResponseFor
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
@@ -40,21 +39,20 @@ interface SessionServiceAsync {
     /**
      * Executes a browser action using natural language instructions or a predefined Action object.
      */
-    fun act(id: JsonValue): CompletableFuture<SessionActResponse> = act(id, SessionActParams.none())
+    fun act(id: String, params: SessionActParams): CompletableFuture<SessionActResponse> =
+        act(id, params, RequestOptions.none())
 
     /** @see act */
     fun act(
-        id: JsonValue,
-        params: SessionActParams = SessionActParams.none(),
+        id: String,
+        params: SessionActParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionActResponse> =
         act(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see act */
-    fun act(
-        id: JsonValue,
-        params: SessionActParams = SessionActParams.none(),
-    ): CompletableFuture<SessionActResponse> = act(id, params, RequestOptions.none())
+    fun act(params: SessionActParams): CompletableFuture<SessionActResponse> =
+        act(params, RequestOptions.none())
 
     /** @see act */
     fun act(
@@ -62,20 +60,12 @@ interface SessionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionActResponse>
 
-    /** @see act */
-    fun act(params: SessionActParams): CompletableFuture<SessionActResponse> =
-        act(params, RequestOptions.none())
-
-    /** @see act */
-    fun act(id: JsonValue, requestOptions: RequestOptions): CompletableFuture<SessionActResponse> =
-        act(id, SessionActParams.none(), requestOptions)
-
     /** Terminates the browser session and releases all associated resources. */
-    fun end(id: JsonValue): CompletableFuture<SessionEndResponse> = end(id, SessionEndParams.none())
+    fun end(id: String): CompletableFuture<SessionEndResponse> = end(id, SessionEndParams.none())
 
     /** @see end */
     fun end(
-        id: JsonValue,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionEndResponse> =
@@ -83,7 +73,7 @@ interface SessionServiceAsync {
 
     /** @see end */
     fun end(
-        id: JsonValue,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
     ): CompletableFuture<SessionEndResponse> = end(id, params, RequestOptions.none())
 
@@ -98,53 +88,40 @@ interface SessionServiceAsync {
         end(params, RequestOptions.none())
 
     /** @see end */
-    fun end(id: JsonValue, requestOptions: RequestOptions): CompletableFuture<SessionEndResponse> =
+    fun end(id: String, requestOptions: RequestOptions): CompletableFuture<SessionEndResponse> =
         end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
-    fun executeAgent(id: JsonValue): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(id, SessionExecuteAgentParams.none())
+    fun execute(
+        id: String,
+        params: SessionExecuteParams,
+    ): CompletableFuture<SessionExecuteResponse> = execute(id, params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        id: JsonValue,
-        params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+    /** @see execute */
+    fun execute(
+        id: String,
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(params.toBuilder().id(id).build(), requestOptions)
+    ): CompletableFuture<SessionExecuteResponse> =
+        execute(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see executeAgent */
-    fun executeAgent(
-        id: JsonValue,
-        params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
-    ): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(id, params, RequestOptions.none())
+    /** @see execute */
+    fun execute(params: SessionExecuteParams): CompletableFuture<SessionExecuteResponse> =
+        execute(params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        params: SessionExecuteAgentParams,
+    /** @see execute */
+    fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionExecuteAgentResponse>
-
-    /** @see executeAgent */
-    fun executeAgent(
-        params: SessionExecuteAgentParams
-    ): CompletableFuture<SessionExecuteAgentResponse> = executeAgent(params, RequestOptions.none())
-
-    /** @see executeAgent */
-    fun executeAgent(
-        id: JsonValue,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+    ): CompletableFuture<SessionExecuteResponse>
 
     /** Extracts structured data from the current page using AI-powered analysis. */
-    fun extract(id: JsonValue): CompletableFuture<SessionExtractResponse> =
+    fun extract(id: String): CompletableFuture<SessionExtractResponse> =
         extract(id, SessionExtractParams.none())
 
     /** @see extract */
     fun extract(
-        id: JsonValue,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionExtractResponse> =
@@ -152,7 +129,7 @@ interface SessionServiceAsync {
 
     /** @see extract */
     fun extract(
-        id: JsonValue,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
     ): CompletableFuture<SessionExtractResponse> = extract(id, params, RequestOptions.none())
 
@@ -168,34 +145,24 @@ interface SessionServiceAsync {
 
     /** @see extract */
     fun extract(
-        id: JsonValue,
+        id: String,
         requestOptions: RequestOptions,
     ): CompletableFuture<SessionExtractResponse> =
         extract(id, SessionExtractParams.none(), requestOptions)
 
     /** Navigates the browser to the specified URL. */
-    fun navigate(id: JsonValue): CompletableFuture<SessionNavigateResponse> =
-        navigate(id, SessionNavigateParams.none())
-
-    /** @see navigate */
     fun navigate(
-        id: JsonValue,
-        params: SessionNavigateParams = SessionNavigateParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionNavigateResponse> =
-        navigate(params.toBuilder().id(id).build(), requestOptions)
-
-    /** @see navigate */
-    fun navigate(
-        id: JsonValue,
-        params: SessionNavigateParams = SessionNavigateParams.none(),
+        id: String,
+        params: SessionNavigateParams,
     ): CompletableFuture<SessionNavigateResponse> = navigate(id, params, RequestOptions.none())
 
     /** @see navigate */
     fun navigate(
+        id: String,
         params: SessionNavigateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionNavigateResponse>
+    ): CompletableFuture<SessionNavigateResponse> =
+        navigate(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see navigate */
     fun navigate(params: SessionNavigateParams): CompletableFuture<SessionNavigateResponse> =
@@ -203,21 +170,20 @@ interface SessionServiceAsync {
 
     /** @see navigate */
     fun navigate(
-        id: JsonValue,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<SessionNavigateResponse> =
-        navigate(id, SessionNavigateParams.none(), requestOptions)
+        params: SessionNavigateParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<SessionNavigateResponse>
 
     /**
      * Identifies and returns available actions on the current page that match the given
      * instruction.
      */
-    fun observe(id: JsonValue): CompletableFuture<SessionObserveResponse> =
+    fun observe(id: String): CompletableFuture<SessionObserveResponse> =
         observe(id, SessionObserveParams.none())
 
     /** @see observe */
     fun observe(
-        id: JsonValue,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionObserveResponse> =
@@ -225,7 +191,7 @@ interface SessionServiceAsync {
 
     /** @see observe */
     fun observe(
-        id: JsonValue,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
     ): CompletableFuture<SessionObserveResponse> = observe(id, params, RequestOptions.none())
 
@@ -241,7 +207,7 @@ interface SessionServiceAsync {
 
     /** @see observe */
     fun observe(
-        id: JsonValue,
+        id: String,
         requestOptions: RequestOptions,
     ): CompletableFuture<SessionObserveResponse> =
         observe(id, SessionObserveParams.none(), requestOptions)
@@ -250,22 +216,14 @@ interface SessionServiceAsync {
      * Creates a new browser session with the specified configuration. Returns a session ID used for
      * all subsequent operations.
      */
-    fun start(): CompletableFuture<SessionStartResponse> = start(SessionStartParams.none())
+    fun start(params: SessionStartParams): CompletableFuture<SessionStartResponse> =
+        start(params, RequestOptions.none())
 
     /** @see start */
     fun start(
-        params: SessionStartParams = SessionStartParams.none(),
+        params: SessionStartParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionStartResponse>
-
-    /** @see start */
-    fun start(
-        params: SessionStartParams = SessionStartParams.none()
-    ): CompletableFuture<SessionStartResponse> = start(params, RequestOptions.none())
-
-    /** @see start */
-    fun start(requestOptions: RequestOptions): CompletableFuture<SessionStartResponse> =
-        start(SessionStartParams.none(), requestOptions)
 
     /**
      * A view of [SessionServiceAsync] that provides access to raw HTTP responses for each method.
@@ -282,32 +240,22 @@ interface SessionServiceAsync {
         ): SessionServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/act`, but is otherwise the same as
-         * [SessionServiceAsync.act].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionServiceAsync.act].
          */
-        fun act(id: JsonValue): CompletableFuture<HttpResponseFor<SessionActResponse>> =
-            act(id, SessionActParams.none())
-
-        /** @see act */
         fun act(
-            id: JsonValue,
-            params: SessionActParams = SessionActParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
-            act(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see act */
-        fun act(
-            id: JsonValue,
-            params: SessionActParams = SessionActParams.none(),
+            id: String,
+            params: SessionActParams,
         ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
             act(id, params, RequestOptions.none())
 
         /** @see act */
         fun act(
+            id: String,
             params: SessionActParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionActResponse>>
+        ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
+            act(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see act */
         fun act(params: SessionActParams): CompletableFuture<HttpResponseFor<SessionActResponse>> =
@@ -315,21 +263,20 @@ interface SessionServiceAsync {
 
         /** @see act */
         fun act(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
-            act(id, SessionActParams.none(), requestOptions)
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionActResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/end`, but is otherwise the same as
-         * [SessionServiceAsync.end].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
+         * as [SessionServiceAsync.end].
          */
-        fun end(id: JsonValue): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
+        fun end(id: String): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
             end(id, SessionEndParams.none())
 
         /** @see end */
         fun end(
-            id: JsonValue,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
@@ -337,7 +284,7 @@ interface SessionServiceAsync {
 
         /** @see end */
         fun end(
-            id: JsonValue,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
             end(id, params, RequestOptions.none())
@@ -354,64 +301,51 @@ interface SessionServiceAsync {
 
         /** @see end */
         fun end(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
             end(id, SessionEndParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/agentExecute`, but is otherwise the
-         * same as [SessionServiceAsync.executeAgent].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionServiceAsync.execute].
          */
-        fun executeAgent(
-            id: JsonValue
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(id, SessionExecuteAgentParams.none())
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(id, params, RequestOptions.none())
 
-        /** @see executeAgent */
-        fun executeAgent(
-            id: JsonValue,
-            params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+        /** @see execute */
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(params.toBuilder().id(id).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see executeAgent */
-        fun executeAgent(
-            id: JsonValue,
-            params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(id, params, RequestOptions.none())
+        /** @see execute */
+        fun execute(
+            params: SessionExecuteParams
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(params, RequestOptions.none())
 
-        /** @see executeAgent */
-        fun executeAgent(
-            params: SessionExecuteAgentParams,
+        /** @see execute */
+        fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>>
-
-        /** @see executeAgent */
-        fun executeAgent(
-            params: SessionExecuteAgentParams
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(params, RequestOptions.none())
-
-        /** @see executeAgent */
-        fun executeAgent(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/extract`, but is otherwise the same
-         * as [SessionServiceAsync.extract].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionServiceAsync.extract].
          */
-        fun extract(id: JsonValue): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
+        fun extract(id: String): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
             extract(id, SessionExtractParams.none())
 
         /** @see extract */
         fun extract(
-            id: JsonValue,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
@@ -419,7 +353,7 @@ interface SessionServiceAsync {
 
         /** @see extract */
         fun extract(
-            id: JsonValue,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
             extract(id, params, RequestOptions.none())
@@ -438,38 +372,28 @@ interface SessionServiceAsync {
 
         /** @see extract */
         fun extract(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
             extract(id, SessionExtractParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/navigate`, but is otherwise the same
-         * as [SessionServiceAsync.navigate].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/navigate`, but is otherwise the
+         * same as [SessionServiceAsync.navigate].
          */
-        fun navigate(id: JsonValue): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
-            navigate(id, SessionNavigateParams.none())
-
-        /** @see navigate */
         fun navigate(
-            id: JsonValue,
-            params: SessionNavigateParams = SessionNavigateParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
-            navigate(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see navigate */
-        fun navigate(
-            id: JsonValue,
-            params: SessionNavigateParams = SessionNavigateParams.none(),
+            id: String,
+            params: SessionNavigateParams,
         ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
             navigate(id, params, RequestOptions.none())
 
         /** @see navigate */
         fun navigate(
+            id: String,
             params: SessionNavigateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>>
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
+            navigate(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see navigate */
         fun navigate(
@@ -479,21 +403,20 @@ interface SessionServiceAsync {
 
         /** @see navigate */
         fun navigate(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
-            navigate(id, SessionNavigateParams.none(), requestOptions)
+            params: SessionNavigateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/observe`, but is otherwise the same
-         * as [SessionServiceAsync.observe].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionServiceAsync.observe].
          */
-        fun observe(id: JsonValue): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+        fun observe(id: String): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
             observe(id, SessionObserveParams.none())
 
         /** @see observe */
         fun observe(
-            id: JsonValue,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
@@ -501,7 +424,7 @@ interface SessionServiceAsync {
 
         /** @see observe */
         fun observe(
-            id: JsonValue,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
             observe(id, params, RequestOptions.none())
@@ -520,34 +443,24 @@ interface SessionServiceAsync {
 
         /** @see observe */
         fun observe(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
             observe(id, SessionObserveParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/start`, but is otherwise the same as
+         * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as
          * [SessionServiceAsync.start].
          */
-        fun start(): CompletableFuture<HttpResponseFor<SessionStartResponse>> =
-            start(SessionStartParams.none())
-
-        /** @see start */
         fun start(
-            params: SessionStartParams = SessionStartParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionStartResponse>>
-
-        /** @see start */
-        fun start(
-            params: SessionStartParams = SessionStartParams.none()
+            params: SessionStartParams
         ): CompletableFuture<HttpResponseFor<SessionStartResponse>> =
             start(params, RequestOptions.none())
 
         /** @see start */
         fun start(
-            requestOptions: RequestOptions
-        ): CompletableFuture<HttpResponseFor<SessionStartResponse>> =
-            start(SessionStartParams.none(), requestOptions)
+            params: SessionStartParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionStartResponse>>
     }
 }

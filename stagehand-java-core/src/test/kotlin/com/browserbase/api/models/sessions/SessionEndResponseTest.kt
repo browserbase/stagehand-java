@@ -11,13 +11,17 @@ internal class SessionEndResponseTest {
 
     @Test
     fun create() {
-        val sessionEndResponse = SessionEndResponse.builder().build()
+        val sessionEndResponse =
+            SessionEndResponse.builder().success(SessionEndResponse.Success.TRUE).build()
+
+        assertThat(sessionEndResponse.success()).isEqualTo(SessionEndResponse.Success.TRUE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionEndResponse = SessionEndResponse.builder().build()
+        val sessionEndResponse =
+            SessionEndResponse.builder().success(SessionEndResponse.Success.TRUE).build()
 
         val roundtrippedSessionEndResponse =
             jsonMapper.readValue(
