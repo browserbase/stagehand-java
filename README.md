@@ -56,7 +56,7 @@ import com.browserbase.api.models.sessions.SessionActResponse;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 SessionActResponse response = client.sessions().act(params);
@@ -162,7 +162,7 @@ import java.util.concurrent.CompletableFuture;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.async().sessions().act(params);
@@ -182,7 +182,7 @@ import java.util.concurrent.CompletableFuture;
 StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.sessions().act(params);
