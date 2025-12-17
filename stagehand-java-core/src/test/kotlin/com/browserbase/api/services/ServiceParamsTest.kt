@@ -5,12 +5,9 @@ package com.browserbase.api.services
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.ModelConfig
-import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
-import com.github.tomakehurst.wiremock.client.WireMock.matchingJsonPath
 import com.github.tomakehurst.wiremock.client.WireMock.ok
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor
@@ -48,16 +45,13 @@ internal class ServiceParamsTest {
 
         sessionService.start(
             SessionStartParams.builder()
-                .browserbaseApiKey("BROWSERBASE_API_KEY")
-                .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                .domSettleTimeout(0L)
-                .model("openai/gpt-4o")
-                .selfHeal(true)
-                .systemPrompt("systemPrompt")
-                .verbose(1L)
+                .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                .body(JsonValue.from(mapOf<String, Any>()))
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
-                .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
                 .build()
         )
 
@@ -65,51 +59,6 @@ internal class ServiceParamsTest {
             postRequestedFor(anyUrl())
                 .withHeader("Secret-Header", equalTo("42"))
                 .withQueryParam("secret_query_param", equalTo("42"))
-                .withRequestBody(matchingJsonPath("$.secretProperty", equalTo("42")))
-        )
-    }
-
-    @Disabled("Prism tests are disabled")
-    @Test
-    fun act() {
-        val sessionService = client.sessions()
-        stubFor(post(anyUrl()).willReturn(ok("{}")))
-
-        sessionService.act(
-            SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
-                .input("click the sign in button")
-                .frameId("frameId")
-                .options(
-                    SessionActParams.Options.builder()
-                        .model(
-                            ModelConfig.builder()
-                                .apiKey("apiKey")
-                                .baseUrl("https://example.com")
-                                .model("model")
-                                .provider(ModelConfig.Provider.OPENAI)
-                                .build()
-                        )
-                        .timeout(0L)
-                        .variables(
-                            SessionActParams.Options.Variables.builder()
-                                .putAdditionalProperty("foo", JsonValue.from("string"))
-                                .build()
-                        )
-                        .build()
-                )
-                .putAdditionalHeader("Secret-Header", "42")
-                .putAdditionalQueryParam("secret_query_param", "42")
-                .putAdditionalBodyProperty("secretProperty", JsonValue.from("42"))
-                .build()
-        )
-
-        verify(
-            postRequestedFor(anyUrl())
-                .withHeader("Secret-Header", equalTo("42"))
-                .withQueryParam("secret_query_param", equalTo("42"))
-                .withRequestBody(matchingJsonPath("$.secretProperty", equalTo("42")))
         )
     }
 }
