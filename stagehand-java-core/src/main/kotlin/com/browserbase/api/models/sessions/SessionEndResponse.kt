@@ -3,8 +3,10 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.ExcludeMissing
+import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -16,25 +18,29 @@ import java.util.Objects
 class SessionEndResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val success: JsonValue,
+    private val success: JsonField<Boolean>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("success") @ExcludeMissing success: JsonValue = JsonMissing.of()
+        @JsonProperty("success") @ExcludeMissing success: JsonField<Boolean> = JsonMissing.of()
     ) : this(success, mutableMapOf())
 
     /**
-     * Expected to always return the following:
-     * ```java
-     * JsonValue.from(true)
-     * ```
+     * Indicates whether the request was successful
      *
-     * However, this method can be useful for debugging and logging (e.g. if the server responded
-     * with an unexpected value).
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("success") @ExcludeMissing fun _success(): JsonValue = success
+    fun success(): Boolean = success.getRequired("success")
+
+    /**
+     * Returns the raw JSON value of [success].
+     *
+     * Unlike [success], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("success") @ExcludeMissing fun _success(): JsonField<Boolean> = success
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -50,14 +56,21 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [SessionEndResponse]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionEndResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .success()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
     /** A builder for [SessionEndResponse]. */
     class Builder internal constructor() {
 
-        private var success: JsonValue = JsonValue.from(true)
+        private var success: JsonField<Boolean>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -66,19 +79,16 @@ private constructor(
             additionalProperties = sessionEndResponse.additionalProperties.toMutableMap()
         }
 
+        /** Indicates whether the request was successful */
+        fun success(success: Boolean) = success(JsonField.of(success))
+
         /**
-         * Sets the field to an arbitrary JSON value.
+         * Sets [Builder.success] to an arbitrary JSON value.
          *
-         * It is usually unnecessary to call this method because the field defaults to the
-         * following:
-         * ```java
-         * JsonValue.from(true)
-         * ```
-         *
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
+         * You should usually call [Builder.success] with a well-typed [Boolean] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun success(success: JsonValue) = apply { this.success = success }
+        fun success(success: JsonField<Boolean>) = apply { this.success = success }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -103,9 +113,19 @@ private constructor(
          * Returns an immutable instance of [SessionEndResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .success()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SessionEndResponse =
-            SessionEndResponse(success, additionalProperties.toMutableMap())
+            SessionEndResponse(
+                checkRequired("success", success),
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -115,11 +135,7 @@ private constructor(
             return@apply
         }
 
-        _success().let {
-            if (it != JsonValue.from(true)) {
-                throw StagehandInvalidDataException("'success' is invalid, received $it")
-            }
-        }
+        success()
         validated = true
     }
 
@@ -136,8 +152,7 @@ private constructor(
      *
      * Used for best match union deserialization.
      */
-    @JvmSynthetic
-    internal fun validity(): Int = success.let { if (it == JsonValue.from(true)) 1 else 0 }
+    @JvmSynthetic internal fun validity(): Int = (if (success.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {

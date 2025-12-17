@@ -21,7 +21,7 @@ internal class SessionObserveParamsTest {
             .instruction("Find all clickable navigation links")
             .options(
                 SessionObserveParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .selector("nav")
                     .timeout(30000.0)
                     .build()
@@ -52,7 +52,7 @@ internal class SessionObserveParamsTest {
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -95,7 +95,7 @@ internal class SessionObserveParamsTest {
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -109,7 +109,7 @@ internal class SessionObserveParamsTest {
         assertThat(body.options())
             .contains(
                 SessionObserveParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .selector("nav")
                     .timeout(30000.0)
                     .build()

@@ -192,7 +192,7 @@ internal class ServiceParamsTest {
                 .experimental(true)
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
-                .verbose(1L)
+                .verbose(SessionStartParams.Verbose._1)
                 .waitForCaptchaSolves(true)
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
@@ -225,7 +225,7 @@ internal class ServiceParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()

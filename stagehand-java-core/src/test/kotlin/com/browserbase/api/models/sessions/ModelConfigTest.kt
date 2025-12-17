@@ -13,19 +13,19 @@ import org.junit.jupiter.api.assertThrows
 internal class ModelConfigTest {
 
     @Test
-    fun ofString() {
-        val string = "string"
+    fun ofName() {
+        val name = "openai/gpt-5-nano"
 
-        val modelConfig = ModelConfig.ofString(string)
+        val modelConfig = ModelConfig.ofName(name)
 
-        assertThat(modelConfig.string()).contains(string)
-        assertThat(modelConfig.unionMember1()).isEmpty
+        assertThat(modelConfig.name()).contains(name)
+        assertThat(modelConfig.modelConfigObject()).isEmpty
     }
 
     @Test
-    fun ofStringRoundtrip() {
+    fun ofNameRoundtrip() {
         val jsonMapper = jsonMapper()
-        val modelConfig = ModelConfig.ofString("string")
+        val modelConfig = ModelConfig.ofName("openai/gpt-5-nano")
 
         val roundtrippedModelConfig =
             jsonMapper.readValue(
@@ -37,29 +37,29 @@ internal class ModelConfigTest {
     }
 
     @Test
-    fun ofUnionMember1() {
-        val unionMember1 =
-            ModelConfig.UnionMember1.builder()
-                .modelName("modelName")
-                .apiKey("apiKey")
-                .baseUrl("https://example.com")
+    fun ofModelConfigObject() {
+        val modelConfigObject =
+            ModelConfig.ModelConfigObject.builder()
+                .modelName("gpt-5-nano")
+                .apiKey("sk-some-openai-api-key")
+                .baseUrl("https://api.openai.com/v1")
                 .build()
 
-        val modelConfig = ModelConfig.ofUnionMember1(unionMember1)
+        val modelConfig = ModelConfig.ofModelConfigObject(modelConfigObject)
 
-        assertThat(modelConfig.string()).isEmpty
-        assertThat(modelConfig.unionMember1()).contains(unionMember1)
+        assertThat(modelConfig.name()).isEmpty
+        assertThat(modelConfig.modelConfigObject()).contains(modelConfigObject)
     }
 
     @Test
-    fun ofUnionMember1Roundtrip() {
+    fun ofModelConfigObjectRoundtrip() {
         val jsonMapper = jsonMapper()
         val modelConfig =
-            ModelConfig.ofUnionMember1(
-                ModelConfig.UnionMember1.builder()
-                    .modelName("modelName")
-                    .apiKey("apiKey")
-                    .baseUrl("https://example.com")
+            ModelConfig.ofModelConfigObject(
+                ModelConfig.ModelConfigObject.builder()
+                    .modelName("gpt-5-nano")
+                    .apiKey("sk-some-openai-api-key")
+                    .baseUrl("https://api.openai.com/v1")
                     .build()
             )
 
