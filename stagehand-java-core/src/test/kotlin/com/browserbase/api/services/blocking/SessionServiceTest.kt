@@ -400,7 +400,7 @@ internal class SessionServiceTest {
                     .experimental(true)
                     .selfHeal(true)
                     .systemPrompt("systemPrompt")
-                    .verbose(SessionStartParams.Verbose._1)
+                    .verbose(1L)
                     .waitForCaptchaSolves(true)
                     .build()
             )

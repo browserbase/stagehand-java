@@ -192,7 +192,7 @@ internal class ServiceParamsTest {
                 .experimental(true)
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
-                .verbose(SessionStartParams.Verbose._1)
+                .verbose(1L)
                 .waitForCaptchaSolves(true)
                 .putAdditionalHeader("Secret-Header", "42")
                 .putAdditionalQueryParam("secret_query_param", "42")
