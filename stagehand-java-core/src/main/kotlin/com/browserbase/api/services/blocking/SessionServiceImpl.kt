@@ -4,6 +4,7 @@ package com.browserbase.api.services.blocking
 
 import com.browserbase.api.core.ClientOptions
 import com.browserbase.api.core.RequestOptions
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.handlers.errorBodyHandler
 import com.browserbase.api.core.handlers.errorHandler
 import com.browserbase.api.core.handlers.jsonHandler
@@ -19,8 +20,8 @@ import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
@@ -30,6 +31,7 @@ import com.browserbase.api.models.sessions.SessionObserveResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 import java.util.function.Consumer
+import kotlin.jvm.optionals.getOrNull
 
 class SessionServiceImpl internal constructor(private val clientOptions: ClientOptions) :
     SessionService {
@@ -44,46 +46,46 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
         SessionServiceImpl(clientOptions.toBuilder().apply(modifier::accept).build())
 
     override fun act(params: SessionActParams, requestOptions: RequestOptions): SessionActResponse =
-        // post /sessions/{id}/act
+        // post /v1/sessions/{id}/act
         withRawResponse().act(params, requestOptions).parse()
 
     override fun end(params: SessionEndParams, requestOptions: RequestOptions): SessionEndResponse =
-        // post /sessions/{id}/end
+        // post /v1/sessions/{id}/end
         withRawResponse().end(params, requestOptions).parse()
 
-    override fun executeAgent(
-        params: SessionExecuteAgentParams,
+    override fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions,
-    ): SessionExecuteAgentResponse =
-        // post /sessions/{id}/agentExecute
-        withRawResponse().executeAgent(params, requestOptions).parse()
+    ): SessionExecuteResponse =
+        // post /v1/sessions/{id}/agentExecute
+        withRawResponse().execute(params, requestOptions).parse()
 
     override fun extract(
         params: SessionExtractParams,
         requestOptions: RequestOptions,
     ): SessionExtractResponse =
-        // post /sessions/{id}/extract
+        // post /v1/sessions/{id}/extract
         withRawResponse().extract(params, requestOptions).parse()
 
     override fun navigate(
         params: SessionNavigateParams,
         requestOptions: RequestOptions,
     ): SessionNavigateResponse =
-        // post /sessions/{id}/navigate
+        // post /v1/sessions/{id}/navigate
         withRawResponse().navigate(params, requestOptions).parse()
 
     override fun observe(
         params: SessionObserveParams,
         requestOptions: RequestOptions,
     ): SessionObserveResponse =
-        // post /sessions/{id}/observe
+        // post /v1/sessions/{id}/observe
         withRawResponse().observe(params, requestOptions).parse()
 
     override fun start(
         params: SessionStartParams,
         requestOptions: RequestOptions,
     ): SessionStartResponse =
-        // post /sessions/start
+        // post /v1/sessions/start
         withRawResponse().start(params, requestOptions).parse()
 
     class WithRawResponseImpl internal constructor(private val clientOptions: ClientOptions) :
@@ -106,11 +108,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             params: SessionActParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionActResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "act")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "act")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -134,11 +139,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             params: SessionEndParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionEndResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "end")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "end")
                     .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepare(clientOptions, params)
@@ -155,18 +163,21 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
-        private val executeAgentHandler: Handler<SessionExecuteAgentResponse> =
-            jsonHandler<SessionExecuteAgentResponse>(clientOptions.jsonMapper)
+        private val executeHandler: Handler<SessionExecuteResponse> =
+            jsonHandler<SessionExecuteResponse>(clientOptions.jsonMapper)
 
-        override fun executeAgent(
-            params: SessionExecuteAgentParams,
+        override fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionExecuteAgentResponse> {
+        ): HttpResponseFor<SessionExecuteResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "agentExecute")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -174,7 +185,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             val response = clientOptions.httpClient.execute(request, requestOptions)
             return errorHandler.handle(response).parseable {
                 response
-                    .use { executeAgentHandler.handle(it) }
+                    .use { executeHandler.handle(it) }
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
@@ -190,11 +201,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             params: SessionExtractParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionExtractResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "extract")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -218,11 +232,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             params: SessionNavigateParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionNavigateResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "navigate")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "navigate")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -246,11 +263,14 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             params: SessionObserveParams,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionObserveResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
             val request =
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", params._pathParam(0), "observe")
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)
@@ -278,7 +298,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                 HttpRequest.builder()
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
-                    .addPathSegments("sessions", "start")
+                    .addPathSegments("v1", "sessions", "start")
                     .body(json(clientOptions.jsonMapper, params._body()))
                     .build()
                     .prepare(clientOptions, params)

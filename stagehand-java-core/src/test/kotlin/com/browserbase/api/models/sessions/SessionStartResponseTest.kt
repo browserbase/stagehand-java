@@ -11,13 +11,40 @@ internal class SessionStartResponseTest {
 
     @Test
     fun create() {
-        val sessionStartResponse = SessionStartResponse.builder().build()
+        val sessionStartResponse =
+            SessionStartResponse.builder()
+                .data(
+                    SessionStartResponse.Data.builder()
+                        .available(true)
+                        .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .build()
+                )
+                .success(SessionStartResponse.Success.TRUE)
+                .build()
+
+        assertThat(sessionStartResponse.data())
+            .isEqualTo(
+                SessionStartResponse.Data.builder()
+                    .available(true)
+                    .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .build()
+            )
+        assertThat(sessionStartResponse.success()).isEqualTo(SessionStartResponse.Success.TRUE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionStartResponse = SessionStartResponse.builder().build()
+        val sessionStartResponse =
+            SessionStartResponse.builder()
+                .data(
+                    SessionStartResponse.Data.builder()
+                        .available(true)
+                        .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .build()
+                )
+                .success(SessionStartResponse.Success.TRUE)
+                .build()
 
         val roundtrippedSessionStartResponse =
             jsonMapper.readValue(

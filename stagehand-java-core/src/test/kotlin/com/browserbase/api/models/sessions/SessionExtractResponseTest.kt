@@ -2,6 +2,7 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
@@ -11,13 +12,40 @@ internal class SessionExtractResponseTest {
 
     @Test
     fun create() {
-        val sessionExtractResponse = SessionExtractResponse.builder().build()
+        val sessionExtractResponse =
+            SessionExtractResponse.builder()
+                .data(
+                    SessionExtractResponse.Data.builder()
+                        .result(JsonValue.from(mapOf<String, Any>()))
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionExtractResponse.Success.TRUE)
+                .build()
+
+        assertThat(sessionExtractResponse.data())
+            .isEqualTo(
+                SessionExtractResponse.Data.builder()
+                    .result(JsonValue.from(mapOf<String, Any>()))
+                    .actionId("actionId")
+                    .build()
+            )
+        assertThat(sessionExtractResponse.success()).isEqualTo(SessionExtractResponse.Success.TRUE)
     }
 
     @Test
     fun roundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionExtractResponse = SessionExtractResponse.builder().build()
+        val sessionExtractResponse =
+            SessionExtractResponse.builder()
+                .data(
+                    SessionExtractResponse.Data.builder()
+                        .result(JsonValue.from(mapOf<String, Any>()))
+                        .actionId("actionId")
+                        .build()
+                )
+                .success(SessionExtractResponse.Success.TRUE)
+                .build()
 
         val roundtrippedSessionExtractResponse =
             jsonMapper.readValue(

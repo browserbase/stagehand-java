@@ -3,15 +3,14 @@
 package com.browserbase.api.services.blocking
 
 import com.browserbase.api.core.ClientOptions
-import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.RequestOptions
 import com.browserbase.api.core.http.HttpResponseFor
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
@@ -40,18 +39,18 @@ interface SessionService {
     /**
      * Executes a browser action using natural language instructions or a predefined Action object.
      */
-    fun act(id: JsonValue): SessionActResponse = act(id, SessionActParams.none())
+    fun act(id: String, params: SessionActParams): SessionActResponse =
+        act(id, params, RequestOptions.none())
 
     /** @see act */
     fun act(
-        id: JsonValue,
-        params: SessionActParams = SessionActParams.none(),
+        id: String,
+        params: SessionActParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionActResponse = act(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see act */
-    fun act(id: JsonValue, params: SessionActParams = SessionActParams.none()): SessionActResponse =
-        act(id, params, RequestOptions.none())
+    fun act(params: SessionActParams): SessionActResponse = act(params, RequestOptions.none())
 
     /** @see act */
     fun act(
@@ -59,25 +58,18 @@ interface SessionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionActResponse
 
-    /** @see act */
-    fun act(params: SessionActParams): SessionActResponse = act(params, RequestOptions.none())
-
-    /** @see act */
-    fun act(id: JsonValue, requestOptions: RequestOptions): SessionActResponse =
-        act(id, SessionActParams.none(), requestOptions)
-
     /** Terminates the browser session and releases all associated resources. */
-    fun end(id: JsonValue): SessionEndResponse = end(id, SessionEndParams.none())
+    fun end(id: String): SessionEndResponse = end(id, SessionEndParams.none())
 
     /** @see end */
     fun end(
-        id: JsonValue,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse = end(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see end */
-    fun end(id: JsonValue, params: SessionEndParams = SessionEndParams.none()): SessionEndResponse =
+    fun end(id: String, params: SessionEndParams = SessionEndParams.none()): SessionEndResponse =
         end(id, params, RequestOptions.none())
 
     /** @see end */
@@ -90,53 +82,43 @@ interface SessionService {
     fun end(params: SessionEndParams): SessionEndResponse = end(params, RequestOptions.none())
 
     /** @see end */
-    fun end(id: JsonValue, requestOptions: RequestOptions): SessionEndResponse =
+    fun end(id: String, requestOptions: RequestOptions): SessionEndResponse =
         end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
-    fun executeAgent(id: JsonValue): SessionExecuteAgentResponse =
-        executeAgent(id, SessionExecuteAgentParams.none())
+    fun execute(id: String, params: SessionExecuteParams): SessionExecuteResponse =
+        execute(id, params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        id: JsonValue,
-        params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+    /** @see execute */
+    fun execute(
+        id: String,
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SessionExecuteAgentResponse = executeAgent(params.toBuilder().id(id).build(), requestOptions)
+    ): SessionExecuteResponse = execute(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see executeAgent */
-    fun executeAgent(
-        id: JsonValue,
-        params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
-    ): SessionExecuteAgentResponse = executeAgent(id, params, RequestOptions.none())
+    /** @see execute */
+    fun execute(params: SessionExecuteParams): SessionExecuteResponse =
+        execute(params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        params: SessionExecuteAgentParams,
+    /** @see execute */
+    fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): SessionExecuteAgentResponse
-
-    /** @see executeAgent */
-    fun executeAgent(params: SessionExecuteAgentParams): SessionExecuteAgentResponse =
-        executeAgent(params, RequestOptions.none())
-
-    /** @see executeAgent */
-    fun executeAgent(id: JsonValue, requestOptions: RequestOptions): SessionExecuteAgentResponse =
-        executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+    ): SessionExecuteResponse
 
     /** Extracts structured data from the current page using AI-powered analysis. */
-    fun extract(id: JsonValue): SessionExtractResponse = extract(id, SessionExtractParams.none())
+    fun extract(id: String): SessionExtractResponse = extract(id, SessionExtractParams.none())
 
     /** @see extract */
     fun extract(
-        id: JsonValue,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionExtractResponse = extract(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see extract */
     fun extract(
-        id: JsonValue,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
     ): SessionExtractResponse = extract(id, params, RequestOptions.none())
 
@@ -151,25 +133,23 @@ interface SessionService {
         extract(params, RequestOptions.none())
 
     /** @see extract */
-    fun extract(id: JsonValue, requestOptions: RequestOptions): SessionExtractResponse =
+    fun extract(id: String, requestOptions: RequestOptions): SessionExtractResponse =
         extract(id, SessionExtractParams.none(), requestOptions)
 
     /** Navigates the browser to the specified URL. */
-    fun navigate(id: JsonValue): SessionNavigateResponse =
-        navigate(id, SessionNavigateParams.none())
+    fun navigate(id: String, params: SessionNavigateParams): SessionNavigateResponse =
+        navigate(id, params, RequestOptions.none())
 
     /** @see navigate */
     fun navigate(
-        id: JsonValue,
-        params: SessionNavigateParams = SessionNavigateParams.none(),
+        id: String,
+        params: SessionNavigateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionNavigateResponse = navigate(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see navigate */
-    fun navigate(
-        id: JsonValue,
-        params: SessionNavigateParams = SessionNavigateParams.none(),
-    ): SessionNavigateResponse = navigate(id, params, RequestOptions.none())
+    fun navigate(params: SessionNavigateParams): SessionNavigateResponse =
+        navigate(params, RequestOptions.none())
 
     /** @see navigate */
     fun navigate(
@@ -177,30 +157,22 @@ interface SessionService {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionNavigateResponse
 
-    /** @see navigate */
-    fun navigate(params: SessionNavigateParams): SessionNavigateResponse =
-        navigate(params, RequestOptions.none())
-
-    /** @see navigate */
-    fun navigate(id: JsonValue, requestOptions: RequestOptions): SessionNavigateResponse =
-        navigate(id, SessionNavigateParams.none(), requestOptions)
-
     /**
      * Identifies and returns available actions on the current page that match the given
      * instruction.
      */
-    fun observe(id: JsonValue): SessionObserveResponse = observe(id, SessionObserveParams.none())
+    fun observe(id: String): SessionObserveResponse = observe(id, SessionObserveParams.none())
 
     /** @see observe */
     fun observe(
-        id: JsonValue,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionObserveResponse = observe(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see observe */
     fun observe(
-        id: JsonValue,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
     ): SessionObserveResponse = observe(id, params, RequestOptions.none())
 
@@ -215,28 +187,21 @@ interface SessionService {
         observe(params, RequestOptions.none())
 
     /** @see observe */
-    fun observe(id: JsonValue, requestOptions: RequestOptions): SessionObserveResponse =
+    fun observe(id: String, requestOptions: RequestOptions): SessionObserveResponse =
         observe(id, SessionObserveParams.none(), requestOptions)
 
     /**
      * Creates a new browser session with the specified configuration. Returns a session ID used for
      * all subsequent operations.
      */
-    fun start(): SessionStartResponse = start(SessionStartParams.none())
-
-    /** @see start */
-    fun start(
-        params: SessionStartParams = SessionStartParams.none(),
-        requestOptions: RequestOptions = RequestOptions.none(),
-    ): SessionStartResponse
-
-    /** @see start */
-    fun start(params: SessionStartParams = SessionStartParams.none()): SessionStartResponse =
+    fun start(params: SessionStartParams): SessionStartResponse =
         start(params, RequestOptions.none())
 
     /** @see start */
-    fun start(requestOptions: RequestOptions): SessionStartResponse =
-        start(SessionStartParams.none(), requestOptions)
+    fun start(
+        params: SessionStartParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SessionStartResponse
 
     /** A view of [SessionService] that provides access to raw HTTP responses for each method. */
     interface WithRawResponse {
@@ -249,35 +214,21 @@ interface SessionService {
         fun withOptions(modifier: Consumer<ClientOptions.Builder>): SessionService.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/act`, but is otherwise the same as
-         * [SessionService.act].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionService.act].
          */
         @MustBeClosed
-        fun act(id: JsonValue): HttpResponseFor<SessionActResponse> =
-            act(id, SessionActParams.none())
+        fun act(id: String, params: SessionActParams): HttpResponseFor<SessionActResponse> =
+            act(id, params, RequestOptions.none())
 
         /** @see act */
         @MustBeClosed
         fun act(
-            id: JsonValue,
-            params: SessionActParams = SessionActParams.none(),
+            id: String,
+            params: SessionActParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionActResponse> =
             act(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see act */
-        @MustBeClosed
-        fun act(
-            id: JsonValue,
-            params: SessionActParams = SessionActParams.none(),
-        ): HttpResponseFor<SessionActResponse> = act(id, params, RequestOptions.none())
-
-        /** @see act */
-        @MustBeClosed
-        fun act(
-            params: SessionActParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionActResponse>
 
         /** @see act */
         @MustBeClosed
@@ -287,22 +238,21 @@ interface SessionService {
         /** @see act */
         @MustBeClosed
         fun act(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionActResponse> = act(id, SessionActParams.none(), requestOptions)
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SessionActResponse>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/end`, but is otherwise the same as
-         * [SessionService.end].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
+         * as [SessionService.end].
          */
         @MustBeClosed
-        fun end(id: JsonValue): HttpResponseFor<SessionEndResponse> =
-            end(id, SessionEndParams.none())
+        fun end(id: String): HttpResponseFor<SessionEndResponse> = end(id, SessionEndParams.none())
 
         /** @see end */
         @MustBeClosed
         fun end(
-            id: JsonValue,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionEndResponse> =
@@ -311,7 +261,7 @@ interface SessionService {
         /** @see end */
         @MustBeClosed
         fun end(
-            id: JsonValue,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
         ): HttpResponseFor<SessionEndResponse> = end(id, params, RequestOptions.none())
 
@@ -329,70 +279,52 @@ interface SessionService {
 
         /** @see end */
         @MustBeClosed
-        fun end(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionEndResponse> = end(id, SessionEndParams.none(), requestOptions)
+        fun end(id: String, requestOptions: RequestOptions): HttpResponseFor<SessionEndResponse> =
+            end(id, SessionEndParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/agentExecute`, but is otherwise the
-         * same as [SessionService.executeAgent].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionService.execute].
          */
         @MustBeClosed
-        fun executeAgent(id: JsonValue): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(id, SessionExecuteAgentParams.none())
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
+        ): HttpResponseFor<SessionExecuteResponse> = execute(id, params, RequestOptions.none())
 
-        /** @see executeAgent */
+        /** @see execute */
         @MustBeClosed
-        fun executeAgent(
-            id: JsonValue,
-            params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(params.toBuilder().id(id).build(), requestOptions)
+        ): HttpResponseFor<SessionExecuteResponse> =
+            execute(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see executeAgent */
+        /** @see execute */
         @MustBeClosed
-        fun executeAgent(
-            id: JsonValue,
-            params: SessionExecuteAgentParams = SessionExecuteAgentParams.none(),
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(id, params, RequestOptions.none())
+        fun execute(params: SessionExecuteParams): HttpResponseFor<SessionExecuteResponse> =
+            execute(params, RequestOptions.none())
 
-        /** @see executeAgent */
+        /** @see execute */
         @MustBeClosed
-        fun executeAgent(
-            params: SessionExecuteAgentParams,
+        fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionExecuteAgentResponse>
-
-        /** @see executeAgent */
-        @MustBeClosed
-        fun executeAgent(
-            params: SessionExecuteAgentParams
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(params, RequestOptions.none())
-
-        /** @see executeAgent */
-        @MustBeClosed
-        fun executeAgent(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionExecuteAgentResponse> =
-            executeAgent(id, SessionExecuteAgentParams.none(), requestOptions)
+        ): HttpResponseFor<SessionExecuteResponse>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/extract`, but is otherwise the same
-         * as [SessionService.extract].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionService.extract].
          */
         @MustBeClosed
-        fun extract(id: JsonValue): HttpResponseFor<SessionExtractResponse> =
+        fun extract(id: String): HttpResponseFor<SessionExtractResponse> =
             extract(id, SessionExtractParams.none())
 
         /** @see extract */
         @MustBeClosed
         fun extract(
-            id: JsonValue,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionExtractResponse> =
@@ -401,7 +333,7 @@ interface SessionService {
         /** @see extract */
         @MustBeClosed
         fun extract(
-            id: JsonValue,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
         ): HttpResponseFor<SessionExtractResponse> = extract(id, params, RequestOptions.none())
 
@@ -420,41 +352,29 @@ interface SessionService {
         /** @see extract */
         @MustBeClosed
         fun extract(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionExtractResponse> =
             extract(id, SessionExtractParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/navigate`, but is otherwise the same
-         * as [SessionService.navigate].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/navigate`, but is otherwise the
+         * same as [SessionService.navigate].
          */
         @MustBeClosed
-        fun navigate(id: JsonValue): HttpResponseFor<SessionNavigateResponse> =
-            navigate(id, SessionNavigateParams.none())
-
-        /** @see navigate */
-        @MustBeClosed
         fun navigate(
-            id: JsonValue,
-            params: SessionNavigateParams = SessionNavigateParams.none(),
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionNavigateResponse> =
-            navigate(params.toBuilder().id(id).build(), requestOptions)
-
-        /** @see navigate */
-        @MustBeClosed
-        fun navigate(
-            id: JsonValue,
-            params: SessionNavigateParams = SessionNavigateParams.none(),
+            id: String,
+            params: SessionNavigateParams,
         ): HttpResponseFor<SessionNavigateResponse> = navigate(id, params, RequestOptions.none())
 
         /** @see navigate */
         @MustBeClosed
         fun navigate(
+            id: String,
             params: SessionNavigateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionNavigateResponse>
+        ): HttpResponseFor<SessionNavigateResponse> =
+            navigate(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see navigate */
         @MustBeClosed
@@ -464,23 +384,22 @@ interface SessionService {
         /** @see navigate */
         @MustBeClosed
         fun navigate(
-            id: JsonValue,
-            requestOptions: RequestOptions,
-        ): HttpResponseFor<SessionNavigateResponse> =
-            navigate(id, SessionNavigateParams.none(), requestOptions)
+            params: SessionNavigateParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SessionNavigateResponse>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{id}/observe`, but is otherwise the same
-         * as [SessionService.observe].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionService.observe].
          */
         @MustBeClosed
-        fun observe(id: JsonValue): HttpResponseFor<SessionObserveResponse> =
+        fun observe(id: String): HttpResponseFor<SessionObserveResponse> =
             observe(id, SessionObserveParams.none())
 
         /** @see observe */
         @MustBeClosed
         fun observe(
-            id: JsonValue,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionObserveResponse> =
@@ -489,7 +408,7 @@ interface SessionService {
         /** @see observe */
         @MustBeClosed
         fun observe(
-            id: JsonValue,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
         ): HttpResponseFor<SessionObserveResponse> = observe(id, params, RequestOptions.none())
 
@@ -508,34 +427,24 @@ interface SessionService {
         /** @see observe */
         @MustBeClosed
         fun observe(
-            id: JsonValue,
+            id: String,
             requestOptions: RequestOptions,
         ): HttpResponseFor<SessionObserveResponse> =
             observe(id, SessionObserveParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/start`, but is otherwise the same as
+         * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as
          * [SessionService.start].
          */
         @MustBeClosed
-        fun start(): HttpResponseFor<SessionStartResponse> = start(SessionStartParams.none())
+        fun start(params: SessionStartParams): HttpResponseFor<SessionStartResponse> =
+            start(params, RequestOptions.none())
 
         /** @see start */
         @MustBeClosed
         fun start(
-            params: SessionStartParams = SessionStartParams.none(),
+            params: SessionStartParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionStartResponse>
-
-        /** @see start */
-        @MustBeClosed
-        fun start(
-            params: SessionStartParams = SessionStartParams.none()
-        ): HttpResponseFor<SessionStartResponse> = start(params, RequestOptions.none())
-
-        /** @see start */
-        @MustBeClosed
-        fun start(requestOptions: RequestOptions): HttpResponseFor<SessionStartResponse> =
-            start(SessionStartParams.none(), requestOptions)
     }
 }
