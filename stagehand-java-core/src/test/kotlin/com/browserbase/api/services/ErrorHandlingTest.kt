@@ -74,13 +74,11 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -104,13 +102,11 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -134,13 +130,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -164,13 +158,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -194,13 +186,11 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -224,13 +214,11 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -254,13 +242,11 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -284,13 +270,11 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -314,13 +298,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -344,13 +326,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -374,13 +354,11 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -404,13 +382,11 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -434,13 +410,11 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -464,13 +438,11 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -494,13 +466,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -524,13 +494,11 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }
@@ -552,13 +520,11 @@ internal class ErrorHandlingTest {
             assertThrows<StagehandException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .browserbaseApiKey("BROWSERBASE_API_KEY")
-                        .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                        .domSettleTimeout(0L)
-                        .model("openai/gpt-4o")
-                        .selfHeal(true)
-                        .systemPrompt("systemPrompt")
-                        .verbose(1L)
+                        .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                        .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                        .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                        .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                        .body(JsonValue.from(mapOf<String, Any>()))
                         .build()
                 )
             }

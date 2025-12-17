@@ -2,6 +2,8 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
+import com.browserbase.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -10,51 +12,59 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .browserbaseApiKey("BROWSERBASE_API_KEY")
-            .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-            .domSettleTimeout(0L)
-            .model("openai/gpt-4o")
-            .selfHeal(true)
-            .systemPrompt("systemPrompt")
-            .verbose(1L)
+            .xLanguage(JsonValue.from(mapOf<String, Any>()))
+            .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+            .xSentAt(JsonValue.from(mapOf<String, Any>()))
+            .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+            .body(JsonValue.from(mapOf<String, Any>()))
             .build()
+    }
+
+    @Test
+    fun headers() {
+        val params =
+            SessionStartParams.builder()
+                .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                .body(JsonValue.from(mapOf<String, Any>()))
+                .build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
+    fun headersWithoutOptionalFields() {
+        val params = SessionStartParams.builder().build()
+
+        val headers = params._headers()
+
+        assertThat(headers).isEqualTo(Headers.builder().build())
     }
 
     @Test
     fun body() {
         val params =
             SessionStartParams.builder()
-                .browserbaseApiKey("BROWSERBASE_API_KEY")
-                .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                .domSettleTimeout(0L)
-                .model("openai/gpt-4o")
-                .selfHeal(true)
-                .systemPrompt("systemPrompt")
-                .verbose(1L)
+                .xLanguage(JsonValue.from(mapOf<String, Any>()))
+                .xSdkVersion(JsonValue.from(mapOf<String, Any>()))
+                .xSentAt(JsonValue.from(mapOf<String, Any>()))
+                .xStreamResponse(JsonValue.from(mapOf<String, Any>()))
+                .body(JsonValue.from(mapOf<String, Any>()))
                 .build()
 
         val body = params._body()
 
-        assertThat(body.browserbaseApiKey()).isEqualTo("BROWSERBASE_API_KEY")
-        assertThat(body.browserbaseProjectId()).isEqualTo("BROWSERBASE_PROJECT_ID")
-        assertThat(body.domSettleTimeout()).contains(0L)
-        assertThat(body.model()).contains("openai/gpt-4o")
-        assertThat(body.selfHeal()).contains(true)
-        assertThat(body.systemPrompt()).contains("systemPrompt")
-        assertThat(body.verbose()).contains(1L)
+        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            SessionStartParams.builder()
-                .browserbaseApiKey("BROWSERBASE_API_KEY")
-                .browserbaseProjectId("BROWSERBASE_PROJECT_ID")
-                .build()
+        val params = SessionStartParams.builder().build()
 
         val body = params._body()
-
-        assertThat(body.browserbaseApiKey()).isEqualTo("BROWSERBASE_API_KEY")
-        assertThat(body.browserbaseProjectId()).isEqualTo("BROWSERBASE_PROJECT_ID")
     }
 }

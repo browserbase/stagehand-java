@@ -5,7 +5,7 @@ package com.browserbase.api.proguard
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.jsonMapper
 import com.browserbase.api.models.sessions.Action
-import com.browserbase.api.models.sessions.SessionExtractResponse
+import com.browserbase.api.models.sessions.ModelConfig
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -61,11 +61,10 @@ internal class ProGuardCompatibilityTest {
         val jsonMapper = jsonMapper()
         val action =
             Action.builder()
-                .addArgument("string")
-                .description("description")
-                .method("method")
-                .selector("selector")
-                .backendNodeId(0L)
+                .description("Click the submit button")
+                .selector("[data-testid='submit-button']")
+                .addArgument("Hello World")
+                .method("click")
                 .build()
 
         val roundtrippedAction =
@@ -75,19 +74,16 @@ internal class ProGuardCompatibilityTest {
     }
 
     @Test
-    fun sessionExtractResponseRoundtrip() {
+    fun modelConfigRoundtrip() {
         val jsonMapper = jsonMapper()
-        val sessionExtractResponse =
-            SessionExtractResponse.ofExtraction(
-                SessionExtractResponse.Extraction.builder().extraction("extraction").build()
-            )
+        val modelConfig = ModelConfig.ofString("string")
 
-        val roundtrippedSessionExtractResponse =
+        val roundtrippedModelConfig =
             jsonMapper.readValue(
-                jsonMapper.writeValueAsString(sessionExtractResponse),
-                jacksonTypeRef<SessionExtractResponse>(),
+                jsonMapper.writeValueAsString(modelConfig),
+                jacksonTypeRef<ModelConfig>(),
             )
 
-        assertThat(roundtrippedSessionExtractResponse).isEqualTo(sessionExtractResponse)
+        assertThat(roundtrippedModelConfig).isEqualTo(modelConfig)
     }
 }
