@@ -1133,6 +1133,9 @@ private constructor(
         ) : this(model, timeout, variables, mutableMapOf())
 
         /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+         * 'anthropic/claude-4.5-opus')
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -1211,6 +1214,10 @@ private constructor(
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
 
+            /**
+             * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+             * 'anthropic/claude-4.5-opus')
+             */
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
             /**
@@ -1222,12 +1229,14 @@ private constructor(
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
 
-            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
-            fun model(string: String) = model(ModelConfig.ofString(string))
+            /** Alias for calling [model] with `ModelConfig.ofName(name)`. */
+            fun model(name: String) = model(ModelConfig.ofName(name))
 
-            /** Alias for calling [model] with `ModelConfig.ofUnionMember1(unionMember1)`. */
-            fun model(unionMember1: ModelConfig.UnionMember1) =
-                model(ModelConfig.ofUnionMember1(unionMember1))
+            /**
+             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
+             */
+            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
+                model(ModelConfig.ofModelConfigObject(modelConfigObject))
 
             /** Timeout in ms for the action */
             fun timeout(timeout: Double) = timeout(JsonField.of(timeout))

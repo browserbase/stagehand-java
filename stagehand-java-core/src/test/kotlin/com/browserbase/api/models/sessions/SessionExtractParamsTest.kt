@@ -22,7 +22,7 @@ internal class SessionExtractParamsTest {
             .instruction("Extract all product names and prices from the page")
             .options(
                 SessionExtractParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .selector("#main-content")
                     .timeout(30000.0)
                     .build()
@@ -58,7 +58,7 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .selector("#main-content")
                         .timeout(30000.0)
                         .build()
@@ -106,7 +106,7 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .selector("#main-content")
                         .timeout(30000.0)
                         .build()
@@ -126,7 +126,7 @@ internal class SessionExtractParamsTest {
         assertThat(body.options())
             .contains(
                 SessionExtractParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .selector("#main-content")
                     .timeout(30000.0)
                     .build()

@@ -22,7 +22,7 @@ internal class SessionActParamsTest {
             .frameId("frameId")
             .options(
                 SessionActParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
@@ -60,7 +60,7 @@ internal class SessionActParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -110,7 +110,7 @@ internal class SessionActParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -129,7 +129,7 @@ internal class SessionActParamsTest {
         assertThat(body.options())
             .contains(
                 SessionActParams.Options.builder()
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()

@@ -20,7 +20,7 @@ internal class SessionExecuteParamsTest {
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .systemPrompt("systemPrompt")
                     .build()
             )
@@ -69,7 +69,7 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .systemPrompt("systemPrompt")
                         .build()
                 )
@@ -130,7 +130,7 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("string")
+                        .model("openai/gpt-5-nano")
                         .systemPrompt("systemPrompt")
                         .build()
                 )
@@ -152,7 +152,7 @@ internal class SessionExecuteParamsTest {
             .isEqualTo(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("string")
+                    .model("openai/gpt-5-nano")
                     .systemPrompt("systemPrompt")
                     .build()
             )

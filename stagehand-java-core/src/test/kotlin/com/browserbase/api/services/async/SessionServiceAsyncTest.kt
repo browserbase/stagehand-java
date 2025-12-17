@@ -44,7 +44,7 @@ internal class SessionServiceAsyncTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("string")
+                            .model("openai/gpt-5-nano")
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -110,7 +110,7 @@ internal class SessionServiceAsyncTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("string")
+                            .model("openai/gpt-5-nano")
                             .systemPrompt("systemPrompt")
                             .build()
                     )
@@ -155,7 +155,7 @@ internal class SessionServiceAsyncTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("string")
+                            .model("openai/gpt-5-nano")
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -232,7 +232,7 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("string")
+                            .model("openai/gpt-5-nano")
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -406,7 +406,7 @@ internal class SessionServiceAsyncTest {
                     .experimental(true)
                     .selfHeal(true)
                     .systemPrompt("systemPrompt")
-                    .verbose(1L)
+                    .verbose(SessionStartParams.Verbose._1)
                     .waitForCaptchaSolves(true)
                     .build()
             )

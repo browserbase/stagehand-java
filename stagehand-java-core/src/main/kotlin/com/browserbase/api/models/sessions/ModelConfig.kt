@@ -27,33 +27,44 @@ import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 
+/**
+ * Model name string with provider prefix (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus')
+ */
 @JsonDeserialize(using = ModelConfig.Deserializer::class)
 @JsonSerialize(using = ModelConfig.Serializer::class)
 class ModelConfig
 private constructor(
-    private val string: String? = null,
-    private val unionMember1: UnionMember1? = null,
+    private val name: String? = null,
+    private val modelConfigObject: ModelConfigObject? = null,
     private val _json: JsonValue? = null,
 ) {
 
-    fun string(): Optional<String> = Optional.ofNullable(string)
+    /**
+     * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+     * 'anthropic/claude-4.5-opus')
+     */
+    fun name(): Optional<String> = Optional.ofNullable(name)
 
-    fun unionMember1(): Optional<UnionMember1> = Optional.ofNullable(unionMember1)
+    fun modelConfigObject(): Optional<ModelConfigObject> = Optional.ofNullable(modelConfigObject)
 
-    fun isString(): Boolean = string != null
+    fun isName(): Boolean = name != null
 
-    fun isUnionMember1(): Boolean = unionMember1 != null
+    fun isModelConfigObject(): Boolean = modelConfigObject != null
 
-    fun asString(): String = string.getOrThrow("string")
+    /**
+     * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+     * 'anthropic/claude-4.5-opus')
+     */
+    fun asName(): String = name.getOrThrow("name")
 
-    fun asUnionMember1(): UnionMember1 = unionMember1.getOrThrow("unionMember1")
+    fun asModelConfigObject(): ModelConfigObject = modelConfigObject.getOrThrow("modelConfigObject")
 
     fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
 
     fun <T> accept(visitor: Visitor<T>): T =
         when {
-            string != null -> visitor.visitString(string)
-            unionMember1 != null -> visitor.visitUnionMember1(unionMember1)
+            name != null -> visitor.visitName(name)
+            modelConfigObject != null -> visitor.visitModelConfigObject(modelConfigObject)
             else -> visitor.unknown(_json)
         }
 
@@ -66,10 +77,10 @@ private constructor(
 
         accept(
             object : Visitor<Unit> {
-                override fun visitString(string: String) {}
+                override fun visitName(name: String) {}
 
-                override fun visitUnionMember1(unionMember1: UnionMember1) {
-                    unionMember1.validate()
+                override fun visitModelConfigObject(modelConfigObject: ModelConfigObject) {
+                    modelConfigObject.validate()
                 }
             }
         )
@@ -93,9 +104,10 @@ private constructor(
     internal fun validity(): Int =
         accept(
             object : Visitor<Int> {
-                override fun visitString(string: String) = 1
+                override fun visitName(name: String) = 1
 
-                override fun visitUnionMember1(unionMember1: UnionMember1) = unionMember1.validity()
+                override fun visitModelConfigObject(modelConfigObject: ModelConfigObject) =
+                    modelConfigObject.validity()
 
                 override fun unknown(json: JsonValue?) = 0
             }
@@ -106,25 +118,32 @@ private constructor(
             return true
         }
 
-        return other is ModelConfig && string == other.string && unionMember1 == other.unionMember1
+        return other is ModelConfig &&
+            name == other.name &&
+            modelConfigObject == other.modelConfigObject
     }
 
-    override fun hashCode(): Int = Objects.hash(string, unionMember1)
+    override fun hashCode(): Int = Objects.hash(name, modelConfigObject)
 
     override fun toString(): String =
         when {
-            string != null -> "ModelConfig{string=$string}"
-            unionMember1 != null -> "ModelConfig{unionMember1=$unionMember1}"
+            name != null -> "ModelConfig{name=$name}"
+            modelConfigObject != null -> "ModelConfig{modelConfigObject=$modelConfigObject}"
             _json != null -> "ModelConfig{_unknown=$_json}"
             else -> throw IllegalStateException("Invalid ModelConfig")
         }
 
     companion object {
 
-        @JvmStatic fun ofString(string: String) = ModelConfig(string = string)
+        /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+         * 'anthropic/claude-4.5-opus')
+         */
+        @JvmStatic fun ofName(name: String) = ModelConfig(name = name)
 
         @JvmStatic
-        fun ofUnionMember1(unionMember1: UnionMember1) = ModelConfig(unionMember1 = unionMember1)
+        fun ofModelConfigObject(modelConfigObject: ModelConfigObject) =
+            ModelConfig(modelConfigObject = modelConfigObject)
     }
 
     /**
@@ -132,9 +151,13 @@ private constructor(
      */
     interface Visitor<out T> {
 
-        fun visitString(string: String): T
+        /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
+         * 'anthropic/claude-4.5-opus')
+         */
+        fun visitName(name: String): T
 
-        fun visitUnionMember1(unionMember1: UnionMember1): T
+        fun visitModelConfigObject(modelConfigObject: ModelConfigObject): T
 
         /**
          * Maps an unknown variant of [ModelConfig] to a value of type [T].
@@ -157,11 +180,11 @@ private constructor(
 
             val bestMatches =
                 sequenceOf(
-                        tryDeserialize(node, jacksonTypeRef<UnionMember1>())?.let {
-                            ModelConfig(unionMember1 = it, _json = json)
+                        tryDeserialize(node, jacksonTypeRef<ModelConfigObject>())?.let {
+                            ModelConfig(modelConfigObject = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<String>())?.let {
-                            ModelConfig(string = it, _json = json)
+                            ModelConfig(name = it, _json = json)
                         },
                     )
                     .filterNotNull()
@@ -187,15 +210,15 @@ private constructor(
             provider: SerializerProvider,
         ) {
             when {
-                value.string != null -> generator.writeObject(value.string)
-                value.unionMember1 != null -> generator.writeObject(value.unionMember1)
+                value.name != null -> generator.writeObject(value.name)
+                value.modelConfigObject != null -> generator.writeObject(value.modelConfigObject)
                 value._json != null -> generator.writeObject(value._json)
                 else -> throw IllegalStateException("Invalid ModelConfig")
             }
         }
     }
 
-    class UnionMember1
+    class ModelConfigObject
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val modelName: JsonField<String>,
@@ -214,18 +237,24 @@ private constructor(
         ) : this(modelName, apiKey, baseUrl, mutableMapOf())
 
         /**
+         * Model name string without prefix (e.g., 'gpt-5-nano', 'claude-4.5-opus')
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
          */
         fun modelName(): String = modelName.getRequired("modelName")
 
         /**
+         * API key for the model provider
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
         fun apiKey(): Optional<String> = apiKey.getOptional("apiKey")
 
         /**
+         * Base URL for the model provider
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -267,7 +296,7 @@ private constructor(
         companion object {
 
             /**
-             * Returns a mutable builder for constructing an instance of [UnionMember1].
+             * Returns a mutable builder for constructing an instance of [ModelConfigObject].
              *
              * The following fields are required:
              * ```java
@@ -277,7 +306,7 @@ private constructor(
             @JvmStatic fun builder() = Builder()
         }
 
-        /** A builder for [UnionMember1]. */
+        /** A builder for [ModelConfigObject]. */
         class Builder internal constructor() {
 
             private var modelName: JsonField<String>? = null
@@ -286,13 +315,14 @@ private constructor(
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
-            internal fun from(unionMember1: UnionMember1) = apply {
-                modelName = unionMember1.modelName
-                apiKey = unionMember1.apiKey
-                baseUrl = unionMember1.baseUrl
-                additionalProperties = unionMember1.additionalProperties.toMutableMap()
+            internal fun from(modelConfigObject: ModelConfigObject) = apply {
+                modelName = modelConfigObject.modelName
+                apiKey = modelConfigObject.apiKey
+                baseUrl = modelConfigObject.baseUrl
+                additionalProperties = modelConfigObject.additionalProperties.toMutableMap()
             }
 
+            /** Model name string without prefix (e.g., 'gpt-5-nano', 'claude-4.5-opus') */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**
@@ -304,6 +334,7 @@ private constructor(
              */
             fun modelName(modelName: JsonField<String>) = apply { this.modelName = modelName }
 
+            /** API key for the model provider */
             fun apiKey(apiKey: String) = apiKey(JsonField.of(apiKey))
 
             /**
@@ -315,6 +346,7 @@ private constructor(
              */
             fun apiKey(apiKey: JsonField<String>) = apply { this.apiKey = apiKey }
 
+            /** Base URL for the model provider */
             fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
 
             /**
@@ -346,7 +378,7 @@ private constructor(
             }
 
             /**
-             * Returns an immutable instance of [UnionMember1].
+             * Returns an immutable instance of [ModelConfigObject].
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              *
@@ -357,8 +389,8 @@ private constructor(
              *
              * @throws IllegalStateException if any required field is unset.
              */
-            fun build(): UnionMember1 =
-                UnionMember1(
+            fun build(): ModelConfigObject =
+                ModelConfigObject(
                     checkRequired("modelName", modelName),
                     apiKey,
                     baseUrl,
@@ -368,7 +400,7 @@ private constructor(
 
         private var validated: Boolean = false
 
-        fun validate(): UnionMember1 = apply {
+        fun validate(): ModelConfigObject = apply {
             if (validated) {
                 return@apply
             }
@@ -404,7 +436,7 @@ private constructor(
                 return true
             }
 
-            return other is UnionMember1 &&
+            return other is ModelConfigObject &&
                 modelName == other.modelName &&
                 apiKey == other.apiKey &&
                 baseUrl == other.baseUrl &&
@@ -418,6 +450,6 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "UnionMember1{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, additionalProperties=$additionalProperties}"
+            "ModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, additionalProperties=$additionalProperties}"
     }
 }
