@@ -15,7 +15,7 @@ internal class SessionEndParamsTest {
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
             .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
             .xSdkVersion("3.0.6")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
             .build()
     }
@@ -36,7 +36,7 @@ internal class SessionEndParamsTest {
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                 .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
                 .xSdkVersion("3.0.6")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
                 .build()
 
@@ -47,7 +47,7 @@ internal class SessionEndParamsTest {
                 Headers.builder()
                     .put("x-language", "typescript")
                     .put("x-sdk-version", "3.0.6")
-                    .put("x-sent-at", "2025-01-15T10:30:00.000Z")
+                    .put("x-sent-at", "2025-01-15T10:30:00Z")
                     .put("x-stream-response", "true")
                     .build()
             )
