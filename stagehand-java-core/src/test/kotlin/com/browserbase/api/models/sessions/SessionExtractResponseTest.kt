@@ -20,7 +20,7 @@ internal class SessionExtractResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionExtractResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionExtractResponse.data())
@@ -30,7 +30,7 @@ internal class SessionExtractResponseTest {
                     .actionId("actionId")
                     .build()
             )
-        assertThat(sessionExtractResponse.success()).isEqualTo(SessionExtractResponse.Success.TRUE)
+        assertThat(sessionExtractResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -44,7 +44,7 @@ internal class SessionExtractResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionExtractResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionExtractResponse =

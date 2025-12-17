@@ -153,7 +153,7 @@ internal class SessionStartParamsTest {
             .experimental(true)
             .selfHeal(true)
             .systemPrompt("systemPrompt")
-            .verbose(SessionStartParams.Verbose._1)
+            .verbose(1L)
             .waitForCaptchaSolves(true)
             .build()
     }
@@ -306,7 +306,7 @@ internal class SessionStartParamsTest {
                 .experimental(true)
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
-                .verbose(SessionStartParams.Verbose._1)
+                .verbose(1L)
                 .waitForCaptchaSolves(true)
                 .build()
 
@@ -480,7 +480,7 @@ internal class SessionStartParamsTest {
                 .experimental(true)
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
-                .verbose(SessionStartParams.Verbose._1)
+                .verbose(1L)
                 .waitForCaptchaSolves(true)
                 .build()
 
@@ -624,7 +624,7 @@ internal class SessionStartParamsTest {
         assertThat(body.experimental()).contains(true)
         assertThat(body.selfHeal()).contains(true)
         assertThat(body.systemPrompt()).contains("systemPrompt")
-        assertThat(body.verbose()).contains(SessionStartParams.Verbose._1)
+        assertThat(body.verbose()).contains(1L)
         assertThat(body.waitForCaptchaSolves()).contains(true)
     }
 

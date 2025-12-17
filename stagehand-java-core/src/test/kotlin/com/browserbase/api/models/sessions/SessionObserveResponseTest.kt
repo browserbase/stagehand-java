@@ -26,7 +26,7 @@ internal class SessionObserveResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionObserveResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionObserveResponse.data())
@@ -43,7 +43,7 @@ internal class SessionObserveResponseTest {
                     .actionId("actionId")
                     .build()
             )
-        assertThat(sessionObserveResponse.success()).isEqualTo(SessionObserveResponse.Success.TRUE)
+        assertThat(sessionObserveResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -64,7 +64,7 @@ internal class SessionObserveResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionObserveResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionObserveResponse =

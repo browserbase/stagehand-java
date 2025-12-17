@@ -33,7 +33,7 @@ internal class SessionActResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionActResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionActResponse.data())
@@ -57,7 +57,7 @@ internal class SessionActResponseTest {
                     .actionId("actionId")
                     .build()
             )
-        assertThat(sessionActResponse.success()).isEqualTo(SessionActResponse.Success.TRUE)
+        assertThat(sessionActResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -85,7 +85,7 @@ internal class SessionActResponseTest {
                         .actionId("actionId")
                         .build()
                 )
-                .success(SessionActResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionActResponse =

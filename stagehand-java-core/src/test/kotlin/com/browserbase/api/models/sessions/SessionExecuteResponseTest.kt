@@ -51,7 +51,7 @@ internal class SessionExecuteResponseTest {
                         )
                         .build()
                 )
-                .success(SessionExecuteResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         assertThat(sessionExecuteResponse.data())
@@ -92,7 +92,7 @@ internal class SessionExecuteResponseTest {
                     )
                     .build()
             )
-        assertThat(sessionExecuteResponse.success()).isEqualTo(SessionExecuteResponse.Success.TRUE)
+        assertThat(sessionExecuteResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -137,7 +137,7 @@ internal class SessionExecuteResponseTest {
                         )
                         .build()
                 )
-                .success(SessionExecuteResponse.Success.TRUE)
+                .success(true)
                 .build()
 
         val roundtrippedSessionExecuteResponse =
