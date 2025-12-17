@@ -57,7 +57,7 @@ StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build();
 SessionActResponse response = client.sessions().act(params);
 ```
@@ -163,7 +163,7 @@ StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.async().sessions().act(params);
 ```
@@ -183,7 +183,7 @@ StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+    .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.sessions().act(params);
 ```
@@ -199,14 +199,13 @@ To access this data, prefix any HTTP method call on a client or service with `wi
 ```java
 import com.browserbase.api.core.http.Headers;
 import com.browserbase.api.core.http.HttpResponseFor;
-import com.browserbase.api.models.sessions.SessionActParams;
-import com.browserbase.api.models.sessions.SessionActResponse;
+import com.browserbase.api.models.sessions.SessionStartParams;
+import com.browserbase.api.models.sessions.SessionStartResponse;
 
-SessionActParams params = SessionActParams.builder()
-    .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-    .input("Click the login button")
+SessionStartParams params = SessionStartParams.builder()
+    .modelName("gpt-4o")
     .build();
-HttpResponseFor<SessionActResponse> response = client.sessions().withRawResponse().act(params);
+HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
 int statusCode = response.statusCode();
 Headers headers = response.headers();
@@ -215,9 +214,9 @@ Headers headers = response.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.browserbase.api.models.sessions.SessionActResponse;
+import com.browserbase.api.models.sessions.SessionStartResponse;
 
-SessionActResponse parsedResponse = response.parse();
+SessionStartResponse parsedResponse = response.parse();
 ```
 
 ## Error handling
@@ -313,9 +312,9 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.browserbase.api.models.sessions.SessionActResponse;
+import com.browserbase.api.models.sessions.SessionStartResponse;
 
-SessionActResponse response = client.sessions().act(
+SessionStartResponse response = client.sessions().start(
   params, RequestOptions.builder().timeout(Duration.ofSeconds(30)).build()
 );
 ```
@@ -449,10 +448,11 @@ These properties can be accessed on the nested built object later using the `_ad
 To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](stagehand-java-core/src/main/kotlin/com/browserbase/api/core/Values.kt) object to its setter:
 
 ```java
+import com.browserbase.api.core.JsonValue;
 import com.browserbase.api.models.sessions.SessionActParams;
 
 SessionActParams params = SessionActParams.builder()
-    .input("Click the login button")
+    .input(JsonValue.from(42))
     .build();
 ```
 
