@@ -15,7 +15,7 @@ internal class SessionExecuteParamsTest {
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
             .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
             .xSdkVersion("3.0.6")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
@@ -64,7 +64,7 @@ internal class SessionExecuteParamsTest {
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                 .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
                 .xSdkVersion("3.0.6")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
@@ -92,7 +92,7 @@ internal class SessionExecuteParamsTest {
                 Headers.builder()
                     .put("x-language", "typescript")
                     .put("x-sdk-version", "3.0.6")
-                    .put("x-sent-at", "2025-01-15T10:30:00.000Z")
+                    .put("x-sent-at", "2025-01-15T10:30:00Z")
                     .put("x-stream-response", "true")
                     .build()
             )
@@ -125,7 +125,7 @@ internal class SessionExecuteParamsTest {
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                 .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
                 .xSdkVersion("3.0.6")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00.000Z"))
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
