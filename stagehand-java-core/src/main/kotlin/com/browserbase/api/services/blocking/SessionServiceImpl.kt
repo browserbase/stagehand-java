@@ -3,17 +3,22 @@
 package com.browserbase.api.services.blocking
 
 import com.browserbase.api.core.ClientOptions
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.RequestOptions
 import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.handlers.errorBodyHandler
 import com.browserbase.api.core.handlers.errorHandler
 import com.browserbase.api.core.handlers.jsonHandler
+import com.browserbase.api.core.handlers.mapJson
+import com.browserbase.api.core.handlers.sseHandler
 import com.browserbase.api.core.http.HttpMethod
 import com.browserbase.api.core.http.HttpRequest
 import com.browserbase.api.core.http.HttpResponse
 import com.browserbase.api.core.http.HttpResponse.Handler
 import com.browserbase.api.core.http.HttpResponseFor
+import com.browserbase.api.core.http.StreamResponse
 import com.browserbase.api.core.http.json
+import com.browserbase.api.core.http.map
 import com.browserbase.api.core.http.parseable
 import com.browserbase.api.core.prepare
 import com.browserbase.api.models.sessions.SessionActParams
@@ -30,6 +35,7 @@ import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
+import com.browserbase.api.models.sessions.StreamEvent
 import java.util.function.Consumer
 import kotlin.jvm.optionals.getOrNull
 
@@ -49,6 +55,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
         // post /v1/sessions/{id}/act
         withRawResponse().act(params, requestOptions).parse()
 
+    override fun actStreaming(
+        params: SessionActParams,
+        requestOptions: RequestOptions,
+    ): StreamResponse<StreamEvent> =
+        // post /v1/sessions/{id}/act
+        withRawResponse().actStreaming(params, requestOptions).parse()
+
     override fun end(params: SessionEndParams, requestOptions: RequestOptions): SessionEndResponse =
         // post /v1/sessions/{id}/end
         withRawResponse().end(params, requestOptions).parse()
@@ -60,12 +73,26 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
         // post /v1/sessions/{id}/agentExecute
         withRawResponse().execute(params, requestOptions).parse()
 
+    override fun executeStreaming(
+        params: SessionExecuteParams,
+        requestOptions: RequestOptions,
+    ): StreamResponse<StreamEvent> =
+        // post /v1/sessions/{id}/agentExecute
+        withRawResponse().executeStreaming(params, requestOptions).parse()
+
     override fun extract(
         params: SessionExtractParams,
         requestOptions: RequestOptions,
     ): SessionExtractResponse =
         // post /v1/sessions/{id}/extract
         withRawResponse().extract(params, requestOptions).parse()
+
+    override fun extractStreaming(
+        params: SessionExtractParams,
+        requestOptions: RequestOptions,
+    ): StreamResponse<StreamEvent> =
+        // post /v1/sessions/{id}/extract
+        withRawResponse().extractStreaming(params, requestOptions).parse()
 
     override fun navigate(
         params: SessionNavigateParams,
@@ -80,6 +107,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
     ): SessionObserveResponse =
         // post /v1/sessions/{id}/observe
         withRawResponse().observe(params, requestOptions).parse()
+
+    override fun observeStreaming(
+        params: SessionObserveParams,
+        requestOptions: RequestOptions,
+    ): StreamResponse<StreamEvent> =
+        // post /v1/sessions/{id}/observe
+        withRawResponse().observeStreaming(params, requestOptions).parse()
 
     override fun start(
         params: SessionStartParams,
@@ -127,6 +161,48 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val actStreamingHandler: Handler<StreamResponse<StreamEvent>> =
+            sseHandler(clientOptions.jsonMapper).mapJson<StreamEvent>()
+
+        override fun actStreaming(
+            params: SessionActParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "act")
+                    .body(
+                        json(
+                            clientOptions.jsonMapper,
+                            params
+                                ._body()
+                                .toBuilder()
+                                .putAdditionalProperty("streamResponse", JsonValue.from(true))
+                                .build(),
+                        )
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .let { actStreamingHandler.handle(it) }
+                    .let { streamResponse ->
+                        if (requestOptions.responseValidation!!) {
+                            streamResponse.map { it.validate() }
+                        } else {
+                            streamResponse
                         }
                     }
             }
@@ -194,6 +270,48 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
             }
         }
 
+        private val executeStreamingHandler: Handler<StreamResponse<StreamEvent>> =
+            sseHandler(clientOptions.jsonMapper).mapJson<StreamEvent>()
+
+        override fun executeStreaming(
+            params: SessionExecuteParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
+                    .body(
+                        json(
+                            clientOptions.jsonMapper,
+                            params
+                                ._body()
+                                .toBuilder()
+                                .putAdditionalProperty("streamResponse", JsonValue.from(true))
+                                .build(),
+                        )
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .let { executeStreamingHandler.handle(it) }
+                    .let { streamResponse ->
+                        if (requestOptions.responseValidation!!) {
+                            streamResponse.map { it.validate() }
+                        } else {
+                            streamResponse
+                        }
+                    }
+            }
+        }
+
         private val extractHandler: Handler<SessionExtractResponse> =
             jsonHandler<SessionExtractResponse>(clientOptions.jsonMapper)
 
@@ -220,6 +338,48 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val extractStreamingHandler: Handler<StreamResponse<StreamEvent>> =
+            sseHandler(clientOptions.jsonMapper).mapJson<StreamEvent>()
+
+        override fun extractStreaming(
+            params: SessionExtractParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
+                    .body(
+                        json(
+                            clientOptions.jsonMapper,
+                            params
+                                ._body()
+                                .toBuilder()
+                                .putAdditionalProperty("streamResponse", JsonValue.from(true))
+                                .build(),
+                        )
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .let { extractStreamingHandler.handle(it) }
+                    .let { streamResponse ->
+                        if (requestOptions.responseValidation!!) {
+                            streamResponse.map { it.validate() }
+                        } else {
+                            streamResponse
                         }
                     }
             }
@@ -282,6 +442,48 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .also {
                         if (requestOptions.responseValidation!!) {
                             it.validate()
+                        }
+                    }
+            }
+        }
+
+        private val observeStreamingHandler: Handler<StreamResponse<StreamEvent>> =
+            sseHandler(clientOptions.jsonMapper).mapJson<StreamEvent>()
+
+        override fun observeStreaming(
+            params: SessionObserveParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<StreamResponse<StreamEvent>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.POST)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
+                    .body(
+                        json(
+                            clientOptions.jsonMapper,
+                            params
+                                ._body()
+                                .toBuilder()
+                                .putAdditionalProperty("streamResponse", JsonValue.from(true))
+                                .build(),
+                        )
+                    )
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .let { observeStreamingHandler.handle(it) }
+                    .let { streamResponse ->
+                        if (requestOptions.responseValidation!!) {
+                            streamResponse.map { it.validate() }
+                        } else {
+                            streamResponse
                         }
                     }
             }
