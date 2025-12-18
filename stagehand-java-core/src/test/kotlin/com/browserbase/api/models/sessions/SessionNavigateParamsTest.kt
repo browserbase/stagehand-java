@@ -26,6 +26,7 @@ internal class SessionNavigateParamsTest {
                     .waitUntil(SessionNavigateParams.Options.WaitUntil.NETWORKIDLE)
                     .build()
             )
+            .streamResponse(true)
             .build()
     }
 
@@ -60,6 +61,7 @@ internal class SessionNavigateParamsTest {
                         .waitUntil(SessionNavigateParams.Options.WaitUntil.NETWORKIDLE)
                         .build()
                 )
+                .streamResponse(true)
                 .build()
 
         val headers = params._headers()
@@ -106,6 +108,7 @@ internal class SessionNavigateParamsTest {
                         .waitUntil(SessionNavigateParams.Options.WaitUntil.NETWORKIDLE)
                         .build()
                 )
+                .streamResponse(true)
                 .build()
 
         val body = params._body()
@@ -120,6 +123,7 @@ internal class SessionNavigateParamsTest {
                     .waitUntil(SessionNavigateParams.Options.WaitUntil.NETWORKIDLE)
                     .build()
             )
+        assertThat(body.streamResponse()).contains(true)
     }
 
     @Test

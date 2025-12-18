@@ -16,6 +16,7 @@ internal class SessionStartResponseTest {
                 .data(
                     SessionStartResponse.Data.builder()
                         .available(true)
+                        .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                         .build()
                 )
@@ -26,6 +27,7 @@ internal class SessionStartResponseTest {
             .isEqualTo(
                 SessionStartResponse.Data.builder()
                     .available(true)
+                    .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                     .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                     .build()
             )
@@ -40,6 +42,7 @@ internal class SessionStartResponseTest {
                 .data(
                     SessionStartResponse.Data.builder()
                         .available(true)
+                        .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                         .build()
                 )
