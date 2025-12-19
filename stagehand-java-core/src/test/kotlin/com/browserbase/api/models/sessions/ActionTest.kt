@@ -17,12 +17,14 @@ internal class ActionTest {
                 .description("Click the submit button")
                 .selector("[data-testid='submit-button']")
                 .addArgument("Hello World")
+                .backendNodeId(0.0)
                 .method("click")
                 .build()
 
         assertThat(action.description()).isEqualTo("Click the submit button")
         assertThat(action.selector()).isEqualTo("[data-testid='submit-button']")
         assertThat(action.arguments().getOrNull()).containsExactly("Hello World")
+        assertThat(action.backendNodeId()).contains(0.0)
         assertThat(action.method()).contains("click")
     }
 
@@ -34,6 +36,7 @@ internal class ActionTest {
                 .description("Click the submit button")
                 .selector("[data-testid='submit-button']")
                 .addArgument("Hello World")
+                .backendNodeId(0.0)
                 .method("click")
                 .build()
 

@@ -72,7 +72,7 @@ private constructor(
     fun modelName(): String = body.modelName()
 
     /**
-     * Timeout in ms for act operations
+     * Timeout in ms for act operations (deprecated, v2 only)
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -99,12 +99,6 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun browserbaseSessionId(): Optional<String> = body.browserbaseSessionId()
-
-    /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun debugDom(): Optional<Boolean> = body.debugDom()
 
     /**
      * Timeout in ms to wait for DOM to settle
@@ -142,9 +136,11 @@ private constructor(
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun verbose(): Optional<Long> = body.verbose()
+    fun verbose(): Optional<Verbose> = body.verbose()
 
     /**
+     * Wait for captcha solves (deprecated, v2 only)
+     *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -189,13 +185,6 @@ private constructor(
     fun _browserbaseSessionId(): JsonField<String> = body._browserbaseSessionId()
 
     /**
-     * Returns the raw JSON value of [debugDom].
-     *
-     * Unlike [debugDom], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    fun _debugDom(): JsonField<Boolean> = body._debugDom()
-
-    /**
      * Returns the raw JSON value of [domSettleTimeoutMs].
      *
      * Unlike [domSettleTimeoutMs], this method doesn't throw if the JSON field has an unexpected
@@ -229,7 +218,7 @@ private constructor(
      *
      * Unlike [verbose], this method doesn't throw if the JSON field has an unexpected type.
      */
-    fun _verbose(): JsonField<Long> = body._verbose()
+    fun _verbose(): JsonField<Verbose> = body._verbose()
 
     /**
      * Returns the raw JSON value of [waitForCaptchaSolves].
@@ -337,7 +326,7 @@ private constructor(
          */
         fun modelName(modelName: JsonField<String>) = apply { body.modelName(modelName) }
 
-        /** Timeout in ms for act operations */
+        /** Timeout in ms for act operations (deprecated, v2 only) */
         fun actTimeoutMs(actTimeoutMs: Double) = apply { body.actTimeoutMs(actTimeoutMs) }
 
         /**
@@ -391,17 +380,6 @@ private constructor(
         fun browserbaseSessionId(browserbaseSessionId: JsonField<String>) = apply {
             body.browserbaseSessionId(browserbaseSessionId)
         }
-
-        fun debugDom(debugDom: Boolean) = apply { body.debugDom(debugDom) }
-
-        /**
-         * Sets [Builder.debugDom] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.debugDom] with a well-typed [Boolean] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun debugDom(debugDom: JsonField<Boolean>) = apply { body.debugDom(debugDom) }
 
         /** Timeout in ms to wait for DOM to settle */
         fun domSettleTimeoutMs(domSettleTimeoutMs: Double) = apply {
@@ -459,16 +437,17 @@ private constructor(
         }
 
         /** Logging verbosity level (0=quiet, 1=normal, 2=debug) */
-        fun verbose(verbose: Long) = apply { body.verbose(verbose) }
+        fun verbose(verbose: Verbose) = apply { body.verbose(verbose) }
 
         /**
          * Sets [Builder.verbose] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.verbose] with a well-typed [Long] value instead. This
+         * You should usually call [Builder.verbose] with a well-typed [Verbose] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun verbose(verbose: JsonField<Long>) = apply { body.verbose(verbose) }
+        fun verbose(verbose: JsonField<Verbose>) = apply { body.verbose(verbose) }
 
+        /** Wait for captcha solves (deprecated, v2 only) */
         fun waitForCaptchaSolves(waitForCaptchaSolves: Boolean) = apply {
             body.waitForCaptchaSolves(waitForCaptchaSolves)
         }
@@ -648,12 +627,11 @@ private constructor(
         private val browser: JsonField<Browser>,
         private val browserbaseSessionCreateParams: JsonField<BrowserbaseSessionCreateParams>,
         private val browserbaseSessionId: JsonField<String>,
-        private val debugDom: JsonField<Boolean>,
         private val domSettleTimeoutMs: JsonField<Double>,
         private val experimental: JsonField<Boolean>,
         private val selfHeal: JsonField<Boolean>,
         private val systemPrompt: JsonField<String>,
-        private val verbose: JsonField<Long>,
+        private val verbose: JsonField<Verbose>,
         private val waitForCaptchaSolves: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -674,9 +652,6 @@ private constructor(
             @JsonProperty("browserbaseSessionID")
             @ExcludeMissing
             browserbaseSessionId: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("debugDom")
-            @ExcludeMissing
-            debugDom: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("domSettleTimeoutMs")
             @ExcludeMissing
             domSettleTimeoutMs: JsonField<Double> = JsonMissing.of(),
@@ -689,7 +664,7 @@ private constructor(
             @JsonProperty("systemPrompt")
             @ExcludeMissing
             systemPrompt: JsonField<String> = JsonMissing.of(),
-            @JsonProperty("verbose") @ExcludeMissing verbose: JsonField<Long> = JsonMissing.of(),
+            @JsonProperty("verbose") @ExcludeMissing verbose: JsonField<Verbose> = JsonMissing.of(),
             @JsonProperty("waitForCaptchaSolves")
             @ExcludeMissing
             waitForCaptchaSolves: JsonField<Boolean> = JsonMissing.of(),
@@ -699,7 +674,6 @@ private constructor(
             browser,
             browserbaseSessionCreateParams,
             browserbaseSessionId,
-            debugDom,
             domSettleTimeoutMs,
             experimental,
             selfHeal,
@@ -718,7 +692,7 @@ private constructor(
         fun modelName(): String = modelName.getRequired("modelName")
 
         /**
-         * Timeout in ms for act operations
+         * Timeout in ms for act operations (deprecated, v2 only)
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -746,12 +720,6 @@ private constructor(
          */
         fun browserbaseSessionId(): Optional<String> =
             browserbaseSessionId.getOptional("browserbaseSessionID")
-
-        /**
-         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
-         *   the server responded with an unexpected value).
-         */
-        fun debugDom(): Optional<Boolean> = debugDom.getOptional("debugDom")
 
         /**
          * Timeout in ms to wait for DOM to settle
@@ -790,9 +758,11 @@ private constructor(
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun verbose(): Optional<Long> = verbose.getOptional("verbose")
+        fun verbose(): Optional<Verbose> = verbose.getOptional("verbose")
 
         /**
+         * Wait for captcha solves (deprecated, v2 only)
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -845,13 +815,6 @@ private constructor(
         fun _browserbaseSessionId(): JsonField<String> = browserbaseSessionId
 
         /**
-         * Returns the raw JSON value of [debugDom].
-         *
-         * Unlike [debugDom], this method doesn't throw if the JSON field has an unexpected type.
-         */
-        @JsonProperty("debugDom") @ExcludeMissing fun _debugDom(): JsonField<Boolean> = debugDom
-
-        /**
          * Returns the raw JSON value of [domSettleTimeoutMs].
          *
          * Unlike [domSettleTimeoutMs], this method doesn't throw if the JSON field has an
@@ -893,7 +856,7 @@ private constructor(
          *
          * Unlike [verbose], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("verbose") @ExcludeMissing fun _verbose(): JsonField<Long> = verbose
+        @JsonProperty("verbose") @ExcludeMissing fun _verbose(): JsonField<Verbose> = verbose
 
         /**
          * Returns the raw JSON value of [waitForCaptchaSolves].
@@ -939,12 +902,11 @@ private constructor(
             private var browserbaseSessionCreateParams: JsonField<BrowserbaseSessionCreateParams> =
                 JsonMissing.of()
             private var browserbaseSessionId: JsonField<String> = JsonMissing.of()
-            private var debugDom: JsonField<Boolean> = JsonMissing.of()
             private var domSettleTimeoutMs: JsonField<Double> = JsonMissing.of()
             private var experimental: JsonField<Boolean> = JsonMissing.of()
             private var selfHeal: JsonField<Boolean> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
-            private var verbose: JsonField<Long> = JsonMissing.of()
+            private var verbose: JsonField<Verbose> = JsonMissing.of()
             private var waitForCaptchaSolves: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -955,7 +917,6 @@ private constructor(
                 browser = body.browser
                 browserbaseSessionCreateParams = body.browserbaseSessionCreateParams
                 browserbaseSessionId = body.browserbaseSessionId
-                debugDom = body.debugDom
                 domSettleTimeoutMs = body.domSettleTimeoutMs
                 experimental = body.experimental
                 selfHeal = body.selfHeal
@@ -977,7 +938,7 @@ private constructor(
              */
             fun modelName(modelName: JsonField<String>) = apply { this.modelName = modelName }
 
-            /** Timeout in ms for act operations */
+            /** Timeout in ms for act operations (deprecated, v2 only) */
             fun actTimeoutMs(actTimeoutMs: Double) = actTimeoutMs(JsonField.of(actTimeoutMs))
 
             /**
@@ -1031,17 +992,6 @@ private constructor(
             fun browserbaseSessionId(browserbaseSessionId: JsonField<String>) = apply {
                 this.browserbaseSessionId = browserbaseSessionId
             }
-
-            fun debugDom(debugDom: Boolean) = debugDom(JsonField.of(debugDom))
-
-            /**
-             * Sets [Builder.debugDom] to an arbitrary JSON value.
-             *
-             * You should usually call [Builder.debugDom] with a well-typed [Boolean] value instead.
-             * This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
-             */
-            fun debugDom(debugDom: JsonField<Boolean>) = apply { this.debugDom = debugDom }
 
             /** Timeout in ms to wait for DOM to settle */
             fun domSettleTimeoutMs(domSettleTimeoutMs: Double) =
@@ -1098,17 +1048,18 @@ private constructor(
             }
 
             /** Logging verbosity level (0=quiet, 1=normal, 2=debug) */
-            fun verbose(verbose: Long) = verbose(JsonField.of(verbose))
+            fun verbose(verbose: Verbose) = verbose(JsonField.of(verbose))
 
             /**
              * Sets [Builder.verbose] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.verbose] with a well-typed [Long] value instead.
+             * You should usually call [Builder.verbose] with a well-typed [Verbose] value instead.
              * This method is primarily for setting the field to an undocumented or not yet
              * supported value.
              */
-            fun verbose(verbose: JsonField<Long>) = apply { this.verbose = verbose }
+            fun verbose(verbose: JsonField<Verbose>) = apply { this.verbose = verbose }
 
+            /** Wait for captcha solves (deprecated, v2 only) */
             fun waitForCaptchaSolves(waitForCaptchaSolves: Boolean) =
                 waitForCaptchaSolves(JsonField.of(waitForCaptchaSolves))
 
@@ -1161,7 +1112,6 @@ private constructor(
                     browser,
                     browserbaseSessionCreateParams,
                     browserbaseSessionId,
-                    debugDom,
                     domSettleTimeoutMs,
                     experimental,
                     selfHeal,
@@ -1184,12 +1134,11 @@ private constructor(
             browser().ifPresent { it.validate() }
             browserbaseSessionCreateParams().ifPresent { it.validate() }
             browserbaseSessionId()
-            debugDom()
             domSettleTimeoutMs()
             experimental()
             selfHeal()
             systemPrompt()
-            verbose()
+            verbose().ifPresent { it.validate() }
             waitForCaptchaSolves()
             validated = true
         }
@@ -1215,12 +1164,11 @@ private constructor(
                 (browser.asKnown().getOrNull()?.validity() ?: 0) +
                 (browserbaseSessionCreateParams.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (browserbaseSessionId.asKnown().isPresent) 1 else 0) +
-                (if (debugDom.asKnown().isPresent) 1 else 0) +
                 (if (domSettleTimeoutMs.asKnown().isPresent) 1 else 0) +
                 (if (experimental.asKnown().isPresent) 1 else 0) +
                 (if (selfHeal.asKnown().isPresent) 1 else 0) +
                 (if (systemPrompt.asKnown().isPresent) 1 else 0) +
-                (if (verbose.asKnown().isPresent) 1 else 0) +
+                (verbose.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (waitForCaptchaSolves.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
@@ -1234,7 +1182,6 @@ private constructor(
                 browser == other.browser &&
                 browserbaseSessionCreateParams == other.browserbaseSessionCreateParams &&
                 browserbaseSessionId == other.browserbaseSessionId &&
-                debugDom == other.debugDom &&
                 domSettleTimeoutMs == other.domSettleTimeoutMs &&
                 experimental == other.experimental &&
                 selfHeal == other.selfHeal &&
@@ -1251,7 +1198,6 @@ private constructor(
                 browser,
                 browserbaseSessionCreateParams,
                 browserbaseSessionId,
-                debugDom,
                 domSettleTimeoutMs,
                 experimental,
                 selfHeal,
@@ -1265,7 +1211,7 @@ private constructor(
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, debugDom=$debugDom, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
+            "Body{modelName=$modelName, actTimeoutMs=$actTimeoutMs, browser=$browser, browserbaseSessionCreateParams=$browserbaseSessionCreateParams, browserbaseSessionId=$browserbaseSessionId, domSettleTimeoutMs=$domSettleTimeoutMs, experimental=$experimental, selfHeal=$selfHeal, systemPrompt=$systemPrompt, verbose=$verbose, waitForCaptchaSolves=$waitForCaptchaSolves, additionalProperties=$additionalProperties}"
     }
 
     class Browser
@@ -7112,6 +7058,140 @@ private constructor(
 
         override fun toString() =
             "BrowserbaseSessionCreateParams{browserSettings=$browserSettings, extensionId=$extensionId, keepAlive=$keepAlive, projectId=$projectId, proxies=$proxies, region=$region, timeout=$timeout, userMetadata=$userMetadata, additionalProperties=$additionalProperties}"
+    }
+
+    /** Logging verbosity level (0=quiet, 1=normal, 2=debug) */
+    class Verbose @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val _0 = of("0")
+
+            @JvmField val _1 = of("1")
+
+            @JvmField val _2 = of("2")
+
+            @JvmStatic fun of(value: String) = Verbose(JsonField.of(value))
+        }
+
+        /** An enum containing [Verbose]'s known values. */
+        enum class Known {
+            _0,
+            _1,
+            _2,
+        }
+
+        /**
+         * An enum containing [Verbose]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [Verbose] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            _0,
+            _1,
+            _2,
+            /** An enum member indicating that [Verbose] was instantiated with an unknown value. */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                _0 -> Value._0
+                _1 -> Value._1
+                _2 -> Value._2
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                _0 -> Known._0
+                _1 -> Known._1
+                _2 -> Known._2
+                else -> throw StagehandInvalidDataException("Unknown Verbose: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                StagehandInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): Verbose = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Verbose && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
     }
 
     /** Client SDK language */

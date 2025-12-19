@@ -635,6 +635,7 @@ private constructor(
     private constructor(
         private val cua: JsonField<Boolean>,
         private val model: JsonField<ModelConfig>,
+        private val provider: JsonField<Provider>,
         private val systemPrompt: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -643,10 +644,13 @@ private constructor(
         private constructor(
             @JsonProperty("cua") @ExcludeMissing cua: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
+            @JsonProperty("provider")
+            @ExcludeMissing
+            provider: JsonField<Provider> = JsonMissing.of(),
             @JsonProperty("systemPrompt")
             @ExcludeMissing
             systemPrompt: JsonField<String> = JsonMissing.of(),
-        ) : this(cua, model, systemPrompt, mutableMapOf())
+        ) : this(cua, model, provider, systemPrompt, mutableMapOf())
 
         /**
          * Enable Computer Use Agent mode
@@ -664,6 +668,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun model(): Optional<ModelConfig> = model.getOptional("model")
+
+        /**
+         * AI provider for the agent (legacy, use model: openai/gpt-5-nano instead)
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun provider(): Optional<Provider> = provider.getOptional("provider")
 
         /**
          * Custom system prompt for the agent
@@ -686,6 +698,13 @@ private constructor(
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
+
+        /**
+         * Returns the raw JSON value of [provider].
+         *
+         * Unlike [provider], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("provider") @ExcludeMissing fun _provider(): JsonField<Provider> = provider
 
         /**
          * Returns the raw JSON value of [systemPrompt].
@@ -720,6 +739,7 @@ private constructor(
 
             private var cua: JsonField<Boolean> = JsonMissing.of()
             private var model: JsonField<ModelConfig> = JsonMissing.of()
+            private var provider: JsonField<Provider> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -727,6 +747,7 @@ private constructor(
             internal fun from(agentConfig: AgentConfig) = apply {
                 cua = agentConfig.cua
                 model = agentConfig.model
+                provider = agentConfig.provider
                 systemPrompt = agentConfig.systemPrompt
                 additionalProperties = agentConfig.additionalProperties.toMutableMap()
             }
@@ -767,6 +788,18 @@ private constructor(
             fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
                 model(ModelConfig.ofModelConfigObject(modelConfigObject))
 
+            /** AI provider for the agent (legacy, use model: openai/gpt-5-nano instead) */
+            fun provider(provider: Provider) = provider(JsonField.of(provider))
+
+            /**
+             * Sets [Builder.provider] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.provider] with a well-typed [Provider] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun provider(provider: JsonField<Provider>) = apply { this.provider = provider }
+
             /** Custom system prompt for the agent */
             fun systemPrompt(systemPrompt: String) = systemPrompt(JsonField.of(systemPrompt))
 
@@ -806,7 +839,7 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): AgentConfig =
-                AgentConfig(cua, model, systemPrompt, additionalProperties.toMutableMap())
+                AgentConfig(cua, model, provider, systemPrompt, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -818,6 +851,7 @@ private constructor(
 
             cua()
             model().ifPresent { it.validate() }
+            provider().ifPresent { it.validate() }
             systemPrompt()
             validated = true
         }
@@ -840,7 +874,151 @@ private constructor(
         internal fun validity(): Int =
             (if (cua.asKnown().isPresent) 1 else 0) +
                 (model.asKnown().getOrNull()?.validity() ?: 0) +
+                (provider.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (systemPrompt.asKnown().isPresent) 1 else 0)
+
+        /** AI provider for the agent (legacy, use model: openai/gpt-5-nano instead) */
+        class Provider @JsonCreator private constructor(private val value: JsonField<String>) :
+            Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val OPENAI = of("openai")
+
+                @JvmField val ANTHROPIC = of("anthropic")
+
+                @JvmField val GOOGLE = of("google")
+
+                @JvmField val MICROSOFT = of("microsoft")
+
+                @JvmStatic fun of(value: String) = Provider(JsonField.of(value))
+            }
+
+            /** An enum containing [Provider]'s known values. */
+            enum class Known {
+                OPENAI,
+                ANTHROPIC,
+                GOOGLE,
+                MICROSOFT,
+            }
+
+            /**
+             * An enum containing [Provider]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Provider] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                OPENAI,
+                ANTHROPIC,
+                GOOGLE,
+                MICROSOFT,
+                /**
+                 * An enum member indicating that [Provider] was instantiated with an unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    OPENAI -> Value.OPENAI
+                    ANTHROPIC -> Value.ANTHROPIC
+                    GOOGLE -> Value.GOOGLE
+                    MICROSOFT -> Value.MICROSOFT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    OPENAI -> Known.OPENAI
+                    ANTHROPIC -> Known.ANTHROPIC
+                    GOOGLE -> Known.GOOGLE
+                    MICROSOFT -> Known.MICROSOFT
+                    else -> throw StagehandInvalidDataException("Unknown Provider: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StagehandInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): Provider = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Provider && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -850,18 +1028,19 @@ private constructor(
             return other is AgentConfig &&
                 cua == other.cua &&
                 model == other.model &&
+                provider == other.provider &&
                 systemPrompt == other.systemPrompt &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(cua, model, systemPrompt, additionalProperties)
+            Objects.hash(cua, model, provider, systemPrompt, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "AgentConfig{cua=$cua, model=$model, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
+            "AgentConfig{cua=$cua, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
     }
 
     class ExecuteOptions
