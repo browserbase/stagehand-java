@@ -16,8 +16,8 @@ internal class SessionStartResponseTest {
                 .data(
                     SessionStartResponse.Data.builder()
                         .available(true)
-                        .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .build()
                 )
                 .success(true)
@@ -27,8 +27,8 @@ internal class SessionStartResponseTest {
             .isEqualTo(
                 SessionStartResponse.Data.builder()
                     .available(true)
-                    .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                     .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                     .build()
             )
         assertThat(sessionStartResponse.success()).isEqualTo(true)
@@ -42,8 +42,8 @@ internal class SessionStartResponseTest {
                 .data(
                     SessionStartResponse.Data.builder()
                         .available(true)
-                        .connectUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
                         .build()
                 )
                 .success(true)

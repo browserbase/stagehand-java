@@ -64,6 +64,7 @@ internal class ProGuardCompatibilityTest {
                 .description("Click the submit button")
                 .selector("[data-testid='submit-button']")
                 .addArgument("Hello World")
+                .backendNodeId(0.0)
                 .method("click")
                 .build()
 

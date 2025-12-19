@@ -26,6 +26,7 @@ private constructor(
     private val description: JsonField<String>,
     private val selector: JsonField<String>,
     private val arguments: JsonField<List<String>>,
+    private val backendNodeId: JsonField<Double>,
     private val method: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -39,8 +40,11 @@ private constructor(
         @JsonProperty("arguments")
         @ExcludeMissing
         arguments: JsonField<List<String>> = JsonMissing.of(),
+        @JsonProperty("backendNodeId")
+        @ExcludeMissing
+        backendNodeId: JsonField<Double> = JsonMissing.of(),
         @JsonProperty("method") @ExcludeMissing method: JsonField<String> = JsonMissing.of(),
-    ) : this(description, selector, arguments, method, mutableMapOf())
+    ) : this(description, selector, arguments, backendNodeId, method, mutableMapOf())
 
     /**
      * Human-readable description of the action
@@ -65,6 +69,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun arguments(): Optional<List<String>> = arguments.getOptional("arguments")
+
+    /**
+     * Backend node ID for the element
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun backendNodeId(): Optional<Double> = backendNodeId.getOptional("backendNodeId")
 
     /**
      * The method to execute (click, fill, etc.)
@@ -94,6 +106,15 @@ private constructor(
      * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("arguments") @ExcludeMissing fun _arguments(): JsonField<List<String>> = arguments
+
+    /**
+     * Returns the raw JSON value of [backendNodeId].
+     *
+     * Unlike [backendNodeId], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("backendNodeId")
+    @ExcludeMissing
+    fun _backendNodeId(): JsonField<Double> = backendNodeId
 
     /**
      * Returns the raw JSON value of [method].
@@ -134,6 +155,7 @@ private constructor(
         private var description: JsonField<String>? = null
         private var selector: JsonField<String>? = null
         private var arguments: JsonField<MutableList<String>>? = null
+        private var backendNodeId: JsonField<Double> = JsonMissing.of()
         private var method: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -142,6 +164,7 @@ private constructor(
             description = action.description
             selector = action.selector
             arguments = action.arguments.map { it.toMutableList() }
+            backendNodeId = action.backendNodeId
             method = action.method
             additionalProperties = action.additionalProperties.toMutableMap()
         }
@@ -195,6 +218,20 @@ private constructor(
                 }
         }
 
+        /** Backend node ID for the element */
+        fun backendNodeId(backendNodeId: Double) = backendNodeId(JsonField.of(backendNodeId))
+
+        /**
+         * Sets [Builder.backendNodeId] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.backendNodeId] with a well-typed [Double] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun backendNodeId(backendNodeId: JsonField<Double>) = apply {
+            this.backendNodeId = backendNodeId
+        }
+
         /** The method to execute (click, fill, etc.) */
         fun method(method: String) = method(JsonField.of(method))
 
@@ -243,6 +280,7 @@ private constructor(
                 checkRequired("description", description),
                 checkRequired("selector", selector),
                 (arguments ?: JsonMissing.of()).map { it.toImmutable() },
+                backendNodeId,
                 method,
                 additionalProperties.toMutableMap(),
             )
@@ -258,6 +296,7 @@ private constructor(
         description()
         selector()
         arguments()
+        backendNodeId()
         method()
         validated = true
     }
@@ -280,6 +319,7 @@ private constructor(
         (if (description.asKnown().isPresent) 1 else 0) +
             (if (selector.asKnown().isPresent) 1 else 0) +
             (arguments.asKnown().getOrNull()?.size ?: 0) +
+            (if (backendNodeId.asKnown().isPresent) 1 else 0) +
             (if (method.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
@@ -291,16 +331,17 @@ private constructor(
             description == other.description &&
             selector == other.selector &&
             arguments == other.arguments &&
+            backendNodeId == other.backendNodeId &&
             method == other.method &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(description, selector, arguments, method, additionalProperties)
+        Objects.hash(description, selector, arguments, backendNodeId, method, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Action{description=$description, selector=$selector, arguments=$arguments, method=$method, additionalProperties=$additionalProperties}"
+        "Action{description=$description, selector=$selector, arguments=$arguments, backendNodeId=$backendNodeId, method=$method, additionalProperties=$additionalProperties}"
 }

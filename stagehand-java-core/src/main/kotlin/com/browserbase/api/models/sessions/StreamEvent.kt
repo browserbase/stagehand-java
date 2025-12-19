@@ -29,7 +29,10 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Server-Sent Event emitted during streaming responses. Events are sent as `data: <JSON>\n\n`. */
+/**
+ * Server-Sent Event emitted during streaming responses. Events are sent as `data: <JSON>\n\n`. Key
+ * order: data (with status first), type, id.
+ */
 class StreamEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(

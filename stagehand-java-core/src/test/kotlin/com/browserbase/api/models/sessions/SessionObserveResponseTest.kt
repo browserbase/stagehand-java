@@ -16,10 +16,11 @@ internal class SessionObserveResponseTest {
                 .data(
                     SessionObserveResponse.Data.builder()
                         .addResult(
-                            Action.builder()
+                            SessionObserveResponse.Data.Result.builder()
                                 .description("Click the submit button")
                                 .selector("[data-testid='submit-button']")
                                 .addArgument("Hello World")
+                                .backendNodeId(0.0)
                                 .method("click")
                                 .build()
                         )
@@ -33,10 +34,11 @@ internal class SessionObserveResponseTest {
             .isEqualTo(
                 SessionObserveResponse.Data.builder()
                     .addResult(
-                        Action.builder()
+                        SessionObserveResponse.Data.Result.builder()
                             .description("Click the submit button")
                             .selector("[data-testid='submit-button']")
                             .addArgument("Hello World")
+                            .backendNodeId(0.0)
                             .method("click")
                             .build()
                     )
@@ -54,10 +56,11 @@ internal class SessionObserveResponseTest {
                 .data(
                     SessionObserveResponse.Data.builder()
                         .addResult(
-                            Action.builder()
+                            SessionObserveResponse.Data.Result.builder()
                                 .description("Click the submit button")
                                 .selector("[data-testid='submit-button']")
                                 .addArgument("Hello World")
+                                .backendNodeId(0.0)
                                 .method("click")
                                 .build()
                         )
