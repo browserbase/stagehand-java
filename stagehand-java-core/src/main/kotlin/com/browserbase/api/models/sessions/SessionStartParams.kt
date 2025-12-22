@@ -7061,7 +7061,7 @@ private constructor(
     }
 
     /** Logging verbosity level (0=quiet, 1=normal, 2=debug) */
-    class Verbose @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+    class Verbose @JsonCreator private constructor(private val value: JsonField<Double>) : Enum {
 
         /**
          * Returns this class instance's raw value.
@@ -7071,17 +7071,17 @@ private constructor(
          * older version than the API, then the API may respond with new members that the SDK is
          * unaware of.
          */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<Double> = value
 
         companion object {
 
-            @JvmField val _0 = of("0")
+            @JvmField val _0 = of(0.0)
 
-            @JvmField val _1 = of("1")
+            @JvmField val _1 = of(1.0)
 
-            @JvmField val _2 = of("2")
+            @JvmField val _2 = of(2.0)
 
-            @JvmStatic fun of(value: String) = Verbose(JsonField.of(value))
+            @JvmStatic fun of(value: Double) = Verbose(JsonField.of(value))
         }
 
         /** An enum containing [Verbose]'s known values. */
@@ -7143,16 +7143,12 @@ private constructor(
         /**
          * Returns this class instance's primitive wire representation.
          *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
          * @throws StagehandInvalidDataException if this class instance's value does not have the
          *   expected primitive type.
          */
-        fun asString(): String =
-            _value().asString().orElseThrow {
-                StagehandInvalidDataException("Value is not a String")
-            }
+        fun asDouble(): Double =
+            _value().asNumber().getOrNull()?.toDouble()
+                ?: throw StagehandInvalidDataException("Value is not a Double")
 
         private var validated: Boolean = false
 
