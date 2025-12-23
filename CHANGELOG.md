@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.3.0 (2025-12-23)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/browserbase/stagehand-java/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* [STG-1053] [server] Use fastify-zod-openapi + zod v4 for openapi generation ([9de17a2](https://github.com/browserbase/stagehand-java/commit/9de17a2552f759f6e8f37de4c3b9bb5d403edcc4))
+* **api:** manual updates ([d9e462c](https://github.com/browserbase/stagehand-java/commit/d9e462c24ed6d3e165a5873e7f70f011d768500a))
+* **api:** manual updates ([b6bdf1a](https://github.com/browserbase/stagehand-java/commit/b6bdf1a26a45556dcfee59b088983cd7e7839f43))
+* **api:** manual updates ([9b6860a](https://github.com/browserbase/stagehand-java/commit/9b6860a4f60d1a740fbb026eef291e40fb8e1845))
+* **api:** manual updates ([28f7978](https://github.com/browserbase/stagehand-java/commit/28f7978e1f040169dbb20aa68efb8e5ceb9a34d2))
+* **api:** manual updates ([07db616](https://github.com/browserbase/stagehand-java/commit/07db616b7209716efa346035d65f5d7bf616c992))
+* **api:** manual updates ([3cf2073](https://github.com/browserbase/stagehand-java/commit/3cf20739785134610aa7bcbdbce3215c3c3a9970))
+* **api:** manual updates ([adace53](https://github.com/browserbase/stagehand-java/commit/adace53fc3e4a0fb4b866172aec98519ec0f29d5))
+* **api:** manual updates ([dd65420](https://github.com/browserbase/stagehand-java/commit/dd65420fecb521fba36cbf2a623ce675973a27a0))
+* **api:** manual updates ([067c9e6](https://github.com/browserbase/stagehand-java/commit/067c9e644940fa3671665a902bc605b8e358473f))
+* **api:** manual updates ([d7aabe3](https://github.com/browserbase/stagehand-java/commit/d7aabe36f42d8344477f2f468bd3ba15837c0516))
+* **api:** manual updates ([13074f1](https://github.com/browserbase/stagehand-java/commit/13074f11bbc12057b60e89f37f850ca8f5bc7a83))
+
+
+### Documentation
+
+* add more examples ([54eba34](https://github.com/browserbase/stagehand-java/commit/54eba3455dbfc5dd61c1c3b88aedd34c56bce37a))
+
 ## 0.2.0 (2025-12-16)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/browserbase/stagehand-java/compare/v0.1.0...v0.2.0)
