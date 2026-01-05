@@ -6,6 +6,7 @@ import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -13,7 +14,6 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
-import java.util.Optional
 
 class SessionEndResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
@@ -28,10 +28,12 @@ private constructor(
     ) : this(success, mutableMapOf())
 
     /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * Indicates whether the request was successful
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun success(): Optional<Boolean> = success.getOptional("success")
+    fun success(): Boolean = success.getRequired("success")
 
     /**
      * Returns the raw JSON value of [success].
@@ -54,14 +56,21 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [SessionEndResponse]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionEndResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .success()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
     /** A builder for [SessionEndResponse]. */
     class Builder internal constructor() {
 
-        private var success: JsonField<Boolean> = JsonMissing.of()
+        private var success: JsonField<Boolean>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
@@ -70,6 +79,7 @@ private constructor(
             additionalProperties = sessionEndResponse.additionalProperties.toMutableMap()
         }
 
+        /** Indicates whether the request was successful */
         fun success(success: Boolean) = success(JsonField.of(success))
 
         /**
@@ -103,9 +113,19 @@ private constructor(
          * Returns an immutable instance of [SessionEndResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .success()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SessionEndResponse =
-            SessionEndResponse(success, additionalProperties.toMutableMap())
+            SessionEndResponse(
+                checkRequired("success", success),
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false

@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/0.2.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/0.2.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/0.3.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.3.0)
 
 <!-- x-release-please-end -->
 
@@ -13,7 +13,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 <!-- x-release-please-start-version -->
 
-The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.2.0).
+The REST API documentation can be found on [docs.stagehand.dev](https://docs.stagehand.dev). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.3.0).
 
 <!-- x-release-please-end -->
 
@@ -24,7 +24,7 @@ The REST API documentation can be found on [docs.stagehand.dev](https://docs.sta
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:0.2.0")
+implementation("com.browserbase.api:stagehand-java:0.3.0")
 ```
 
 ### Maven
@@ -33,7 +33,7 @@ implementation("com.browserbase.api:stagehand-java:0.2.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@ import com.browserbase.api.models.sessions.SessionActResponse;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 SessionActResponse response = client.sessions().act(params);
@@ -162,7 +162,7 @@ import java.util.concurrent.CompletableFuture;
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.async().sessions().act(params);
@@ -182,13 +182,105 @@ import java.util.concurrent.CompletableFuture;
 StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
-    .sessionId("00000000-your-session-id-000000000000")
+    .id("00000000-your-session-id-000000000000")
     .input("click the first link on the page")
     .build();
 CompletableFuture<SessionActResponse> response = client.sessions().act(params);
 ```
 
 The asynchronous client supports the same options as the synchronous one, except most methods return `CompletableFuture`s.
+
+## Streaming
+
+The SDK defines methods that return response "chunk" streams, where each chunk can be individually processed as soon as it arrives instead of waiting on the full response. Streaming methods generally correspond to [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) or [JSONL](https://jsonlines.org) responses.
+
+Some of these methods may have streaming and non-streaming variants, but a streaming method will always have a `Streaming` suffix in its name, even if it doesn't have a non-streaming variant.
+
+These streaming methods return [`StreamResponse`](stagehand-java-core/src/main/kotlin/com/browserbase/api/core/http/StreamResponse.kt) for synchronous clients:
+
+```java
+import com.browserbase.api.core.http.StreamResponse;
+import com.browserbase.api.models.sessions.StreamEvent;
+
+try (StreamResponse<StreamEvent> streamResponse = client.sessions().actStreaming(params)) {
+    streamResponse.stream().forEach(chunk -> {
+        System.out.println(chunk);
+    });
+    System.out.println("No more chunks!");
+}
+```
+
+Or [`AsyncStreamResponse`](stagehand-java-core/src/main/kotlin/com/browserbase/api/core/http/AsyncStreamResponse.kt) for asynchronous clients:
+
+```java
+import com.browserbase.api.core.http.AsyncStreamResponse;
+import com.browserbase.api.models.sessions.StreamEvent;
+import java.util.Optional;
+
+client.async().sessions().actStreaming(params).subscribe(chunk -> {
+    System.out.println(chunk);
+});
+
+// If you need to handle errors or completion of the stream
+client.async().sessions().actStreaming(params).subscribe(new AsyncStreamResponse.Handler<>() {
+    @Override
+    public void onNext(StreamEvent chunk) {
+        System.out.println(chunk);
+    }
+
+    @Override
+    public void onComplete(Optional<Throwable> error) {
+        if (error.isPresent()) {
+            System.out.println("Something went wrong!");
+            throw new RuntimeException(error.get());
+        } else {
+            System.out.println("No more chunks!");
+        }
+    }
+});
+
+// Or use futures
+client.async().sessions().actStreaming(params)
+    .subscribe(chunk -> {
+        System.out.println(chunk);
+    })
+    .onCompleteFuture();
+    .whenComplete((unused, error) -> {
+        if (error != null) {
+            System.out.println("Something went wrong!");
+            throw new RuntimeException(error);
+        } else {
+            System.out.println("No more chunks!");
+        }
+    });
+```
+
+Async streaming uses a dedicated per-client cached thread pool [`Executor`](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/Executor.html) to stream without blocking the current thread. This default is suitable for most purposes.
+
+To use a different `Executor`, configure the subscription using the `executor` parameter:
+
+```java
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+Executor executor = Executors.newFixedThreadPool(4);
+client.async().sessions().actStreaming(params).subscribe(
+    chunk -> System.out.println(chunk), executor
+);
+```
+
+Or configure the client globally using the `streamHandlerExecutor` method:
+
+```java
+import com.browserbase.api.client.StagehandClient;
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
+import java.util.concurrent.Executors;
+
+StagehandClient client = StagehandOkHttpClient.builder()
+    .fromEnv()
+    .streamHandlerExecutor(Executors.newFixedThreadPool(4))
+    .build();
+```
 
 ## Raw responses
 
@@ -203,8 +295,7 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .browserbaseApiKey("your Browserbase API key")
-    .browserbaseProjectId("your Browserbase Project ID")
+    .modelName("openai/gpt-5-nano")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
@@ -236,6 +327,8 @@ The SDK throws custom unchecked exception types:
   | 429    | [`RateLimitException`](stagehand-java-core/src/main/kotlin/com/browserbase/api/errors/RateLimitException.kt)                       |
   | 5xx    | [`InternalServerException`](stagehand-java-core/src/main/kotlin/com/browserbase/api/errors/InternalServerException.kt)             |
   | others | [`UnexpectedStatusCodeException`](stagehand-java-core/src/main/kotlin/com/browserbase/api/errors/UnexpectedStatusCodeException.kt) |
+
+  [`SseException`](stagehand-java-core/src/main/kotlin/com/browserbase/api/errors/SseException.kt) is thrown for errors encountered during [SSE streaming](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) after a successful initial HTTP response.
 
 - [`StagehandIoException`](stagehand-java-core/src/main/kotlin/com/browserbase/api/errors/StagehandIoException.kt): I/O networking errors.
 
@@ -505,8 +598,8 @@ import com.browserbase.api.core.JsonMissing;
 import com.browserbase.api.models.sessions.SessionActParams;
 
 SessionActParams params = SessionActParams.builder()
-    .input("click the sign in button")
-    .sessionId(JsonMissing.of())
+    .input("Click the login button")
+    .id(JsonMissing.of())
     .build();
 ```
 

@@ -4,6 +4,7 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import kotlin.jvm.optionals.getOrNull
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,18 +14,18 @@ internal class ActionTest {
     fun create() {
         val action =
             Action.builder()
-                .addArgument("string")
-                .description("description")
-                .method("method")
-                .selector("selector")
-                .backendNodeId(0L)
+                .description("Click the submit button")
+                .selector("[data-testid='submit-button']")
+                .addArgument("Hello World")
+                .backendNodeId(0.0)
+                .method("click")
                 .build()
 
-        assertThat(action.arguments()).containsExactly("string")
-        assertThat(action.description()).isEqualTo("description")
-        assertThat(action.method()).isEqualTo("method")
-        assertThat(action.selector()).isEqualTo("selector")
-        assertThat(action.backendNodeId()).contains(0L)
+        assertThat(action.description()).isEqualTo("Click the submit button")
+        assertThat(action.selector()).isEqualTo("[data-testid='submit-button']")
+        assertThat(action.arguments().getOrNull()).containsExactly("Hello World")
+        assertThat(action.backendNodeId()).contains(0.0)
+        assertThat(action.method()).contains("click")
     }
 
     @Test
@@ -32,11 +33,11 @@ internal class ActionTest {
         val jsonMapper = jsonMapper()
         val action =
             Action.builder()
-                .addArgument("string")
-                .description("description")
-                .method("method")
-                .selector("selector")
-                .backendNodeId(0L)
+                .description("Click the submit button")
+                .selector("[data-testid='submit-button']")
+                .addArgument("Hello World")
+                .backendNodeId(0.0)
+                .method("click")
                 .build()
 
         val roundtrippedAction =

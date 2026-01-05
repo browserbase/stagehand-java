@@ -13,7 +13,7 @@ internal class SessionEndResponseTest {
     fun create() {
         val sessionEndResponse = SessionEndResponse.builder().success(true).build()
 
-        assertThat(sessionEndResponse.success()).contains(true)
+        assertThat(sessionEndResponse.success()).isEqualTo(true)
     }
 
     @Test

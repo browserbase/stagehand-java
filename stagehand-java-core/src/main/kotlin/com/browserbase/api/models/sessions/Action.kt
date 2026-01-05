@@ -19,39 +19,32 @@ import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
+/** Action object returned by observe and used by act */
 class Action
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val arguments: JsonField<List<String>>,
     private val description: JsonField<String>,
-    private val method: JsonField<String>,
     private val selector: JsonField<String>,
-    private val backendNodeId: JsonField<Long>,
+    private val arguments: JsonField<List<String>>,
+    private val backendNodeId: JsonField<Double>,
+    private val method: JsonField<String>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("arguments")
-        @ExcludeMissing
-        arguments: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("description")
         @ExcludeMissing
         description: JsonField<String> = JsonMissing.of(),
-        @JsonProperty("method") @ExcludeMissing method: JsonField<String> = JsonMissing.of(),
         @JsonProperty("selector") @ExcludeMissing selector: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("arguments")
+        @ExcludeMissing
+        arguments: JsonField<List<String>> = JsonMissing.of(),
         @JsonProperty("backendNodeId")
         @ExcludeMissing
-        backendNodeId: JsonField<Long> = JsonMissing.of(),
-    ) : this(arguments, description, method, selector, backendNodeId, mutableMapOf())
-
-    /**
-     * Arguments for the method
-     *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun arguments(): List<String> = arguments.getRequired("arguments")
+        backendNodeId: JsonField<Double> = JsonMissing.of(),
+        @JsonProperty("method") @ExcludeMissing method: JsonField<String> = JsonMissing.of(),
+    ) : this(description, selector, arguments, backendNodeId, method, mutableMapOf())
 
     /**
      * Human-readable description of the action
@@ -62,15 +55,7 @@ private constructor(
     fun description(): String = description.getRequired("description")
 
     /**
-     * Method to execute (e.g., "click", "fill")
-     *
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
-     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
-     */
-    fun method(): String = method.getRequired("method")
-
-    /**
-     * CSS or XPath selector for the element
+     * CSS selector or XPath for the element
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -78,19 +63,28 @@ private constructor(
     fun selector(): String = selector.getRequired("selector")
 
     /**
-     * CDP backend node ID
+     * Arguments to pass to the method
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
-    fun backendNodeId(): Optional<Long> = backendNodeId.getOptional("backendNodeId")
+    fun arguments(): Optional<List<String>> = arguments.getOptional("arguments")
 
     /**
-     * Returns the raw JSON value of [arguments].
+     * Backend node ID for the element
      *
-     * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
      */
-    @JsonProperty("arguments") @ExcludeMissing fun _arguments(): JsonField<List<String>> = arguments
+    fun backendNodeId(): Optional<Double> = backendNodeId.getOptional("backendNodeId")
+
+    /**
+     * The method to execute (click, fill, etc.)
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun method(): Optional<String> = method.getOptional("method")
 
     /**
      * Returns the raw JSON value of [description].
@@ -100,18 +94,18 @@ private constructor(
     @JsonProperty("description") @ExcludeMissing fun _description(): JsonField<String> = description
 
     /**
-     * Returns the raw JSON value of [method].
-     *
-     * Unlike [method], this method doesn't throw if the JSON field has an unexpected type.
-     */
-    @JsonProperty("method") @ExcludeMissing fun _method(): JsonField<String> = method
-
-    /**
      * Returns the raw JSON value of [selector].
      *
      * Unlike [selector], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("selector") @ExcludeMissing fun _selector(): JsonField<String> = selector
+
+    /**
+     * Returns the raw JSON value of [arguments].
+     *
+     * Unlike [arguments], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("arguments") @ExcludeMissing fun _arguments(): JsonField<List<String>> = arguments
 
     /**
      * Returns the raw JSON value of [backendNodeId].
@@ -120,7 +114,14 @@ private constructor(
      */
     @JsonProperty("backendNodeId")
     @ExcludeMissing
-    fun _backendNodeId(): JsonField<Long> = backendNodeId
+    fun _backendNodeId(): JsonField<Double> = backendNodeId
+
+    /**
+     * Returns the raw JSON value of [method].
+     *
+     * Unlike [method], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("method") @ExcludeMissing fun _method(): JsonField<String> = method
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -141,9 +142,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .arguments()
          * .description()
-         * .method()
          * .selector()
          * ```
          */
@@ -153,24 +152,47 @@ private constructor(
     /** A builder for [Action]. */
     class Builder internal constructor() {
 
-        private var arguments: JsonField<MutableList<String>>? = null
         private var description: JsonField<String>? = null
-        private var method: JsonField<String>? = null
         private var selector: JsonField<String>? = null
-        private var backendNodeId: JsonField<Long> = JsonMissing.of()
+        private var arguments: JsonField<MutableList<String>>? = null
+        private var backendNodeId: JsonField<Double> = JsonMissing.of()
+        private var method: JsonField<String> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(action: Action) = apply {
-            arguments = action.arguments.map { it.toMutableList() }
             description = action.description
-            method = action.method
             selector = action.selector
+            arguments = action.arguments.map { it.toMutableList() }
             backendNodeId = action.backendNodeId
+            method = action.method
             additionalProperties = action.additionalProperties.toMutableMap()
         }
 
-        /** Arguments for the method */
+        /** Human-readable description of the action */
+        fun description(description: String) = description(JsonField.of(description))
+
+        /**
+         * Sets [Builder.description] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun description(description: JsonField<String>) = apply { this.description = description }
+
+        /** CSS selector or XPath for the element */
+        fun selector(selector: String) = selector(JsonField.of(selector))
+
+        /**
+         * Sets [Builder.selector] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.selector] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun selector(selector: JsonField<String>) = apply { this.selector = selector }
+
+        /** Arguments to pass to the method */
         fun arguments(arguments: List<String>) = arguments(JsonField.of(arguments))
 
         /**
@@ -196,19 +218,21 @@ private constructor(
                 }
         }
 
-        /** Human-readable description of the action */
-        fun description(description: String) = description(JsonField.of(description))
+        /** Backend node ID for the element */
+        fun backendNodeId(backendNodeId: Double) = backendNodeId(JsonField.of(backendNodeId))
 
         /**
-         * Sets [Builder.description] to an arbitrary JSON value.
+         * Sets [Builder.backendNodeId] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.description] with a well-typed [String] value instead.
+         * You should usually call [Builder.backendNodeId] with a well-typed [Double] value instead.
          * This method is primarily for setting the field to an undocumented or not yet supported
          * value.
          */
-        fun description(description: JsonField<String>) = apply { this.description = description }
+        fun backendNodeId(backendNodeId: JsonField<Double>) = apply {
+            this.backendNodeId = backendNodeId
+        }
 
-        /** Method to execute (e.g., "click", "fill") */
+        /** The method to execute (click, fill, etc.) */
         fun method(method: String) = method(JsonField.of(method))
 
         /**
@@ -218,31 +242,6 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun method(method: JsonField<String>) = apply { this.method = method }
-
-        /** CSS or XPath selector for the element */
-        fun selector(selector: String) = selector(JsonField.of(selector))
-
-        /**
-         * Sets [Builder.selector] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.selector] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun selector(selector: JsonField<String>) = apply { this.selector = selector }
-
-        /** CDP backend node ID */
-        fun backendNodeId(backendNodeId: Long) = backendNodeId(JsonField.of(backendNodeId))
-
-        /**
-         * Sets [Builder.backendNodeId] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.backendNodeId] with a well-typed [Long] value instead.
-         * This method is primarily for setting the field to an undocumented or not yet supported
-         * value.
-         */
-        fun backendNodeId(backendNodeId: JsonField<Long>) = apply {
-            this.backendNodeId = backendNodeId
-        }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -270,9 +269,7 @@ private constructor(
          *
          * The following fields are required:
          * ```java
-         * .arguments()
          * .description()
-         * .method()
          * .selector()
          * ```
          *
@@ -280,11 +277,11 @@ private constructor(
          */
         fun build(): Action =
             Action(
-                checkRequired("arguments", arguments).map { it.toImmutable() },
                 checkRequired("description", description),
-                checkRequired("method", method),
                 checkRequired("selector", selector),
+                (arguments ?: JsonMissing.of()).map { it.toImmutable() },
                 backendNodeId,
+                method,
                 additionalProperties.toMutableMap(),
             )
     }
@@ -296,11 +293,11 @@ private constructor(
             return@apply
         }
 
-        arguments()
         description()
-        method()
         selector()
+        arguments()
         backendNodeId()
+        method()
         validated = true
     }
 
@@ -319,11 +316,11 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (arguments.asKnown().getOrNull()?.size ?: 0) +
-            (if (description.asKnown().isPresent) 1 else 0) +
-            (if (method.asKnown().isPresent) 1 else 0) +
+        (if (description.asKnown().isPresent) 1 else 0) +
             (if (selector.asKnown().isPresent) 1 else 0) +
-            (if (backendNodeId.asKnown().isPresent) 1 else 0)
+            (arguments.asKnown().getOrNull()?.size ?: 0) +
+            (if (backendNodeId.asKnown().isPresent) 1 else 0) +
+            (if (method.asKnown().isPresent) 1 else 0)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -331,20 +328,20 @@ private constructor(
         }
 
         return other is Action &&
-            arguments == other.arguments &&
             description == other.description &&
-            method == other.method &&
             selector == other.selector &&
+            arguments == other.arguments &&
             backendNodeId == other.backendNodeId &&
+            method == other.method &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(arguments, description, method, selector, backendNodeId, additionalProperties)
+        Objects.hash(description, selector, arguments, backendNodeId, method, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Action{arguments=$arguments, description=$description, method=$method, selector=$selector, backendNodeId=$backendNodeId, additionalProperties=$additionalProperties}"
+        "Action{description=$description, selector=$selector, arguments=$arguments, backendNodeId=$backendNodeId, method=$method, additionalProperties=$additionalProperties}"
 }

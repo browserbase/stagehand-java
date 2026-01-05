@@ -3,6 +3,7 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.http.Headers
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -11,22 +12,18 @@ internal class SessionObserveParamsTest {
     @Test
     fun create() {
         SessionObserveParams.builder()
-            .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+            .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
+            .xSdkVersion("3.0.6")
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
             .frameId("frameId")
-            .instruction("instruction")
+            .instruction("Find all clickable navigation links")
             .options(
                 SessionObserveParams.Options.builder()
-                    .model(
-                        ModelConfig.builder()
-                            .apiKey("apiKey")
-                            .baseUrl("https://example.com")
-                            .model("model")
-                            .provider(ModelConfig.Provider.OPENAI)
-                            .build()
-                    )
-                    .selector("selector")
-                    .timeout(0L)
+                    .model("openai/gpt-5-nano")
+                    .selector("nav")
+                    .timeout(30000.0)
                     .build()
             )
             .build()
@@ -35,9 +32,9 @@ internal class SessionObserveParamsTest {
     @Test
     fun pathParams() {
         val params =
-            SessionObserveParams.builder().sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").build()
+            SessionObserveParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -46,35 +43,39 @@ internal class SessionObserveParamsTest {
     fun headers() {
         val params =
             SessionObserveParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                 .frameId("frameId")
-                .instruction("instruction")
+                .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model(
-                            ModelConfig.builder()
-                                .apiKey("apiKey")
-                                .baseUrl("https://example.com")
-                                .model("model")
-                                .provider(ModelConfig.Provider.OPENAI)
-                                .build()
-                        )
-                        .selector("selector")
-                        .timeout(0L)
+                        .model("openai/gpt-5-nano")
+                        .selector("nav")
+                        .timeout(30000.0)
                         .build()
                 )
                 .build()
 
         val headers = params._headers()
 
-        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("x-language", "typescript")
+                    .put("x-sdk-version", "3.0.6")
+                    .put("x-sent-at", "2025-01-15T10:30:00Z")
+                    .put("x-stream-response", "true")
+                    .build()
+            )
     }
 
     @Test
     fun headersWithoutOptionalFields() {
         val params =
-            SessionObserveParams.builder().sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").build()
+            SessionObserveParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         val headers = params._headers()
 
@@ -85,22 +86,18 @@ internal class SessionObserveParamsTest {
     fun body() {
         val params =
             SessionObserveParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                 .frameId("frameId")
-                .instruction("instruction")
+                .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model(
-                            ModelConfig.builder()
-                                .apiKey("apiKey")
-                                .baseUrl("https://example.com")
-                                .model("model")
-                                .provider(ModelConfig.Provider.OPENAI)
-                                .build()
-                        )
-                        .selector("selector")
-                        .timeout(0L)
+                        .model("openai/gpt-5-nano")
+                        .selector("nav")
+                        .timeout(30000.0)
                         .build()
                 )
                 .build()
@@ -108,20 +105,13 @@ internal class SessionObserveParamsTest {
         val body = params._body()
 
         assertThat(body.frameId()).contains("frameId")
-        assertThat(body.instruction()).contains("instruction")
+        assertThat(body.instruction()).contains("Find all clickable navigation links")
         assertThat(body.options())
             .contains(
                 SessionObserveParams.Options.builder()
-                    .model(
-                        ModelConfig.builder()
-                            .apiKey("apiKey")
-                            .baseUrl("https://example.com")
-                            .model("model")
-                            .provider(ModelConfig.Provider.OPENAI)
-                            .build()
-                    )
-                    .selector("selector")
-                    .timeout(0L)
+                    .model("openai/gpt-5-nano")
+                    .selector("nav")
+                    .timeout(30000.0)
                     .build()
             )
     }
@@ -129,7 +119,7 @@ internal class SessionObserveParamsTest {
     @Test
     fun bodyWithoutOptionalFields() {
         val params =
-            SessionObserveParams.builder().sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e").build()
+            SessionObserveParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         val body = params._body()
     }

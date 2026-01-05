@@ -13,13 +13,25 @@ internal class SessionStartResponseTest {
     fun create() {
         val sessionStartResponse =
             SessionStartResponse.builder()
-                .available(true)
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .data(
+                    SessionStartResponse.Data.builder()
+                        .available(true)
+                        .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
+                        .build()
+                )
+                .success(true)
                 .build()
 
-        assertThat(sessionStartResponse.available()).isEqualTo(true)
-        assertThat(sessionStartResponse.sessionId())
-            .isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(sessionStartResponse.data())
+            .isEqualTo(
+                SessionStartResponse.Data.builder()
+                    .available(true)
+                    .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                    .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
+                    .build()
+            )
+        assertThat(sessionStartResponse.success()).isEqualTo(true)
     }
 
     @Test
@@ -27,8 +39,14 @@ internal class SessionStartResponseTest {
         val jsonMapper = jsonMapper()
         val sessionStartResponse =
             SessionStartResponse.builder()
-                .available(true)
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .data(
+                    SessionStartResponse.Data.builder()
+                        .available(true)
+                        .sessionId("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                        .cdpUrl("wss://connect.browserbase.com/?signingKey=abc123")
+                        .build()
+                )
+                .success(true)
                 .build()
 
         val roundtrippedSessionStartResponse =

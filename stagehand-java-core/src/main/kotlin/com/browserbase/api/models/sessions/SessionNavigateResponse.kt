@@ -6,6 +6,7 @@ import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.core.checkRequired
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -14,62 +15,49 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
-/** Navigation response (may be null) */
 class SessionNavigateResponse
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)
 private constructor(
-    private val ok: JsonField<Boolean>,
-    private val status: JsonField<Long>,
-    private val url: JsonField<String>,
+    private val data: JsonField<Data>,
+    private val success: JsonField<Boolean>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
 
     @JsonCreator
     private constructor(
-        @JsonProperty("ok") @ExcludeMissing ok: JsonField<Boolean> = JsonMissing.of(),
-        @JsonProperty("status") @ExcludeMissing status: JsonField<Long> = JsonMissing.of(),
-        @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
-    ) : this(ok, status, url, mutableMapOf())
+        @JsonProperty("data") @ExcludeMissing data: JsonField<Data> = JsonMissing.of(),
+        @JsonProperty("success") @ExcludeMissing success: JsonField<Boolean> = JsonMissing.of(),
+    ) : this(data, success, mutableMapOf())
 
     /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    fun ok(): Optional<Boolean> = ok.getOptional("ok")
+    fun data(): Data = data.getRequired("data")
 
     /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun status(): Optional<Long> = status.getOptional("status")
-
-    /**
-     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
-     *   server responded with an unexpected value).
-     */
-    fun url(): Optional<String> = url.getOptional("url")
-
-    /**
-     * Returns the raw JSON value of [ok].
+     * Indicates whether the request was successful
      *
-     * Unlike [ok], this method doesn't throw if the JSON field has an unexpected type.
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+     *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
      */
-    @JsonProperty("ok") @ExcludeMissing fun _ok(): JsonField<Boolean> = ok
+    fun success(): Boolean = success.getRequired("success")
 
     /**
-     * Returns the raw JSON value of [status].
+     * Returns the raw JSON value of [data].
      *
-     * Unlike [status], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [data], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("status") @ExcludeMissing fun _status(): JsonField<Long> = status
+    @JsonProperty("data") @ExcludeMissing fun _data(): JsonField<Data> = data
 
     /**
-     * Returns the raw JSON value of [url].
+     * Returns the raw JSON value of [success].
      *
-     * Unlike [url], this method doesn't throw if the JSON field has an unexpected type.
+     * Unlike [success], this method doesn't throw if the JSON field has an unexpected type.
      */
-    @JsonProperty("url") @ExcludeMissing fun _url(): JsonField<String> = url
+    @JsonProperty("success") @ExcludeMissing fun _success(): JsonField<Boolean> = success
 
     @JsonAnySetter
     private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -85,55 +73,52 @@ private constructor(
 
     companion object {
 
-        /** Returns a mutable builder for constructing an instance of [SessionNavigateResponse]. */
+        /**
+         * Returns a mutable builder for constructing an instance of [SessionNavigateResponse].
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * .success()
+         * ```
+         */
         @JvmStatic fun builder() = Builder()
     }
 
     /** A builder for [SessionNavigateResponse]. */
     class Builder internal constructor() {
 
-        private var ok: JsonField<Boolean> = JsonMissing.of()
-        private var status: JsonField<Long> = JsonMissing.of()
-        private var url: JsonField<String> = JsonMissing.of()
+        private var data: JsonField<Data>? = null
+        private var success: JsonField<Boolean>? = null
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(sessionNavigateResponse: SessionNavigateResponse) = apply {
-            ok = sessionNavigateResponse.ok
-            status = sessionNavigateResponse.status
-            url = sessionNavigateResponse.url
+            data = sessionNavigateResponse.data
+            success = sessionNavigateResponse.success
             additionalProperties = sessionNavigateResponse.additionalProperties.toMutableMap()
         }
 
-        fun ok(ok: Boolean) = ok(JsonField.of(ok))
+        fun data(data: Data) = data(JsonField.of(data))
 
         /**
-         * Sets [Builder.ok] to an arbitrary JSON value.
+         * Sets [Builder.data] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.ok] with a well-typed [Boolean] value instead. This
+         * You should usually call [Builder.data] with a well-typed [Data] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun ok(ok: JsonField<Boolean>) = apply { this.ok = ok }
+        fun data(data: JsonField<Data>) = apply { this.data = data }
 
-        fun status(status: Long) = status(JsonField.of(status))
+        /** Indicates whether the request was successful */
+        fun success(success: Boolean) = success(JsonField.of(success))
 
         /**
-         * Sets [Builder.status] to an arbitrary JSON value.
+         * Sets [Builder.success] to an arbitrary JSON value.
          *
-         * You should usually call [Builder.status] with a well-typed [Long] value instead. This
+         * You should usually call [Builder.success] with a well-typed [Boolean] value instead. This
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
-        fun status(status: JsonField<Long>) = apply { this.status = status }
-
-        fun url(url: String) = url(JsonField.of(url))
-
-        /**
-         * Sets [Builder.url] to an arbitrary JSON value.
-         *
-         * You should usually call [Builder.url] with a well-typed [String] value instead. This
-         * method is primarily for setting the field to an undocumented or not yet supported value.
-         */
-        fun url(url: JsonField<String>) = apply { this.url = url }
+        fun success(success: JsonField<Boolean>) = apply { this.success = success }
 
         fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
             this.additionalProperties.clear()
@@ -158,9 +143,21 @@ private constructor(
          * Returns an immutable instance of [SessionNavigateResponse].
          *
          * Further updates to this [Builder] will not mutate the returned instance.
+         *
+         * The following fields are required:
+         * ```java
+         * .data()
+         * .success()
+         * ```
+         *
+         * @throws IllegalStateException if any required field is unset.
          */
         fun build(): SessionNavigateResponse =
-            SessionNavigateResponse(ok, status, url, additionalProperties.toMutableMap())
+            SessionNavigateResponse(
+                checkRequired("data", data),
+                checkRequired("success", success),
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -170,9 +167,8 @@ private constructor(
             return@apply
         }
 
-        ok()
-        status()
-        url()
+        data().validate()
+        success()
         validated = true
     }
 
@@ -191,9 +187,174 @@ private constructor(
      */
     @JvmSynthetic
     internal fun validity(): Int =
-        (if (ok.asKnown().isPresent) 1 else 0) +
-            (if (status.asKnown().isPresent) 1 else 0) +
-            (if (url.asKnown().isPresent) 1 else 0)
+        (data.asKnown().getOrNull()?.validity() ?: 0) + (if (success.asKnown().isPresent) 1 else 0)
+
+    class Data
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val result: JsonValue,
+        private val actionId: JsonField<String>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("result") @ExcludeMissing result: JsonValue = JsonMissing.of(),
+            @JsonProperty("actionId") @ExcludeMissing actionId: JsonField<String> = JsonMissing.of(),
+        ) : this(result, actionId, mutableMapOf())
+
+        /** Navigation response (Playwright Response object or null) */
+        @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
+
+        /**
+         * Action ID for tracking
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun actionId(): Optional<String> = actionId.getOptional("actionId")
+
+        /**
+         * Returns the raw JSON value of [actionId].
+         *
+         * Unlike [actionId], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("actionId") @ExcludeMissing fun _actionId(): JsonField<String> = actionId
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of [Data].
+             *
+             * The following fields are required:
+             * ```java
+             * .result()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Data]. */
+        class Builder internal constructor() {
+
+            private var result: JsonValue? = null
+            private var actionId: JsonField<String> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(data: Data) = apply {
+                result = data.result
+                actionId = data.actionId
+                additionalProperties = data.additionalProperties.toMutableMap()
+            }
+
+            /** Navigation response (Playwright Response object or null) */
+            fun result(result: JsonValue) = apply { this.result = result }
+
+            /** Action ID for tracking */
+            fun actionId(actionId: String) = actionId(JsonField.of(actionId))
+
+            /**
+             * Sets [Builder.actionId] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.actionId] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun actionId(actionId: JsonField<String>) = apply { this.actionId = actionId }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Data].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .result()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): Data =
+                Data(checkRequired("result", result), actionId, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Data = apply {
+            if (validated) {
+                return@apply
+            }
+
+            actionId()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = (if (actionId.asKnown().isPresent) 1 else 0)
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Data &&
+                result == other.result &&
+                actionId == other.actionId &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(result, actionId, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Data{result=$result, actionId=$actionId, additionalProperties=$additionalProperties}"
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) {
@@ -201,16 +362,15 @@ private constructor(
         }
 
         return other is SessionNavigateResponse &&
-            ok == other.ok &&
-            status == other.status &&
-            url == other.url &&
+            data == other.data &&
+            success == other.success &&
             additionalProperties == other.additionalProperties
     }
 
-    private val hashCode: Int by lazy { Objects.hash(ok, status, url, additionalProperties) }
+    private val hashCode: Int by lazy { Objects.hash(data, success, additionalProperties) }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "SessionNavigateResponse{ok=$ok, status=$status, url=$url, additionalProperties=$additionalProperties}"
+        "SessionNavigateResponse{data=$data, success=$success, additionalProperties=$additionalProperties}"
 }

@@ -4,22 +4,25 @@ package com.browserbase.api.services.async
 
 import com.browserbase.api.core.ClientOptions
 import com.browserbase.api.core.RequestOptions
+import com.browserbase.api.core.http.AsyncStreamResponse
 import com.browserbase.api.core.http.HttpResponseFor
-import com.browserbase.api.models.sessions.Action
+import com.browserbase.api.core.http.StreamResponse
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionActResponse
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionEndResponse
-import com.browserbase.api.models.sessions.SessionExecuteAgentParams
-import com.browserbase.api.models.sessions.SessionExecuteAgentResponse
+import com.browserbase.api.models.sessions.SessionExecuteParams
+import com.browserbase.api.models.sessions.SessionExecuteResponse
 import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionExtractResponse
 import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
+import com.browserbase.api.models.sessions.SessionObserveResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
-import java.util.Optional
+import com.browserbase.api.models.sessions.StreamEvent
+import com.google.errorprone.annotations.MustBeClosed
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -38,19 +41,18 @@ interface SessionServiceAsync {
     fun withOptions(modifier: Consumer<ClientOptions.Builder>): SessionServiceAsync
 
     /**
-     * Performs a browser action based on natural language instruction or a specific action object
-     * returned by observe().
+     * Executes a browser action using natural language instructions or a predefined Action object.
      */
-    fun act(sessionId: String, params: SessionActParams): CompletableFuture<SessionActResponse> =
-        act(sessionId, params, RequestOptions.none())
+    fun act(id: String, params: SessionActParams): CompletableFuture<SessionActResponse> =
+        act(id, params, RequestOptions.none())
 
     /** @see act */
     fun act(
-        sessionId: String,
+        id: String,
         params: SessionActParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionActResponse> =
-        act(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        act(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see act */
     fun act(params: SessionActParams): CompletableFuture<SessionActResponse> =
@@ -62,23 +64,46 @@ interface SessionServiceAsync {
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionActResponse>
 
-    /** Closes the browser and cleans up all resources associated with the session. */
-    fun end(sessionId: String): CompletableFuture<SessionEndResponse> =
-        end(sessionId, SessionEndParams.none())
+    /**
+     * Executes a browser action using natural language instructions or a predefined Action object.
+     */
+    fun actStreaming(id: String, params: SessionActParams): AsyncStreamResponse<StreamEvent> =
+        actStreaming(id, params, RequestOptions.none())
+
+    /** @see actStreaming */
+    fun actStreaming(
+        id: String,
+        params: SessionActParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent> =
+        actStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see actStreaming */
+    fun actStreaming(params: SessionActParams): AsyncStreamResponse<StreamEvent> =
+        actStreaming(params, RequestOptions.none())
+
+    /** @see actStreaming */
+    fun actStreaming(
+        params: SessionActParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent>
+
+    /** Terminates the browser session and releases all associated resources. */
+    fun end(id: String): CompletableFuture<SessionEndResponse> = end(id, SessionEndParams.none())
 
     /** @see end */
     fun end(
-        sessionId: String,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionEndResponse> =
-        end(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        end(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see end */
     fun end(
-        sessionId: String,
+        id: String,
         params: SessionEndParams = SessionEndParams.none(),
-    ): CompletableFuture<SessionEndResponse> = end(sessionId, params, RequestOptions.none())
+    ): CompletableFuture<SessionEndResponse> = end(id, params, RequestOptions.none())
 
     /** @see end */
     fun end(
@@ -91,58 +116,74 @@ interface SessionServiceAsync {
         end(params, RequestOptions.none())
 
     /** @see end */
-    fun end(
-        sessionId: String,
-        requestOptions: RequestOptions,
-    ): CompletableFuture<SessionEndResponse> =
-        end(sessionId, SessionEndParams.none(), requestOptions)
+    fun end(id: String, requestOptions: RequestOptions): CompletableFuture<SessionEndResponse> =
+        end(id, SessionEndParams.none(), requestOptions)
 
-    /** Runs an autonomous agent that can perform multiple actions to complete a complex task. */
-    fun executeAgent(
-        sessionId: String,
-        params: SessionExecuteAgentParams,
-    ): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(sessionId, params, RequestOptions.none())
+    /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
+    fun execute(
+        id: String,
+        params: SessionExecuteParams,
+    ): CompletableFuture<SessionExecuteResponse> = execute(id, params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        sessionId: String,
-        params: SessionExecuteAgentParams,
+    /** @see execute */
+    fun execute(
+        id: String,
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionExecuteAgentResponse> =
-        executeAgent(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+    ): CompletableFuture<SessionExecuteResponse> =
+        execute(params.toBuilder().id(id).build(), requestOptions)
 
-    /** @see executeAgent */
-    fun executeAgent(
-        params: SessionExecuteAgentParams
-    ): CompletableFuture<SessionExecuteAgentResponse> = executeAgent(params, RequestOptions.none())
+    /** @see execute */
+    fun execute(params: SessionExecuteParams): CompletableFuture<SessionExecuteResponse> =
+        execute(params, RequestOptions.none())
 
-    /** @see executeAgent */
-    fun executeAgent(
-        params: SessionExecuteAgentParams,
+    /** @see execute */
+    fun execute(
+        params: SessionExecuteParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<SessionExecuteAgentResponse>
+    ): CompletableFuture<SessionExecuteResponse>
 
-    /**
-     * Extracts data from the current page using natural language instructions and optional JSON
-     * schema for structured output.
-     */
-    fun extract(sessionId: String): CompletableFuture<SessionExtractResponse> =
-        extract(sessionId, SessionExtractParams.none())
+    /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
+    fun executeStreaming(
+        id: String,
+        params: SessionExecuteParams,
+    ): AsyncStreamResponse<StreamEvent> = executeStreaming(id, params, RequestOptions.none())
+
+    /** @see executeStreaming */
+    fun executeStreaming(
+        id: String,
+        params: SessionExecuteParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent> =
+        executeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see executeStreaming */
+    fun executeStreaming(params: SessionExecuteParams): AsyncStreamResponse<StreamEvent> =
+        executeStreaming(params, RequestOptions.none())
+
+    /** @see executeStreaming */
+    fun executeStreaming(
+        params: SessionExecuteParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent>
+
+    /** Extracts structured data from the current page using AI-powered analysis. */
+    fun extract(id: String): CompletableFuture<SessionExtractResponse> =
+        extract(id, SessionExtractParams.none())
 
     /** @see extract */
     fun extract(
-        sessionId: String,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionExtractResponse> =
-        extract(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        extract(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see extract */
     fun extract(
-        sessionId: String,
+        id: String,
         params: SessionExtractParams = SessionExtractParams.none(),
-    ): CompletableFuture<SessionExtractResponse> = extract(sessionId, params, RequestOptions.none())
+    ): CompletableFuture<SessionExtractResponse> = extract(id, params, RequestOptions.none())
 
     /** @see extract */
     fun extract(
@@ -156,79 +197,149 @@ interface SessionServiceAsync {
 
     /** @see extract */
     fun extract(
-        sessionId: String,
+        id: String,
         requestOptions: RequestOptions,
     ): CompletableFuture<SessionExtractResponse> =
-        extract(sessionId, SessionExtractParams.none(), requestOptions)
+        extract(id, SessionExtractParams.none(), requestOptions)
 
-    /** Navigates the browser to the specified URL and waits for page load. */
+    /** Extracts structured data from the current page using AI-powered analysis. */
+    fun extractStreaming(id: String): AsyncStreamResponse<StreamEvent> =
+        extractStreaming(id, SessionExtractParams.none())
+
+    /** @see extractStreaming */
+    fun extractStreaming(
+        id: String,
+        params: SessionExtractParams = SessionExtractParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent> =
+        extractStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see extractStreaming */
+    fun extractStreaming(
+        id: String,
+        params: SessionExtractParams = SessionExtractParams.none(),
+    ): AsyncStreamResponse<StreamEvent> = extractStreaming(id, params, RequestOptions.none())
+
+    /** @see extractStreaming */
+    fun extractStreaming(
+        params: SessionExtractParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent>
+
+    /** @see extractStreaming */
+    fun extractStreaming(params: SessionExtractParams): AsyncStreamResponse<StreamEvent> =
+        extractStreaming(params, RequestOptions.none())
+
+    /** @see extractStreaming */
+    fun extractStreaming(
+        id: String,
+        requestOptions: RequestOptions,
+    ): AsyncStreamResponse<StreamEvent> =
+        extractStreaming(id, SessionExtractParams.none(), requestOptions)
+
+    /** Navigates the browser to the specified URL. */
     fun navigate(
-        sessionId: String,
+        id: String,
         params: SessionNavigateParams,
-    ): CompletableFuture<Optional<SessionNavigateResponse>> =
-        navigate(sessionId, params, RequestOptions.none())
+    ): CompletableFuture<SessionNavigateResponse> = navigate(id, params, RequestOptions.none())
 
     /** @see navigate */
     fun navigate(
-        sessionId: String,
+        id: String,
         params: SessionNavigateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<Optional<SessionNavigateResponse>> =
-        navigate(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+    ): CompletableFuture<SessionNavigateResponse> =
+        navigate(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see navigate */
-    fun navigate(
-        params: SessionNavigateParams
-    ): CompletableFuture<Optional<SessionNavigateResponse>> =
+    fun navigate(params: SessionNavigateParams): CompletableFuture<SessionNavigateResponse> =
         navigate(params, RequestOptions.none())
 
     /** @see navigate */
     fun navigate(
         params: SessionNavigateParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<Optional<SessionNavigateResponse>>
+    ): CompletableFuture<SessionNavigateResponse>
 
     /**
-     * Returns a list of candidate actions that can be performed on the page, optionally filtered by
-     * natural language instruction.
+     * Identifies and returns available actions on the current page that match the given
+     * instruction.
      */
-    fun observe(sessionId: String): CompletableFuture<List<Action>> =
-        observe(sessionId, SessionObserveParams.none())
+    fun observe(id: String): CompletableFuture<SessionObserveResponse> =
+        observe(id, SessionObserveParams.none())
 
     /** @see observe */
     fun observe(
-        sessionId: String,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<List<Action>> =
-        observe(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+    ): CompletableFuture<SessionObserveResponse> =
+        observe(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see observe */
     fun observe(
-        sessionId: String,
+        id: String,
         params: SessionObserveParams = SessionObserveParams.none(),
-    ): CompletableFuture<List<Action>> = observe(sessionId, params, RequestOptions.none())
+    ): CompletableFuture<SessionObserveResponse> = observe(id, params, RequestOptions.none())
 
     /** @see observe */
     fun observe(
         params: SessionObserveParams,
         requestOptions: RequestOptions = RequestOptions.none(),
-    ): CompletableFuture<List<Action>>
+    ): CompletableFuture<SessionObserveResponse>
 
     /** @see observe */
-    fun observe(params: SessionObserveParams): CompletableFuture<List<Action>> =
+    fun observe(params: SessionObserveParams): CompletableFuture<SessionObserveResponse> =
         observe(params, RequestOptions.none())
 
     /** @see observe */
     fun observe(
-        sessionId: String,
+        id: String,
         requestOptions: RequestOptions,
-    ): CompletableFuture<List<Action>> =
-        observe(sessionId, SessionObserveParams.none(), requestOptions)
+    ): CompletableFuture<SessionObserveResponse> =
+        observe(id, SessionObserveParams.none(), requestOptions)
 
     /**
-     * Initializes a new Stagehand session with a browser instance. Returns a session ID that must
-     * be used for all subsequent requests.
+     * Identifies and returns available actions on the current page that match the given
+     * instruction.
+     */
+    fun observeStreaming(id: String): AsyncStreamResponse<StreamEvent> =
+        observeStreaming(id, SessionObserveParams.none())
+
+    /** @see observeStreaming */
+    fun observeStreaming(
+        id: String,
+        params: SessionObserveParams = SessionObserveParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent> =
+        observeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see observeStreaming */
+    fun observeStreaming(
+        id: String,
+        params: SessionObserveParams = SessionObserveParams.none(),
+    ): AsyncStreamResponse<StreamEvent> = observeStreaming(id, params, RequestOptions.none())
+
+    /** @see observeStreaming */
+    fun observeStreaming(
+        params: SessionObserveParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): AsyncStreamResponse<StreamEvent>
+
+    /** @see observeStreaming */
+    fun observeStreaming(params: SessionObserveParams): AsyncStreamResponse<StreamEvent> =
+        observeStreaming(params, RequestOptions.none())
+
+    /** @see observeStreaming */
+    fun observeStreaming(
+        id: String,
+        requestOptions: RequestOptions,
+    ): AsyncStreamResponse<StreamEvent> =
+        observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+    /**
+     * Creates a new browser session with the specified configuration. Returns a session ID used for
+     * all subsequent operations.
      */
     fun start(params: SessionStartParams): CompletableFuture<SessionStartResponse> =
         start(params, RequestOptions.none())
@@ -254,22 +365,22 @@ interface SessionServiceAsync {
         ): SessionServiceAsync.WithRawResponse
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/act`, but is otherwise the
-         * same as [SessionServiceAsync.act].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionServiceAsync.act].
          */
         fun act(
-            sessionId: String,
+            id: String,
             params: SessionActParams,
         ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
-            act(sessionId, params, RequestOptions.none())
+            act(id, params, RequestOptions.none())
 
         /** @see act */
         fun act(
-            sessionId: String,
+            id: String,
             params: SessionActParams,
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionActResponse>> =
-            act(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+            act(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see act */
         fun act(params: SessionActParams): CompletableFuture<HttpResponseFor<SessionActResponse>> =
@@ -282,26 +393,60 @@ interface SessionServiceAsync {
         ): CompletableFuture<HttpResponseFor<SessionActResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/end`, but is otherwise the
-         * same as [SessionServiceAsync.end].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/act`, but is otherwise the same
+         * as [SessionServiceAsync.actStreaming].
          */
-        fun end(sessionId: String): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
-            end(sessionId, SessionEndParams.none())
+        @MustBeClosed
+        fun actStreaming(
+            id: String,
+            params: SessionActParams,
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            actStreaming(id, params, RequestOptions.none())
+
+        /** @see actStreaming */
+        @MustBeClosed
+        fun actStreaming(
+            id: String,
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            actStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see actStreaming */
+        @MustBeClosed
+        fun actStreaming(
+            params: SessionActParams
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            actStreaming(params, RequestOptions.none())
+
+        /** @see actStreaming */
+        @MustBeClosed
+        fun actStreaming(
+            params: SessionActParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>>
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
+         * as [SessionServiceAsync.end].
+         */
+        fun end(id: String): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
+            end(id, SessionEndParams.none())
 
         /** @see end */
         fun end(
-            sessionId: String,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
-            end(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+            end(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see end */
         fun end(
-            sessionId: String,
+            id: String,
             params: SessionEndParams = SessionEndParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
-            end(sessionId, params, RequestOptions.none())
+            end(id, params, RequestOptions.none())
 
         /** @see end */
         fun end(
@@ -315,62 +460,96 @@ interface SessionServiceAsync {
 
         /** @see end */
         fun end(
-            sessionId: String,
+            id: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
-            end(sessionId, SessionEndParams.none(), requestOptions)
+            end(id, SessionEndParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/agentExecute`, but is
-         * otherwise the same as [SessionServiceAsync.executeAgent].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionServiceAsync.execute].
          */
-        fun executeAgent(
-            sessionId: String,
-            params: SessionExecuteAgentParams,
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(sessionId, params, RequestOptions.none())
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(id, params, RequestOptions.none())
 
-        /** @see executeAgent */
-        fun executeAgent(
-            sessionId: String,
-            params: SessionExecuteAgentParams,
+        /** @see execute */
+        fun execute(
+            id: String,
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(params.toBuilder().id(id).build(), requestOptions)
 
-        /** @see executeAgent */
-        fun executeAgent(
-            params: SessionExecuteAgentParams
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>> =
-            executeAgent(params, RequestOptions.none())
+        /** @see execute */
+        fun execute(
+            params: SessionExecuteParams
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>> =
+            execute(params, RequestOptions.none())
 
-        /** @see executeAgent */
-        fun executeAgent(
-            params: SessionExecuteAgentParams,
+        /** @see execute */
+        fun execute(
+            params: SessionExecuteParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionExecuteAgentResponse>>
+        ): CompletableFuture<HttpResponseFor<SessionExecuteResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/extract`, but is otherwise
-         * the same as [SessionServiceAsync.extract].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
+         * the same as [SessionServiceAsync.executeStreaming].
          */
-        fun extract(sessionId: String): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
-            extract(sessionId, SessionExtractParams.none())
+        @MustBeClosed
+        fun executeStreaming(
+            id: String,
+            params: SessionExecuteParams,
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            executeStreaming(id, params, RequestOptions.none())
+
+        /** @see executeStreaming */
+        @MustBeClosed
+        fun executeStreaming(
+            id: String,
+            params: SessionExecuteParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            executeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see executeStreaming */
+        @MustBeClosed
+        fun executeStreaming(
+            params: SessionExecuteParams
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            executeStreaming(params, RequestOptions.none())
+
+        /** @see executeStreaming */
+        @MustBeClosed
+        fun executeStreaming(
+            params: SessionExecuteParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>>
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionServiceAsync.extract].
+         */
+        fun extract(id: String): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
+            extract(id, SessionExtractParams.none())
 
         /** @see extract */
         fun extract(
-            sessionId: String,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
-            extract(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+            extract(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see extract */
         fun extract(
-            sessionId: String,
+            id: String,
             params: SessionExtractParams = SessionExtractParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
-            extract(sessionId, params, RequestOptions.none())
+            extract(id, params, RequestOptions.none())
 
         /** @see extract */
         fun extract(
@@ -386,83 +565,182 @@ interface SessionServiceAsync {
 
         /** @see extract */
         fun extract(
-            sessionId: String,
+            id: String,
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<SessionExtractResponse>> =
-            extract(sessionId, SessionExtractParams.none(), requestOptions)
+            extract(id, SessionExtractParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/navigate`, but is otherwise
-         * the same as [SessionServiceAsync.navigate].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/extract`, but is otherwise the
+         * same as [SessionServiceAsync.extractStreaming].
+         */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            extractStreaming(id, SessionExtractParams.none())
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String,
+            params: SessionExtractParams = SessionExtractParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            extractStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String,
+            params: SessionExtractParams = SessionExtractParams.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            extractStreaming(id, params, RequestOptions.none())
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            params: SessionExtractParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>>
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            params: SessionExtractParams
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            extractStreaming(params, RequestOptions.none())
+
+        /** @see extractStreaming */
+        @MustBeClosed
+        fun extractStreaming(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            extractStreaming(id, SessionExtractParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/navigate`, but is otherwise the
+         * same as [SessionServiceAsync.navigate].
          */
         fun navigate(
-            sessionId: String,
+            id: String,
             params: SessionNavigateParams,
-        ): CompletableFuture<HttpResponseFor<Optional<SessionNavigateResponse>>> =
-            navigate(sessionId, params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
+            navigate(id, params, RequestOptions.none())
 
         /** @see navigate */
         fun navigate(
-            sessionId: String,
+            id: String,
             params: SessionNavigateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<Optional<SessionNavigateResponse>>> =
-            navigate(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
+            navigate(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see navigate */
         fun navigate(
             params: SessionNavigateParams
-        ): CompletableFuture<HttpResponseFor<Optional<SessionNavigateResponse>>> =
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>> =
             navigate(params, RequestOptions.none())
 
         /** @see navigate */
         fun navigate(
             params: SessionNavigateParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<Optional<SessionNavigateResponse>>>
+        ): CompletableFuture<HttpResponseFor<SessionNavigateResponse>>
 
         /**
-         * Returns a raw HTTP response for `post /sessions/{sessionId}/observe`, but is otherwise
-         * the same as [SessionServiceAsync.observe].
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionServiceAsync.observe].
          */
-        fun observe(sessionId: String): CompletableFuture<HttpResponseFor<List<Action>>> =
-            observe(sessionId, SessionObserveParams.none())
+        fun observe(id: String): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+            observe(id, SessionObserveParams.none())
 
         /** @see observe */
         fun observe(
-            sessionId: String,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<List<Action>>> =
-            observe(params.toBuilder().sessionId(sessionId).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+            observe(params.toBuilder().id(id).build(), requestOptions)
 
         /** @see observe */
         fun observe(
-            sessionId: String,
+            id: String,
             params: SessionObserveParams = SessionObserveParams.none(),
-        ): CompletableFuture<HttpResponseFor<List<Action>>> =
-            observe(sessionId, params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+            observe(id, params, RequestOptions.none())
 
         /** @see observe */
         fun observe(
             params: SessionObserveParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<List<Action>>>
+        ): CompletableFuture<HttpResponseFor<SessionObserveResponse>>
 
         /** @see observe */
         fun observe(
             params: SessionObserveParams
-        ): CompletableFuture<HttpResponseFor<List<Action>>> = observe(params, RequestOptions.none())
+        ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+            observe(params, RequestOptions.none())
 
         /** @see observe */
         fun observe(
-            sessionId: String,
+            id: String,
             requestOptions: RequestOptions,
-        ): CompletableFuture<HttpResponseFor<List<Action>>> =
-            observe(sessionId, SessionObserveParams.none(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionObserveResponse>> =
+            observe(id, SessionObserveParams.none(), requestOptions)
 
         /**
-         * Returns a raw HTTP response for `post /sessions/start`, but is otherwise the same as
+         * Returns a raw HTTP response for `post /v1/sessions/{id}/observe`, but is otherwise the
+         * same as [SessionServiceAsync.observeStreaming].
+         */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            observeStreaming(id, SessionObserveParams.none())
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String,
+            params: SessionObserveParams = SessionObserveParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            observeStreaming(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String,
+            params: SessionObserveParams = SessionObserveParams.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            observeStreaming(id, params, RequestOptions.none())
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            params: SessionObserveParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>>
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            params: SessionObserveParams
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            observeStreaming(params, RequestOptions.none())
+
+        /** @see observeStreaming */
+        @MustBeClosed
+        fun observeStreaming(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
+            observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as
          * [SessionServiceAsync.start].
          */
         fun start(

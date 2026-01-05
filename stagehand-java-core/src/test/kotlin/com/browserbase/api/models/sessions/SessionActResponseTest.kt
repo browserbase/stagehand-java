@@ -13,30 +13,52 @@ internal class SessionActResponseTest {
     fun create() {
         val sessionActResponse =
             SessionActResponse.builder()
-                .addAction(
-                    Action.builder()
-                        .addArgument("string")
-                        .description("description")
-                        .method("method")
-                        .selector("selector")
-                        .backendNodeId(0L)
+                .data(
+                    SessionActResponse.Data.builder()
+                        .result(
+                            SessionActResponse.Data.Result.builder()
+                                .actionDescription("Clicked button with text 'Login'")
+                                .addAction(
+                                    SessionActResponse.Data.Result.Action.builder()
+                                        .description("Click the submit button")
+                                        .selector("[data-testid='submit-button']")
+                                        .addArgument("Hello World")
+                                        .backendNodeId(0.0)
+                                        .method("click")
+                                        .build()
+                                )
+                                .message("Successfully clicked the login button")
+                                .success(true)
+                                .build()
+                        )
+                        .actionId("actionId")
                         .build()
                 )
-                .message("message")
                 .success(true)
                 .build()
 
-        assertThat(sessionActResponse.actions())
-            .containsExactly(
-                Action.builder()
-                    .addArgument("string")
-                    .description("description")
-                    .method("method")
-                    .selector("selector")
-                    .backendNodeId(0L)
+        assertThat(sessionActResponse.data())
+            .isEqualTo(
+                SessionActResponse.Data.builder()
+                    .result(
+                        SessionActResponse.Data.Result.builder()
+                            .actionDescription("Clicked button with text 'Login'")
+                            .addAction(
+                                SessionActResponse.Data.Result.Action.builder()
+                                    .description("Click the submit button")
+                                    .selector("[data-testid='submit-button']")
+                                    .addArgument("Hello World")
+                                    .backendNodeId(0.0)
+                                    .method("click")
+                                    .build()
+                            )
+                            .message("Successfully clicked the login button")
+                            .success(true)
+                            .build()
+                    )
+                    .actionId("actionId")
                     .build()
             )
-        assertThat(sessionActResponse.message()).isEqualTo("message")
         assertThat(sessionActResponse.success()).isEqualTo(true)
     }
 
@@ -45,16 +67,27 @@ internal class SessionActResponseTest {
         val jsonMapper = jsonMapper()
         val sessionActResponse =
             SessionActResponse.builder()
-                .addAction(
-                    Action.builder()
-                        .addArgument("string")
-                        .description("description")
-                        .method("method")
-                        .selector("selector")
-                        .backendNodeId(0L)
+                .data(
+                    SessionActResponse.Data.builder()
+                        .result(
+                            SessionActResponse.Data.Result.builder()
+                                .actionDescription("Clicked button with text 'Login'")
+                                .addAction(
+                                    SessionActResponse.Data.Result.Action.builder()
+                                        .description("Click the submit button")
+                                        .selector("[data-testid='submit-button']")
+                                        .addArgument("Hello World")
+                                        .backendNodeId(0.0)
+                                        .method("click")
+                                        .build()
+                                )
+                                .message("Successfully clicked the login button")
+                                .success(true)
+                                .build()
+                        )
+                        .actionId("actionId")
                         .build()
                 )
-                .message("message")
                 .success(true)
                 .build()
 

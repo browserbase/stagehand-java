@@ -16,23 +16,39 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-/** Navigates the browser to the specified URL and waits for page load. */
+/** Navigates the browser to the specified URL. */
 class SessionNavigateParams
 private constructor(
-    private val sessionId: String?,
+    private val id: String?,
+    private val xLanguage: XLanguage?,
+    private val xSdkVersion: String?,
+    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    fun sessionId(): Optional<String> = Optional.ofNullable(sessionId)
+    /** Unique session identifier */
+    fun id(): Optional<String> = Optional.ofNullable(id)
 
+    /** Client SDK language */
+    fun xLanguage(): Optional<XLanguage> = Optional.ofNullable(xLanguage)
+
+    /** Version of the Stagehand SDK */
+    fun xSdkVersion(): Optional<String> = Optional.ofNullable(xSdkVersion)
+
+    /** ISO timestamp when request was sent */
+    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
+
+    /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
 
     /**
@@ -44,6 +60,8 @@ private constructor(
     fun url(): String = body.url()
 
     /**
+     * Target frame ID for the navigation
+     *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
      */
@@ -54,6 +72,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun options(): Optional<Options> = body.options()
+
+    /**
+     * Whether to stream the response via SSE
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun streamResponse(): Optional<Boolean> = body.streamResponse()
 
     /**
      * Returns the raw JSON value of [url].
@@ -75,6 +101,13 @@ private constructor(
      * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _options(): JsonField<Options> = body._options()
+
+    /**
+     * Returns the raw JSON value of [streamResponse].
+     *
+     * Unlike [streamResponse], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _streamResponse(): JsonField<Boolean> = body._streamResponse()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -102,7 +135,10 @@ private constructor(
     /** A builder for [SessionNavigateParams]. */
     class Builder internal constructor() {
 
-        private var sessionId: String? = null
+        private var id: String? = null
+        private var xLanguage: XLanguage? = null
+        private var xSdkVersion: String? = null
+        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -110,18 +146,41 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(sessionNavigateParams: SessionNavigateParams) = apply {
-            sessionId = sessionNavigateParams.sessionId
+            id = sessionNavigateParams.id
+            xLanguage = sessionNavigateParams.xLanguage
+            xSdkVersion = sessionNavigateParams.xSdkVersion
+            xSentAt = sessionNavigateParams.xSentAt
             xStreamResponse = sessionNavigateParams.xStreamResponse
             body = sessionNavigateParams.body.toBuilder()
             additionalHeaders = sessionNavigateParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionNavigateParams.additionalQueryParams.toBuilder()
         }
 
-        fun sessionId(sessionId: String?) = apply { this.sessionId = sessionId }
+        /** Unique session identifier */
+        fun id(id: String?) = apply { this.id = id }
 
-        /** Alias for calling [Builder.sessionId] with `sessionId.orElse(null)`. */
-        fun sessionId(sessionId: Optional<String>) = sessionId(sessionId.getOrNull())
+        /** Alias for calling [Builder.id] with `id.orElse(null)`. */
+        fun id(id: Optional<String>) = id(id.getOrNull())
 
+        /** Client SDK language */
+        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
+
+        /** Alias for calling [Builder.xLanguage] with `xLanguage.orElse(null)`. */
+        fun xLanguage(xLanguage: Optional<XLanguage>) = xLanguage(xLanguage.getOrNull())
+
+        /** Version of the Stagehand SDK */
+        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
+
+        /** Alias for calling [Builder.xSdkVersion] with `xSdkVersion.orElse(null)`. */
+        fun xSdkVersion(xSdkVersion: Optional<String>) = xSdkVersion(xSdkVersion.getOrNull())
+
+        /** ISO timestamp when request was sent */
+        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
+
+        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
+        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
+
+        /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
             this.xStreamResponse = xStreamResponse
         }
@@ -138,6 +197,7 @@ private constructor(
          * - [url]
          * - [frameId]
          * - [options]
+         * - [streamResponse]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -152,6 +212,7 @@ private constructor(
          */
         fun url(url: JsonField<String>) = apply { body.url(url) }
 
+        /** Target frame ID for the navigation */
         fun frameId(frameId: String) = apply { body.frameId(frameId) }
 
         /**
@@ -171,6 +232,20 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun options(options: JsonField<Options>) = apply { body.options(options) }
+
+        /** Whether to stream the response via SSE */
+        fun streamResponse(streamResponse: Boolean) = apply { body.streamResponse(streamResponse) }
+
+        /**
+         * Sets [Builder.streamResponse] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.streamResponse] with a well-typed [Boolean] value
+         * instead. This method is primarily for setting the field to an undocumented or not yet
+         * supported value.
+         */
+        fun streamResponse(streamResponse: JsonField<Boolean>) = apply {
+            body.streamResponse(streamResponse)
+        }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -303,7 +378,10 @@ private constructor(
          */
         fun build(): SessionNavigateParams =
             SessionNavigateParams(
-                sessionId,
+                id,
+                xLanguage,
+                xSdkVersion,
+                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -315,13 +393,16 @@ private constructor(
 
     fun _pathParam(index: Int): String =
         when (index) {
-            0 -> sessionId ?: ""
+            0 -> id ?: ""
             else -> ""
         }
 
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
+                xLanguage?.let { put("x-language", it.toString()) }
+                xSdkVersion?.let { put("x-sdk-version", it) }
+                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -335,6 +416,7 @@ private constructor(
         private val url: JsonField<String>,
         private val frameId: JsonField<String>,
         private val options: JsonField<Options>,
+        private val streamResponse: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -343,7 +425,10 @@ private constructor(
             @JsonProperty("url") @ExcludeMissing url: JsonField<String> = JsonMissing.of(),
             @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
             @JsonProperty("options") @ExcludeMissing options: JsonField<Options> = JsonMissing.of(),
-        ) : this(url, frameId, options, mutableMapOf())
+            @JsonProperty("streamResponse")
+            @ExcludeMissing
+            streamResponse: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(url, frameId, options, streamResponse, mutableMapOf())
 
         /**
          * URL to navigate to
@@ -354,6 +439,8 @@ private constructor(
         fun url(): String = url.getRequired("url")
 
         /**
+         * Target frame ID for the navigation
+         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -364,6 +451,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun options(): Optional<Options> = options.getOptional("options")
+
+        /**
+         * Whether to stream the response via SSE
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun streamResponse(): Optional<Boolean> = streamResponse.getOptional("streamResponse")
 
         /**
          * Returns the raw JSON value of [url].
@@ -385,6 +480,16 @@ private constructor(
          * Unlike [options], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("options") @ExcludeMissing fun _options(): JsonField<Options> = options
+
+        /**
+         * Returns the raw JSON value of [streamResponse].
+         *
+         * Unlike [streamResponse], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("streamResponse")
+        @ExcludeMissing
+        fun _streamResponse(): JsonField<Boolean> = streamResponse
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -417,6 +522,7 @@ private constructor(
             private var url: JsonField<String>? = null
             private var frameId: JsonField<String> = JsonMissing.of()
             private var options: JsonField<Options> = JsonMissing.of()
+            private var streamResponse: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -424,6 +530,7 @@ private constructor(
                 url = body.url
                 frameId = body.frameId
                 options = body.options
+                streamResponse = body.streamResponse
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -439,6 +546,7 @@ private constructor(
              */
             fun url(url: JsonField<String>) = apply { this.url = url }
 
+            /** Target frame ID for the navigation */
             fun frameId(frameId: String) = frameId(JsonField.of(frameId))
 
             /**
@@ -460,6 +568,21 @@ private constructor(
              * supported value.
              */
             fun options(options: JsonField<Options>) = apply { this.options = options }
+
+            /** Whether to stream the response via SSE */
+            fun streamResponse(streamResponse: Boolean) =
+                streamResponse(JsonField.of(streamResponse))
+
+            /**
+             * Sets [Builder.streamResponse] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.streamResponse] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun streamResponse(streamResponse: JsonField<Boolean>) = apply {
+                this.streamResponse = streamResponse
+            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -497,6 +620,7 @@ private constructor(
                     checkRequired("url", url),
                     frameId,
                     options,
+                    streamResponse,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -511,6 +635,7 @@ private constructor(
             url()
             frameId()
             options().ifPresent { it.validate() }
+            streamResponse()
             validated = true
         }
 
@@ -532,7 +657,8 @@ private constructor(
         internal fun validity(): Int =
             (if (url.asKnown().isPresent) 1 else 0) +
                 (if (frameId.asKnown().isPresent) 1 else 0) +
-                (options.asKnown().getOrNull()?.validity() ?: 0)
+                (options.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (streamResponse.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -543,32 +669,53 @@ private constructor(
                 url == other.url &&
                 frameId == other.frameId &&
                 options == other.options &&
+                streamResponse == other.streamResponse &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(url, frameId, options, additionalProperties)
+            Objects.hash(url, frameId, options, streamResponse, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{url=$url, frameId=$frameId, options=$options, additionalProperties=$additionalProperties}"
+            "Body{url=$url, frameId=$frameId, options=$options, streamResponse=$streamResponse, additionalProperties=$additionalProperties}"
     }
 
     class Options
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val referer: JsonField<String>,
+        private val timeout: JsonField<Double>,
         private val waitUntil: JsonField<WaitUntil>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
         @JsonCreator
         private constructor(
+            @JsonProperty("referer") @ExcludeMissing referer: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
             @JsonProperty("waitUntil")
             @ExcludeMissing
-            waitUntil: JsonField<WaitUntil> = JsonMissing.of()
-        ) : this(waitUntil, mutableMapOf())
+            waitUntil: JsonField<WaitUntil> = JsonMissing.of(),
+        ) : this(referer, timeout, waitUntil, mutableMapOf())
+
+        /**
+         * Referer header to send with the request
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun referer(): Optional<String> = referer.getOptional("referer")
+
+        /**
+         * Timeout in ms for the navigation
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun timeout(): Optional<Double> = timeout.getOptional("timeout")
 
         /**
          * When to consider navigation complete
@@ -577,6 +724,20 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun waitUntil(): Optional<WaitUntil> = waitUntil.getOptional("waitUntil")
+
+        /**
+         * Returns the raw JSON value of [referer].
+         *
+         * Unlike [referer], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("referer") @ExcludeMissing fun _referer(): JsonField<String> = referer
+
+        /**
+         * Returns the raw JSON value of [timeout].
+         *
+         * Unlike [timeout], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Double> = timeout
 
         /**
          * Returns the raw JSON value of [waitUntil].
@@ -608,14 +769,42 @@ private constructor(
         /** A builder for [Options]. */
         class Builder internal constructor() {
 
+            private var referer: JsonField<String> = JsonMissing.of()
+            private var timeout: JsonField<Double> = JsonMissing.of()
             private var waitUntil: JsonField<WaitUntil> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
             internal fun from(options: Options) = apply {
+                referer = options.referer
+                timeout = options.timeout
                 waitUntil = options.waitUntil
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
+
+            /** Referer header to send with the request */
+            fun referer(referer: String) = referer(JsonField.of(referer))
+
+            /**
+             * Sets [Builder.referer] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.referer] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun referer(referer: JsonField<String>) = apply { this.referer = referer }
+
+            /** Timeout in ms for the navigation */
+            fun timeout(timeout: Double) = timeout(JsonField.of(timeout))
+
+            /**
+             * Sets [Builder.timeout] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.timeout] with a well-typed [Double] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
 
             /** When to consider navigation complete */
             fun waitUntil(waitUntil: WaitUntil) = waitUntil(JsonField.of(waitUntil))
@@ -653,7 +842,8 @@ private constructor(
              *
              * Further updates to this [Builder] will not mutate the returned instance.
              */
-            fun build(): Options = Options(waitUntil, additionalProperties.toMutableMap())
+            fun build(): Options =
+                Options(referer, timeout, waitUntil, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -663,6 +853,8 @@ private constructor(
                 return@apply
             }
 
+            referer()
+            timeout()
             waitUntil().ifPresent { it.validate() }
             validated = true
         }
@@ -682,7 +874,10 @@ private constructor(
          * Used for best match union deserialization.
          */
         @JvmSynthetic
-        internal fun validity(): Int = (waitUntil.asKnown().getOrNull()?.validity() ?: 0)
+        internal fun validity(): Int =
+            (if (referer.asKnown().isPresent) 1 else 0) +
+                (if (timeout.asKnown().isPresent) 1 else 0) +
+                (waitUntil.asKnown().getOrNull()?.validity() ?: 0)
 
         /** When to consider navigation complete */
         class WaitUntil @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -828,18 +1023,159 @@ private constructor(
             }
 
             return other is Options &&
+                referer == other.referer &&
+                timeout == other.timeout &&
                 waitUntil == other.waitUntil &&
                 additionalProperties == other.additionalProperties
         }
 
-        private val hashCode: Int by lazy { Objects.hash(waitUntil, additionalProperties) }
+        private val hashCode: Int by lazy {
+            Objects.hash(referer, timeout, waitUntil, additionalProperties)
+        }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Options{waitUntil=$waitUntil, additionalProperties=$additionalProperties}"
+            "Options{referer=$referer, timeout=$timeout, waitUntil=$waitUntil, additionalProperties=$additionalProperties}"
     }
 
+    /** Client SDK language */
+    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+        /**
+         * Returns this class instance's raw value.
+         *
+         * This is usually only useful if this instance was deserialized from data that doesn't
+         * match any known member, and you want to know that value. For example, if the SDK is on an
+         * older version than the API, then the API may respond with new members that the SDK is
+         * unaware of.
+         */
+        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+        companion object {
+
+            @JvmField val TYPESCRIPT = of("typescript")
+
+            @JvmField val PYTHON = of("python")
+
+            @JvmField val PLAYGROUND = of("playground")
+
+            @JvmStatic fun of(value: String) = XLanguage(JsonField.of(value))
+        }
+
+        /** An enum containing [XLanguage]'s known values. */
+        enum class Known {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+        }
+
+        /**
+         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
+         *
+         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
+         * - It was deserialized from data that doesn't match any known member. For example, if the
+         *   SDK is on an older version than the API, then the API may respond with new members that
+         *   the SDK is unaware of.
+         * - It was constructed with an arbitrary value using the [of] method.
+         */
+        enum class Value {
+            TYPESCRIPT,
+            PYTHON,
+            PLAYGROUND,
+            /**
+             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
+             */
+            _UNKNOWN,
+        }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
+         * if the class was instantiated with an unknown value.
+         *
+         * Use the [known] method instead if you're certain the value is always known or if you want
+         * to throw for the unknown case.
+         */
+        fun value(): Value =
+            when (this) {
+                TYPESCRIPT -> Value.TYPESCRIPT
+                PYTHON -> Value.PYTHON
+                PLAYGROUND -> Value.PLAYGROUND
+                else -> Value._UNKNOWN
+            }
+
+        /**
+         * Returns an enum member corresponding to this class instance's value.
+         *
+         * Use the [value] method instead if you're uncertain the value is always known and don't
+         * want to throw for the unknown case.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value is a not a known
+         *   member.
+         */
+        fun known(): Known =
+            when (this) {
+                TYPESCRIPT -> Known.TYPESCRIPT
+                PYTHON -> Known.PYTHON
+                PLAYGROUND -> Known.PLAYGROUND
+                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
+            }
+
+        /**
+         * Returns this class instance's primitive wire representation.
+         *
+         * This differs from the [toString] method because that method is primarily for debugging
+         * and generally doesn't throw.
+         *
+         * @throws StagehandInvalidDataException if this class instance's value does not have the
+         *   expected primitive type.
+         */
+        fun asString(): String =
+            _value().asString().orElseThrow {
+                StagehandInvalidDataException("Value is not a String")
+            }
+
+        private var validated: Boolean = false
+
+        fun validate(): XLanguage = apply {
+            if (validated) {
+                return@apply
+            }
+
+            known()
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is XLanguage && value == other.value
+        }
+
+        override fun hashCode() = value.hashCode()
+
+        override fun toString() = value.toString()
+    }
+
+    /** Whether to stream the response via SSE */
     class XStreamResponse @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
 
@@ -977,7 +1313,10 @@ private constructor(
         }
 
         return other is SessionNavigateParams &&
-            sessionId == other.sessionId &&
+            id == other.id &&
+            xLanguage == other.xLanguage &&
+            xSdkVersion == other.xSdkVersion &&
+            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -985,8 +1324,17 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(sessionId, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            id,
+            xLanguage,
+            xSdkVersion,
+            xSentAt,
+            xStreamResponse,
+            body,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "SessionNavigateParams{sessionId=$sessionId, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionNavigateParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

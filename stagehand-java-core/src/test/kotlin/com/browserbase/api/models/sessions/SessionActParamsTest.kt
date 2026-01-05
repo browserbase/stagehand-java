@@ -4,6 +4,7 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
+import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -12,24 +13,20 @@ internal class SessionActParamsTest {
     @Test
     fun create() {
         SessionActParams.builder()
-            .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+            .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+            .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+            .xSdkVersion("3.0.6")
+            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
-            .input("click the sign in button")
+            .input("Click the login button")
             .frameId("frameId")
             .options(
                 SessionActParams.Options.builder()
-                    .model(
-                        ModelConfig.builder()
-                            .apiKey("apiKey")
-                            .baseUrl("https://example.com")
-                            .model("model")
-                            .provider(ModelConfig.Provider.OPENAI)
-                            .build()
-                    )
-                    .timeout(0L)
+                    .model("openai/gpt-5-nano")
+                    .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
-                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .putAdditionalProperty("username", JsonValue.from("john_doe"))
                             .build()
                     )
                     .build()
@@ -41,11 +38,11 @@ internal class SessionActParamsTest {
     fun pathParams() {
         val params =
             SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .input("click the sign in button")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .input("Click the login button")
                 .build()
 
-        assertThat(params._pathParam(0)).isEqualTo("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+        assertThat(params._pathParam(0)).isEqualTo("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
         // out-of-bound path param
         assertThat(params._pathParam(1)).isEqualTo("")
     }
@@ -54,24 +51,20 @@ internal class SessionActParamsTest {
     fun headers() {
         val params =
             SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
-                .input("click the sign in button")
+                .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model(
-                            ModelConfig.builder()
-                                .apiKey("apiKey")
-                                .baseUrl("https://example.com")
-                                .model("model")
-                                .provider(ModelConfig.Provider.OPENAI)
-                                .build()
-                        )
-                        .timeout(0L)
+                        .model("openai/gpt-5-nano")
+                        .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
-                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .putAdditionalProperty("username", JsonValue.from("john_doe"))
                                 .build()
                         )
                         .build()
@@ -80,15 +73,23 @@ internal class SessionActParamsTest {
 
         val headers = params._headers()
 
-        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
+        assertThat(headers)
+            .isEqualTo(
+                Headers.builder()
+                    .put("x-language", "typescript")
+                    .put("x-sdk-version", "3.0.6")
+                    .put("x-sent-at", "2025-01-15T10:30:00Z")
+                    .put("x-stream-response", "true")
+                    .build()
+            )
     }
 
     @Test
     fun headersWithoutOptionalFields() {
         val params =
             SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .input("click the sign in button")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .input("Click the login button")
                 .build()
 
         val headers = params._headers()
@@ -100,24 +101,20 @@ internal class SessionActParamsTest {
     fun body() {
         val params =
             SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
-                .input("click the sign in button")
+                .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model(
-                            ModelConfig.builder()
-                                .apiKey("apiKey")
-                                .baseUrl("https://example.com")
-                                .model("model")
-                                .provider(ModelConfig.Provider.OPENAI)
-                                .build()
-                        )
-                        .timeout(0L)
+                        .model("openai/gpt-5-nano")
+                        .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
-                                .putAdditionalProperty("foo", JsonValue.from("string"))
+                                .putAdditionalProperty("username", JsonValue.from("john_doe"))
                                 .build()
                         )
                         .build()
@@ -127,23 +124,16 @@ internal class SessionActParamsTest {
         val body = params._body()
 
         assertThat(body.input())
-            .isEqualTo(SessionActParams.Input.ofString("click the sign in button"))
+            .isEqualTo(SessionActParams.Input.ofString("Click the login button"))
         assertThat(body.frameId()).contains("frameId")
         assertThat(body.options())
             .contains(
                 SessionActParams.Options.builder()
-                    .model(
-                        ModelConfig.builder()
-                            .apiKey("apiKey")
-                            .baseUrl("https://example.com")
-                            .model("model")
-                            .provider(ModelConfig.Provider.OPENAI)
-                            .build()
-                    )
-                    .timeout(0L)
+                    .model("openai/gpt-5-nano")
+                    .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
-                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .putAdditionalProperty("username", JsonValue.from("john_doe"))
                             .build()
                     )
                     .build()
@@ -154,13 +144,13 @@ internal class SessionActParamsTest {
     fun bodyWithoutOptionalFields() {
         val params =
             SessionActParams.builder()
-                .sessionId("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
-                .input("click the sign in button")
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .input("Click the login button")
                 .build()
 
         val body = params._body()
 
         assertThat(body.input())
-            .isEqualTo(SessionActParams.Input.ofString("click the sign in button"))
+            .isEqualTo(SessionActParams.Input.ofString("Click the login button"))
     }
 }
