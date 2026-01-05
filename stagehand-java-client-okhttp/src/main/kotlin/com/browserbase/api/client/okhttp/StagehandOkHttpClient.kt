@@ -157,7 +157,7 @@ class StagehandOkHttpClient private constructor() {
         /**
          * The base URL to use for every request.
          *
-         * Defaults to the production environment: `https://api.stagehand.browserbase.com/v1`.
+         * Defaults to the production environment: `https://api.stagehand.browserbase.com`.
          */
         fun baseUrl(baseUrl: String?) = apply { clientOptions.baseUrl(baseUrl) }
 
