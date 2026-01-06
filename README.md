@@ -41,25 +41,181 @@ implementation("com.browserbase.api:stagehand-java:0.4.0")
 
 ## Requirements
 
-This library requires Java 8 or later.
+This library requires Java 8 through Java 21. Java 22+ is not currently supported.
+
+## Running the Example
+
+A complete working example is available at [`stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java`](stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java).
+
+To run it, first export the required environment variables, then use Gradle:
+
+```bash
+export BROWSERBASE_API_KEY="your-bb-api-key"
+export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
+export MODEL_API_KEY="sk-proj-your-llm-api-key"
+
+./gradlew :stagehand-java-example:run
+```
 
 ## Usage
+
+This example demonstrates the full Stagehand workflow: starting a session, navigating to a page, observing possible actions, acting on elements, extracting data, and running an autonomous agent.
 
 ```java
 import com.browserbase.api.client.StagehandClient;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
-import com.browserbase.api.models.sessions.SessionActParams;
-import com.browserbase.api.models.sessions.SessionActResponse;
+import com.browserbase.api.core.JsonValue;
+import com.browserbase.api.models.sessions.*;
 
-// Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
-StagehandClient client = StagehandOkHttpClient.fromEnv();
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-SessionActParams params = SessionActParams.builder()
-    .id("00000000-your-session-id-000000000000")
-    .input("click the first link on the page")
-    .build();
-SessionActResponse response = client.sessions().act(params);
+public class Main {
+    private static final String SDK_VERSION = "3.0.6";
+
+    public static void main(String[] args) {
+        // Create client using environment variables:
+        // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
+        StagehandClient client = StagehandOkHttpClient.fromEnv();
+
+        // Start a new browser session
+        SessionStartResponse startResponse = client.sessions().start(
+            SessionStartParams.builder()
+                .modelName("openai/gpt-5-nano")
+                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion(SDK_VERSION)
+                .build()
+        );
+
+        String sessionId = startResponse.data().sessionId();
+        System.out.println("Session started: " + sessionId);
+
+        try {
+            // Navigate to a webpage
+            // frameId is required - use empty string for the main frame
+            client.sessions().navigate(
+                SessionNavigateParams.builder()
+                    .id(sessionId)
+                    .url("https://news.ycombinator.com")
+                    .frameId("")
+                    .xLanguage(SessionNavigateParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+            System.out.println("Navigated to Hacker News");
+
+            // Observe to find possible actions on the page
+            SessionObserveResponse observeResponse = client.sessions().observe(
+                SessionObserveParams.builder()
+                    .id(sessionId)
+                    .instruction("find the link to view comments for the top post")
+                    .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+
+            List<SessionObserveResponse.Data.Result> results = observeResponse.data().result();
+            System.out.println("Found " + results.size() + " possible actions");
+
+            if (results.isEmpty()) {
+                System.out.println("No actions found");
+                return;
+            }
+
+            // Take the first action returned by Observe
+            // Convert the result to an Action to pass to Act
+            SessionObserveResponse.Data.Result result = results.get(0);
+            Action action = JsonValue.from(result).convert(Action.class);
+            System.out.println("Acting on: " + action.description());
+
+            // Pass the structured action to Act
+            SessionActResponse actResponse = client.sessions().act(
+                SessionActParams.builder()
+                    .id(sessionId)
+                    .input(action)
+                    .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+            System.out.println("Act completed: " + actResponse.data().result().message());
+
+            // Extract structured data from the page using a JSON schema
+            SessionExtractResponse extractResponse = client.sessions().extract(
+                SessionExtractParams.builder()
+                    .id(sessionId)
+                    .instruction("extract the text of the top comment on this page")
+                    .schema(SessionExtractParams.Schema.builder()
+                        .putAdditionalProperty("type", JsonValue.from("object"))
+                        .putAdditionalProperty("properties", JsonValue.from(Map.of(
+                            "commentText", Map.of(
+                                "type", "string",
+                                "description", "The text content of the top comment"
+                            ),
+                            "author", Map.of(
+                                "type", "string",
+                                "description", "The username of the comment author"
+                            )
+                        )))
+                        .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
+                        .build())
+                    .xLanguage(SessionExtractParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+
+            JsonValue extractedResult = extractResponse.data()._result();
+            System.out.println("Extracted data: " + extractedResult);
+
+            // Get the author from the extracted data
+            String author = extractedResult.asObject()
+                .flatMap(obj -> Optional.ofNullable(obj.get("author")))
+                .flatMap(JsonValue::asString)
+                .orElse("unknown");
+            System.out.println("Looking up profile for author: " + author);
+
+            // Run an autonomous agent to accomplish a complex task
+            SessionExecuteResponse executeResponse = client.sessions().execute(
+                SessionExecuteParams.builder()
+                    .id(sessionId)
+                    .executeOptions(SessionExecuteParams.ExecuteOptions.builder()
+                        .instruction(String.format(
+                            "Find any personal website, GitHub, or LinkedIn profile for user '%s'. " +
+                            "Click on their username to view their profile page.",
+                            author
+                        ))
+                        .maxSteps(10.0)
+                        .build())
+                    .agentConfig(SessionExecuteParams.AgentConfig.builder()
+                        .model(ModelConfig.ofModelConfigObject(
+                            ModelConfig.ModelConfigObject.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey(System.getenv("MODEL_API_KEY"))
+                                .build()
+                        ))
+                        .cua(false)
+                        .build())
+                    .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+
+            System.out.println("Agent completed: " + executeResponse.data().result().message());
+            System.out.println("Agent success: " + executeResponse.data().result().success());
+
+        } finally {
+            // End the browser session to clean up resources
+            client.sessions().end(
+                SessionEndParams.builder()
+                    .id(sessionId)
+                    .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
+                    .xSdkVersion(SDK_VERSION)
+                    .build()
+            );
+            System.out.println("Session ended");
+        }
+    }
+}
 ```
 
 ## Client configuration
@@ -125,7 +281,7 @@ To temporarily use a modified client configuration, while reusing the same conne
 import com.browserbase.api.client.StagehandClient;
 
 StagehandClient clientWithOptions = client.withOptions(optionsBuilder -> {
-    optionsBuilder.baseUrl("https://example.com");
+    optionsBuilder.modelApiKey("sk-your-llm-api-key-here");
     optionsBuilder.maxRetries(42);
 });
 ```
