@@ -120,7 +120,7 @@ internal class SessionServiceTest {
                     .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                    .body(JsonValue.from(mapOf<String, Any>()))
+                    ._forceBody(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 
