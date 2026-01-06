@@ -88,24 +88,31 @@ interface SessionService {
     ): StreamResponse<StreamEvent>
 
     /** Terminates the browser session and releases all associated resources. */
-    fun end(id: String, params: SessionEndParams): SessionEndResponse =
-        end(id, params, RequestOptions.none())
+    fun end(id: String): SessionEndResponse = end(id, SessionEndParams.none())
 
     /** @see end */
     fun end(
         id: String,
-        params: SessionEndParams,
+        params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse = end(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see end */
-    fun end(params: SessionEndParams): SessionEndResponse = end(params, RequestOptions.none())
+    fun end(id: String, params: SessionEndParams = SessionEndParams.none()): SessionEndResponse =
+        end(id, params, RequestOptions.none())
 
     /** @see end */
     fun end(
         params: SessionEndParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): SessionEndResponse
+
+    /** @see end */
+    fun end(params: SessionEndParams): SessionEndResponse = end(params, RequestOptions.none())
+
+    /** @see end */
+    fun end(id: String, requestOptions: RequestOptions): SessionEndResponse =
+        end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
     fun execute(id: String, params: SessionExecuteParams): SessionExecuteResponse =
@@ -406,17 +413,30 @@ interface SessionService {
          * as [SessionService.end].
          */
         @MustBeClosed
-        fun end(id: String, params: SessionEndParams): HttpResponseFor<SessionEndResponse> =
-            end(id, params, RequestOptions.none())
+        fun end(id: String): HttpResponseFor<SessionEndResponse> = end(id, SessionEndParams.none())
 
         /** @see end */
         @MustBeClosed
         fun end(
             id: String,
-            params: SessionEndParams,
+            params: SessionEndParams = SessionEndParams.none(),
             requestOptions: RequestOptions = RequestOptions.none(),
         ): HttpResponseFor<SessionEndResponse> =
             end(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see end */
+        @MustBeClosed
+        fun end(
+            id: String,
+            params: SessionEndParams = SessionEndParams.none(),
+        ): HttpResponseFor<SessionEndResponse> = end(id, params, RequestOptions.none())
+
+        /** @see end */
+        @MustBeClosed
+        fun end(
+            params: SessionEndParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SessionEndResponse>
 
         /** @see end */
         @MustBeClosed
@@ -425,10 +445,8 @@ interface SessionService {
 
         /** @see end */
         @MustBeClosed
-        fun end(
-            params: SessionEndParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): HttpResponseFor<SessionEndResponse>
+        fun end(id: String, requestOptions: RequestOptions): HttpResponseFor<SessionEndResponse> =
+            end(id, SessionEndParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise

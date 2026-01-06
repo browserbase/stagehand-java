@@ -18,17 +18,13 @@ internal class SessionEndParamsTest {
             .xSdkVersion("3.0.6")
             .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-            .body(JsonValue.from(mapOf<String, Any>()))
+            ._forceBody(JsonValue.from(mapOf<String, Any>()))
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params =
-            SessionEndParams.builder()
-                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .body(JsonValue.from(mapOf<String, Any>()))
-                .build()
+        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         assertThat(params._pathParam(0)).isEqualTo("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
         // out-of-bound path param
@@ -44,7 +40,7 @@ internal class SessionEndParamsTest {
                 .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                .body(JsonValue.from(mapOf<String, Any>()))
+                ._forceBody(JsonValue.from(mapOf<String, Any>()))
                 .build()
 
         val headers = params._headers()
@@ -62,11 +58,7 @@ internal class SessionEndParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params =
-            SessionEndParams.builder()
-                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .body(JsonValue.from(mapOf<String, Any>()))
-                .build()
+        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         val headers = params._headers()
 
@@ -82,24 +74,18 @@ internal class SessionEndParamsTest {
                 .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                .body(JsonValue.from(mapOf<String, Any>()))
+                ._forceBody(JsonValue.from(mapOf<String, Any>()))
                 .build()
 
         val body = params._body()
 
-        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+        assertThat(body.__forceBody()).isEqualTo(JsonValue.from(mapOf<String, Any>()))
     }
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params =
-            SessionEndParams.builder()
-                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .body(JsonValue.from(mapOf<String, Any>()))
-                .build()
+        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         val body = params._body()
-
-        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
     }
 }

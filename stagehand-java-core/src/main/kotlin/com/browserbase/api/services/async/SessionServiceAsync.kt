@@ -89,26 +89,35 @@ interface SessionServiceAsync {
     ): AsyncStreamResponse<StreamEvent>
 
     /** Terminates the browser session and releases all associated resources. */
-    fun end(id: String, params: SessionEndParams): CompletableFuture<SessionEndResponse> =
-        end(id, params, RequestOptions.none())
+    fun end(id: String): CompletableFuture<SessionEndResponse> = end(id, SessionEndParams.none())
 
     /** @see end */
     fun end(
         id: String,
-        params: SessionEndParams,
+        params: SessionEndParams = SessionEndParams.none(),
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionEndResponse> =
         end(params.toBuilder().id(id).build(), requestOptions)
 
     /** @see end */
-    fun end(params: SessionEndParams): CompletableFuture<SessionEndResponse> =
-        end(params, RequestOptions.none())
+    fun end(
+        id: String,
+        params: SessionEndParams = SessionEndParams.none(),
+    ): CompletableFuture<SessionEndResponse> = end(id, params, RequestOptions.none())
 
     /** @see end */
     fun end(
         params: SessionEndParams,
         requestOptions: RequestOptions = RequestOptions.none(),
     ): CompletableFuture<SessionEndResponse>
+
+    /** @see end */
+    fun end(params: SessionEndParams): CompletableFuture<SessionEndResponse> =
+        end(params, RequestOptions.none())
+
+    /** @see end */
+    fun end(id: String, requestOptions: RequestOptions): CompletableFuture<SessionEndResponse> =
+        end(id, SessionEndParams.none(), requestOptions)
 
     /** Runs an autonomous AI agent that can perform complex multi-step browser tasks. */
     fun execute(
@@ -421,19 +430,29 @@ interface SessionServiceAsync {
          * Returns a raw HTTP response for `post /v1/sessions/{id}/end`, but is otherwise the same
          * as [SessionServiceAsync.end].
          */
+        fun end(id: String): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
+            end(id, SessionEndParams.none())
+
+        /** @see end */
         fun end(
             id: String,
-            params: SessionEndParams,
+            params: SessionEndParams = SessionEndParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
+            end(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see end */
+        fun end(
+            id: String,
+            params: SessionEndParams = SessionEndParams.none(),
         ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
             end(id, params, RequestOptions.none())
 
         /** @see end */
         fun end(
-            id: String,
             params: SessionEndParams,
             requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
-            end(params.toBuilder().id(id).build(), requestOptions)
+        ): CompletableFuture<HttpResponseFor<SessionEndResponse>>
 
         /** @see end */
         fun end(params: SessionEndParams): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
@@ -441,9 +460,10 @@ interface SessionServiceAsync {
 
         /** @see end */
         fun end(
-            params: SessionEndParams,
-            requestOptions: RequestOptions = RequestOptions.none(),
-        ): CompletableFuture<HttpResponseFor<SessionEndResponse>>
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SessionEndResponse>> =
+            end(id, SessionEndParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/{id}/agentExecute`, but is otherwise
