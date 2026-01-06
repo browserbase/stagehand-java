@@ -2,6 +2,7 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
 import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -17,12 +18,17 @@ internal class SessionEndParamsTest {
             .xSdkVersion("3.0.6")
             .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
+            .body(JsonValue.from(mapOf<String, Any>()))
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
+        val params =
+            SessionEndParams.builder()
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .body(JsonValue.from(mapOf<String, Any>()))
+                .build()
 
         assertThat(params._pathParam(0)).isEqualTo("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
         // out-of-bound path param
@@ -38,6 +44,7 @@ internal class SessionEndParamsTest {
                 .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
+                .body(JsonValue.from(mapOf<String, Any>()))
                 .build()
 
         val headers = params._headers()
@@ -55,10 +62,44 @@ internal class SessionEndParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
+        val params =
+            SessionEndParams.builder()
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .body(JsonValue.from(mapOf<String, Any>()))
+                .build()
 
         val headers = params._headers()
 
         assertThat(headers).isEqualTo(Headers.builder().build())
+    }
+
+    @Test
+    fun body() {
+        val params =
+            SessionEndParams.builder()
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
+                .xSdkVersion("3.0.6")
+                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
+                .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
+                .body(JsonValue.from(mapOf<String, Any>()))
+                .build()
+
+        val body = params._body()
+
+        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
+    }
+
+    @Test
+    fun bodyWithoutOptionalFields() {
+        val params =
+            SessionEndParams.builder()
+                .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
+                .body(JsonValue.from(mapOf<String, Any>()))
+                .build()
+
+        val body = params._body()
+
+        assertThat(body).isEqualTo(JsonValue.from(mapOf<String, Any>()))
     }
 }
