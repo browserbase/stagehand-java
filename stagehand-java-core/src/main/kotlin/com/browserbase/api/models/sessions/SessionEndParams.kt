@@ -3,16 +3,21 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.Enum
+import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
+import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
-import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
+import com.fasterxml.jackson.annotation.JsonAnyGetter
+import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Collections
 import java.util.Objects
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
@@ -25,9 +30,9 @@ private constructor(
     private val xSdkVersion: String?,
     private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
+    private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
-    private val additionalBodyProperties: Map<String, JsonValue>,
 ) : Params {
 
     /** Unique session identifier */
@@ -45,8 +50,9 @@ private constructor(
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
 
-    /** Additional body properties to send with the request. */
-    fun _additionalBodyProperties(): Map<String, JsonValue> = additionalBodyProperties
+    fun __forceBody(): JsonValue = body.__forceBody()
+
+    fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
@@ -72,9 +78,9 @@ private constructor(
         private var xSdkVersion: String? = null
         private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
+        private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
-        private var additionalBodyProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
         @JvmSynthetic
         internal fun from(sessionEndParams: SessionEndParams) = apply {
@@ -83,9 +89,9 @@ private constructor(
             xSdkVersion = sessionEndParams.xSdkVersion
             xSentAt = sessionEndParams.xSentAt
             xStreamResponse = sessionEndParams.xStreamResponse
+            body = sessionEndParams.body.toBuilder()
             additionalHeaders = sessionEndParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionEndParams.additionalQueryParams.toBuilder()
-            additionalBodyProperties = sessionEndParams.additionalBodyProperties.toMutableMap()
         }
 
         /** Unique session identifier */
@@ -120,6 +126,36 @@ private constructor(
         /** Alias for calling [Builder.xStreamResponse] with `xStreamResponse.orElse(null)`. */
         fun xStreamResponse(xStreamResponse: Optional<XStreamResponse>) =
             xStreamResponse(xStreamResponse.getOrNull())
+
+        /**
+         * Sets the entire request body.
+         *
+         * This is generally only useful if you are already constructing the body separately.
+         * Otherwise, it's more convenient to use the top-level setters instead:
+         * - [_forceBody]
+         */
+        fun body(body: Body) = apply { this.body = body.toBuilder() }
+
+        fun _forceBody(_forceBody: JsonValue) = apply { body._forceBody(_forceBody) }
+
+        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
+            body.additionalProperties(additionalBodyProperties)
+        }
+
+        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
+            body.putAdditionalProperty(key, value)
+        }
+
+        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
+            apply {
+                body.putAllAdditionalProperties(additionalBodyProperties)
+            }
+
+        fun removeAdditionalBodyProperty(key: String) = apply { body.removeAdditionalProperty(key) }
+
+        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
+            body.removeAllAdditionalProperties(keys)
+        }
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -219,28 +255,6 @@ private constructor(
             additionalQueryParams.removeAll(keys)
         }
 
-        fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
-            this.additionalBodyProperties.clear()
-            putAllAdditionalBodyProperties(additionalBodyProperties)
-        }
-
-        fun putAdditionalBodyProperty(key: String, value: JsonValue) = apply {
-            additionalBodyProperties.put(key, value)
-        }
-
-        fun putAllAdditionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) =
-            apply {
-                this.additionalBodyProperties.putAll(additionalBodyProperties)
-            }
-
-        fun removeAdditionalBodyProperty(key: String) = apply {
-            additionalBodyProperties.remove(key)
-        }
-
-        fun removeAllAdditionalBodyProperties(keys: Set<String>) = apply {
-            keys.forEach(::removeAdditionalBodyProperty)
-        }
-
         /**
          * Returns an immutable instance of [SessionEndParams].
          *
@@ -253,14 +267,13 @@ private constructor(
                 xSdkVersion,
                 xSentAt,
                 xStreamResponse,
+                body.build(),
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
-                additionalBodyProperties.toImmutable(),
             )
     }
 
-    fun _body(): Optional<Map<String, JsonValue>> =
-        Optional.ofNullable(additionalBodyProperties.ifEmpty { null })
+    fun _body(): Body = body
 
     fun _pathParam(index: Int): String =
         when (index) {
@@ -280,6 +293,123 @@ private constructor(
             .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
+
+    class Body
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val _forceBody: JsonValue,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("_forceBody") @ExcludeMissing _forceBody: JsonValue = JsonMissing.of()
+        ) : this(_forceBody, mutableMapOf())
+
+        @JsonProperty("_forceBody") @ExcludeMissing fun __forceBody(): JsonValue = _forceBody
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Body]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Body]. */
+        class Builder internal constructor() {
+
+            private var _forceBody: JsonValue = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(body: Body) = apply {
+                _forceBody = body._forceBody
+                additionalProperties = body.additionalProperties.toMutableMap()
+            }
+
+            fun _forceBody(_forceBody: JsonValue) = apply { this._forceBody = _forceBody }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Body].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Body = Body(_forceBody, additionalProperties.toMutableMap())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Body = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic internal fun validity(): Int = 0
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Body &&
+                _forceBody == other._forceBody &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(_forceBody, additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "Body{_forceBody=$_forceBody, additionalProperties=$additionalProperties}"
+    }
 
     /** Client SDK language */
     class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -560,9 +690,9 @@ private constructor(
             xSdkVersion == other.xSdkVersion &&
             xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
+            body == other.body &&
             additionalHeaders == other.additionalHeaders &&
-            additionalQueryParams == other.additionalQueryParams &&
-            additionalBodyProperties == other.additionalBodyProperties
+            additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
@@ -572,11 +702,11 @@ private constructor(
             xSdkVersion,
             xSentAt,
             xStreamResponse,
+            body,
             additionalHeaders,
             additionalQueryParams,
-            additionalBodyProperties,
         )
 
     override fun toString() =
-        "SessionEndParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams, additionalBodyProperties=$additionalBodyProperties}"
+        "SessionEndParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
