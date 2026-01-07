@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0 (2026-01-07)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/browserbase/stagehand-java/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* /end endpoint returns empty object ([058cf38](https://github.com/browserbase/stagehand-java/commit/058cf3853b589356fe0b88d5899c98e4c44c8f19))
+* Added optional param to force empty object ([a93f1bf](https://github.com/browserbase/stagehand-java/commit/a93f1bf0324f4fa0b1bd96122d29534ff03cd9b2))
+* **client:** add `HttpRequest#url()` method ([5a4d99f](https://github.com/browserbase/stagehand-java/commit/5a4d99fd20473dcd6045fb65d8230c3894734364))
+
+
+### Documentation
+
+* add full working example script to readme and stagehand-java-example ([#5](https://github.com/browserbase/stagehand-java/issues/5)) ([7135947](https://github.com/browserbase/stagehand-java/commit/713594728cd301df4587bdb0337a5047695704eb))
+* prominently feature MCP server setup in root SDK readmes ([0c7cb02](https://github.com/browserbase/stagehand-java/commit/0c7cb0241f65547071fcd15e7bce41f621cfbfcb))
+
 ## 0.4.0 (2026-01-05)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/browserbase/stagehand-java/compare/v0.3.0...v0.4.0)
