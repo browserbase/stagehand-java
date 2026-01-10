@@ -28,8 +28,6 @@ import kotlin.jvm.optionals.getOrNull
 class SessionObserveParams
 private constructor(
     private val id: String?,
-    private val xLanguage: XLanguage?,
-    private val xSdkVersion: String?,
     private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
@@ -39,12 +37,6 @@ private constructor(
 
     /** Unique session identifier */
     fun id(): Optional<String> = Optional.ofNullable(id)
-
-    /** Client SDK language */
-    fun xLanguage(): Optional<XLanguage> = Optional.ofNullable(xLanguage)
-
-    /** Version of the Stagehand SDK */
-    fun xSdkVersion(): Optional<String> = Optional.ofNullable(xSdkVersion)
 
     /** ISO timestamp when request was sent */
     fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
@@ -117,8 +109,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xLanguage: XLanguage? = null
-        private var xSdkVersion: String? = null
         private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
@@ -128,8 +118,6 @@ private constructor(
         @JvmSynthetic
         internal fun from(sessionObserveParams: SessionObserveParams) = apply {
             id = sessionObserveParams.id
-            xLanguage = sessionObserveParams.xLanguage
-            xSdkVersion = sessionObserveParams.xSdkVersion
             xSentAt = sessionObserveParams.xSentAt
             xStreamResponse = sessionObserveParams.xStreamResponse
             body = sessionObserveParams.body.toBuilder()
@@ -142,18 +130,6 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /** Client SDK language */
-        fun xLanguage(xLanguage: XLanguage?) = apply { this.xLanguage = xLanguage }
-
-        /** Alias for calling [Builder.xLanguage] with `xLanguage.orElse(null)`. */
-        fun xLanguage(xLanguage: Optional<XLanguage>) = xLanguage(xLanguage.getOrNull())
-
-        /** Version of the Stagehand SDK */
-        fun xSdkVersion(xSdkVersion: String?) = apply { this.xSdkVersion = xSdkVersion }
-
-        /** Alias for calling [Builder.xSdkVersion] with `xSdkVersion.orElse(null)`. */
-        fun xSdkVersion(xSdkVersion: Optional<String>) = xSdkVersion(xSdkVersion.getOrNull())
 
         /** ISO timestamp when request was sent */
         fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
@@ -339,8 +315,6 @@ private constructor(
         fun build(): SessionObserveParams =
             SessionObserveParams(
                 id,
-                xLanguage,
-                xSdkVersion,
                 xSentAt,
                 xStreamResponse,
                 body.build(),
@@ -360,8 +334,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xLanguage?.let { put("x-language", it.toString()) }
-                xSdkVersion?.let { put("x-sdk-version", it) }
                 xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
@@ -816,142 +788,6 @@ private constructor(
             "Options{model=$model, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
     }
 
-    /** Client SDK language */
-    class XLanguage @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
-
-        /**
-         * Returns this class instance's raw value.
-         *
-         * This is usually only useful if this instance was deserialized from data that doesn't
-         * match any known member, and you want to know that value. For example, if the SDK is on an
-         * older version than the API, then the API may respond with new members that the SDK is
-         * unaware of.
-         */
-        @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
-
-        companion object {
-
-            @JvmField val TYPESCRIPT = of("typescript")
-
-            @JvmField val PYTHON = of("python")
-
-            @JvmField val PLAYGROUND = of("playground")
-
-            @JvmStatic fun of(value: String) = XLanguage(JsonField.of(value))
-        }
-
-        /** An enum containing [XLanguage]'s known values. */
-        enum class Known {
-            TYPESCRIPT,
-            PYTHON,
-            PLAYGROUND,
-        }
-
-        /**
-         * An enum containing [XLanguage]'s known values, as well as an [_UNKNOWN] member.
-         *
-         * An instance of [XLanguage] can contain an unknown value in a couple of cases:
-         * - It was deserialized from data that doesn't match any known member. For example, if the
-         *   SDK is on an older version than the API, then the API may respond with new members that
-         *   the SDK is unaware of.
-         * - It was constructed with an arbitrary value using the [of] method.
-         */
-        enum class Value {
-            TYPESCRIPT,
-            PYTHON,
-            PLAYGROUND,
-            /**
-             * An enum member indicating that [XLanguage] was instantiated with an unknown value.
-             */
-            _UNKNOWN,
-        }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value, or [Value._UNKNOWN]
-         * if the class was instantiated with an unknown value.
-         *
-         * Use the [known] method instead if you're certain the value is always known or if you want
-         * to throw for the unknown case.
-         */
-        fun value(): Value =
-            when (this) {
-                TYPESCRIPT -> Value.TYPESCRIPT
-                PYTHON -> Value.PYTHON
-                PLAYGROUND -> Value.PLAYGROUND
-                else -> Value._UNKNOWN
-            }
-
-        /**
-         * Returns an enum member corresponding to this class instance's value.
-         *
-         * Use the [value] method instead if you're uncertain the value is always known and don't
-         * want to throw for the unknown case.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value is a not a known
-         *   member.
-         */
-        fun known(): Known =
-            when (this) {
-                TYPESCRIPT -> Known.TYPESCRIPT
-                PYTHON -> Known.PYTHON
-                PLAYGROUND -> Known.PLAYGROUND
-                else -> throw StagehandInvalidDataException("Unknown XLanguage: $value")
-            }
-
-        /**
-         * Returns this class instance's primitive wire representation.
-         *
-         * This differs from the [toString] method because that method is primarily for debugging
-         * and generally doesn't throw.
-         *
-         * @throws StagehandInvalidDataException if this class instance's value does not have the
-         *   expected primitive type.
-         */
-        fun asString(): String =
-            _value().asString().orElseThrow {
-                StagehandInvalidDataException("Value is not a String")
-            }
-
-        private var validated: Boolean = false
-
-        fun validate(): XLanguage = apply {
-            if (validated) {
-                return@apply
-            }
-
-            known()
-            validated = true
-        }
-
-        fun isValid(): Boolean =
-            try {
-                validate()
-                true
-            } catch (e: StagehandInvalidDataException) {
-                false
-            }
-
-        /**
-         * Returns a score indicating how many valid values are contained in this object
-         * recursively.
-         *
-         * Used for best match union deserialization.
-         */
-        @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) {
-                return true
-            }
-
-            return other is XLanguage && value == other.value
-        }
-
-        override fun hashCode() = value.hashCode()
-
-        override fun toString() = value.toString()
-    }
-
     /** Whether to stream the response via SSE */
     class XStreamResponse @JsonCreator private constructor(private val value: JsonField<String>) :
         Enum {
@@ -1091,8 +927,6 @@ private constructor(
 
         return other is SessionObserveParams &&
             id == other.id &&
-            xLanguage == other.xLanguage &&
-            xSdkVersion == other.xSdkVersion &&
             xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
@@ -1101,17 +935,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(
-            id,
-            xLanguage,
-            xSdkVersion,
-            xSentAt,
-            xStreamResponse,
-            body,
-            additionalHeaders,
-            additionalQueryParams,
-        )
+        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionObserveParams{id=$id, xLanguage=$xLanguage, xSdkVersion=$xSdkVersion, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionObserveParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

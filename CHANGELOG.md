@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.6.0 (2026-01-10)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/browserbase/stagehand-java/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **client:** allow configuring dispatcher executor service ([b67a0d6](https://github.com/browserbase/stagehand-java/commit/b67a0d62fe7f2e15a73bc033c0a421daf88e6915))
+* Removed requiring x-language and x-sdk-version from openapi spec ([2690cf4](https://github.com/browserbase/stagehand-java/commit/2690cf4d826f3a356f6049a5640fd15bf6e962ee))
+
 ## 0.5.0 (2026-01-07)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/browserbase/stagehand-java/compare/v0.4.0...v0.5.0)
