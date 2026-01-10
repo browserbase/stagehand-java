@@ -13,8 +13,6 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-            .xSdkVersion("3.0.6")
             .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
             .modelName("gpt-4o")
@@ -161,8 +159,6 @@ internal class SessionStartParamsTest {
     fun headers() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("gpt-4o")
@@ -313,8 +309,6 @@ internal class SessionStartParamsTest {
         assertThat(headers)
             .isEqualTo(
                 Headers.builder()
-                    .put("x-language", "typescript")
-                    .put("x-sdk-version", "3.0.6")
                     .put("x-sent-at", "2025-01-15T10:30:00Z")
                     .put("x-stream-response", "true")
                     .build()
@@ -334,8 +328,6 @@ internal class SessionStartParamsTest {
     fun body() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("gpt-4o")
