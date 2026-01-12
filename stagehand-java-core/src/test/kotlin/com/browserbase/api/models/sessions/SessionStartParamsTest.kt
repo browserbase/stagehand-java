@@ -15,7 +15,7 @@ internal class SessionStartParamsTest {
         SessionStartParams.builder()
             .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-            .modelName("gpt-4o")
+            .modelName("openai/gpt-4o")
             .actTimeoutMs(0.0)
             .browser(
                 SessionStartParams.Browser.builder()
@@ -161,7 +161,7 @@ internal class SessionStartParamsTest {
             SessionStartParams.builder()
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -317,7 +317,7 @@ internal class SessionStartParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
 
         val headers = params._headers()
 
@@ -330,7 +330,7 @@ internal class SessionStartParamsTest {
             SessionStartParams.builder()
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -475,7 +475,7 @@ internal class SessionStartParamsTest {
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
         assertThat(body.actTimeoutMs()).contains(0.0)
         assertThat(body.browser())
             .contains(
@@ -618,10 +618,10 @@ internal class SessionStartParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
     }
 }

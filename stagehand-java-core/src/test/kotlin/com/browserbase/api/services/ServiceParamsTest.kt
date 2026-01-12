@@ -50,7 +50,7 @@ internal class ServiceParamsTest {
             SessionStartParams.builder()
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
