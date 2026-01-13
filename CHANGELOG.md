@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.6.0 (2026-01-13)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/browserbase/stagehand-java/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **client:** allow configuring dispatcher executor service ([b67a0d6](https://github.com/browserbase/stagehand-java/commit/b67a0d62fe7f2e15a73bc033c0a421daf88e6915))
+* Removed requiring x-language and x-sdk-version from openapi spec ([2690cf4](https://github.com/browserbase/stagehand-java/commit/2690cf4d826f3a356f6049a5640fd15bf6e962ee))
+* Using provider/model syntax in modelName examples within openapi spec ([aae3dce](https://github.com/browserbase/stagehand-java/commit/aae3dce8134b19c0bb3d24b848a73dd8a523aaec))
+
+
+### Chores
+
+* **internal:** support uploading Maven repo artifacts to stainless package server ([32f6329](https://github.com/browserbase/stagehand-java/commit/32f6329e2ec8e30b1b2f701e9ed2f039e934fd49))
+
 ## 0.5.0 (2026-01-07)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/browserbase/stagehand-java/compare/v0.4.0...v0.5.0)
