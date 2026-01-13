@@ -48,11 +48,9 @@ internal class ServiceParamsTest {
 
         sessionService.start(
             SessionStartParams.builder()
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -216,8 +214,6 @@ internal class ServiceParamsTest {
         sessionService.act(
             SessionActParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
