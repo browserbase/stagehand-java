@@ -29,10 +29,6 @@ import java.util.Optional;
  * - MODEL_API_KEY: Your OpenAI API key
  */
 public class Main {
-
-    // SDK version for API compatibility (matches TypeScript SDK v3)
-    private static final String SDK_VERSION = "3.0.6";
-
     public static void main(String[] args) {
         // Create client using environment variables
         // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
@@ -42,8 +38,6 @@ public class Main {
         SessionStartResponse startResponse = client.sessions().start(
             SessionStartParams.builder()
                 .modelName("openai/gpt-5-nano")
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion(SDK_VERSION)
                 .build()
         );
 
@@ -56,9 +50,6 @@ public class Main {
                 SessionNavigateParams.builder()
                     .id(sessionId)
                     .url("https://news.ycombinator.com")
-                    .frameId("")  // Empty string for main frame
-                    .xLanguage(SessionNavigateParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build()
             );
             System.out.println("Navigated to Hacker News");
@@ -68,8 +59,6 @@ public class Main {
                 SessionObserveParams.builder()
                     .id(sessionId)
                     .instruction("find the link to view comments for the top post")
-                    .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build()
             );
 
@@ -91,8 +80,6 @@ public class Main {
                 SessionActParams.builder()
                     .id(sessionId)
                     .input(action)
-                    .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build()
             );
             System.out.println("Act completed: " + actResponse.data().result().message());
@@ -117,8 +104,6 @@ public class Main {
                         )))
                         .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
                         .build())
-                    .xLanguage(SessionExtractParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build()
             );
 
@@ -161,8 +146,6 @@ public class Main {
                         ))
                         .cua(false)
                         .build())
-                    .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build(),
                 RequestOptions.builder().timeout(Duration.ofMinutes(5)).build()
             );
@@ -176,8 +159,6 @@ public class Main {
             client.sessions().end(
                 SessionEndParams.builder()
                     .id(sessionId)
-                    .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion(SDK_VERSION)
                     .build()
             );
             System.out.println("Session ended");
