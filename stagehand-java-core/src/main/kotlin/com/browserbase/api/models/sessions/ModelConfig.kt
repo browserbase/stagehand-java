@@ -243,7 +243,7 @@ private constructor(
         ) : this(modelName, apiKey, baseUrl, provider, mutableMapOf())
 
         /**
-         * Model name string without prefix (e.g., 'gpt-5-nano', 'claude-4.5-opus')
+         * Model name string (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus')
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -345,7 +345,7 @@ private constructor(
                 additionalProperties = modelConfigObject.additionalProperties.toMutableMap()
             }
 
-            /** Model name string without prefix (e.g., 'gpt-5-nano', 'claude-4.5-opus') */
+            /** Model name string (e.g., 'openai/gpt-5-nano', 'anthropic/claude-4.5-opus') */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**

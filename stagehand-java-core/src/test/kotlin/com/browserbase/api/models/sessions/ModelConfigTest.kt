@@ -40,7 +40,7 @@ internal class ModelConfigTest {
     fun ofModelConfigObject() {
         val modelConfigObject =
             ModelConfig.ModelConfigObject.builder()
-                .modelName("gpt-5-nano")
+                .modelName("openai/gpt-5-nano")
                 .apiKey("sk-some-openai-api-key")
                 .baseUrl("https://api.openai.com/v1")
                 .provider(ModelConfig.ModelConfigObject.Provider.OPENAI)
@@ -58,7 +58,7 @@ internal class ModelConfigTest {
         val modelConfig =
             ModelConfig.ofModelConfigObject(
                 ModelConfig.ModelConfigObject.builder()
-                    .modelName("gpt-5-nano")
+                    .modelName("openai/gpt-5-nano")
                     .apiKey("sk-some-openai-api-key")
                     .baseUrl("https://api.openai.com/v1")
                     .provider(ModelConfig.ModelConfigObject.Provider.OPENAI)

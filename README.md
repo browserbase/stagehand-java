@@ -70,7 +70,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:0.5.0")
+implementation("com.browserbase.api:stagehand-java:0.6.0")
 ```
 
 ### Maven
@@ -79,7 +79,7 @@ implementation("com.browserbase.api:stagehand-java:0.5.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 

@@ -36,8 +36,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.act(
                 SessionActParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                     .input("Click the login button")
@@ -76,8 +74,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.actStreaming(
                 SessionActParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionActParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                     .input("Click the login button")
@@ -117,8 +113,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.end(
                 SessionEndParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionEndParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
                     ._forceBody(JsonValue.from(mapOf<String, Any>()))
@@ -145,8 +139,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.execute(
                 SessionExecuteParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                     .agentConfig(
@@ -190,8 +182,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.executeStreaming(
                 SessionExecuteParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionExecuteParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                     .agentConfig(
@@ -236,8 +226,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.extract(
                 SessionExtractParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionExtractParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                     .frameId("frameId")
@@ -277,8 +265,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.extractStreaming(
                 SessionExtractParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionExtractParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                     .frameId("frameId")
@@ -319,8 +305,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.navigate(
                 SessionNavigateParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionNavigateParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionNavigateParams.XStreamResponse.TRUE)
                     .url("https://example.com")
@@ -356,8 +340,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.observe(
                 SessionObserveParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                     .frameId("frameId")
@@ -392,8 +374,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.observeStreaming(
                 SessionObserveParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xLanguage(SessionObserveParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                     .frameId("frameId")
@@ -428,11 +408,9 @@ internal class SessionServiceAsyncTest {
         val responseFuture =
             sessionServiceAsync.start(
                 SessionStartParams.builder()
-                    .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                    .xSdkVersion("3.0.6")
                     .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                    .modelName("gpt-4o")
+                    .modelName("openai/gpt-4o")
                     .actTimeoutMs(0.0)
                     .browser(
                         SessionStartParams.Browser.builder()
