@@ -75,11 +75,9 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -254,11 +252,9 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -433,11 +429,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -612,11 +606,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -791,11 +783,9 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -970,11 +960,9 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1149,11 +1137,9 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1328,11 +1314,9 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1507,11 +1491,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1686,11 +1668,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1865,11 +1845,9 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2044,11 +2022,9 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2223,11 +2199,9 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2402,11 +2376,9 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2581,11 +2553,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2760,11 +2730,9 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2937,11 +2905,9 @@ internal class ErrorHandlingTest {
             assertThrows<StagehandException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                        .xSdkVersion("3.0.6")
                         .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("gpt-4o")
+                        .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()

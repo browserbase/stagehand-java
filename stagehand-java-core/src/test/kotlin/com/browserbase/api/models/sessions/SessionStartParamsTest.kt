@@ -13,11 +13,9 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-            .xSdkVersion("3.0.6")
             .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-            .modelName("gpt-4o")
+            .modelName("openai/gpt-4o")
             .actTimeoutMs(0.0)
             .browser(
                 SessionStartParams.Browser.builder()
@@ -161,11 +159,9 @@ internal class SessionStartParamsTest {
     fun headers() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -313,8 +309,6 @@ internal class SessionStartParamsTest {
         assertThat(headers)
             .isEqualTo(
                 Headers.builder()
-                    .put("x-language", "typescript")
-                    .put("x-sdk-version", "3.0.6")
                     .put("x-sent-at", "2025-01-15T10:30:00Z")
                     .put("x-stream-response", "true")
                     .build()
@@ -323,7 +317,7 @@ internal class SessionStartParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
 
         val headers = params._headers()
 
@@ -334,11 +328,9 @@ internal class SessionStartParamsTest {
     fun body() {
         val params =
             SessionStartParams.builder()
-                .xLanguage(SessionStartParams.XLanguage.TYPESCRIPT)
-                .xSdkVersion("3.0.6")
                 .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("gpt-4o")
+                .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -483,7 +475,7 @@ internal class SessionStartParamsTest {
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
         assertThat(body.actTimeoutMs()).contains(0.0)
         assertThat(body.browser())
             .contains(
@@ -626,10 +618,10 @@ internal class SessionStartParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
     }
 }
