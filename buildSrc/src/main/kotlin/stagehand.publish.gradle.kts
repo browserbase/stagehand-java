@@ -15,7 +15,7 @@ configure<PublishingExtension> {
 
                 licenses {
                     license {
-                        name.set("Apache-2.0")
+                        name.set("MIT")
                     }
                 }
 
