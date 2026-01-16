@@ -9,6 +9,8 @@
 
 The Stagehand Java SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
 
+The Stagehand Java SDK is similar to the Stagehand Kotlin SDK but with minor differences that make it more ergonomic for use in Java, such as `Optional` instead of nullable values, `Stream` instead of `Sequence`, and `CompletableFuture` instead of suspend functions.
+
 It is generated with [Stainless](https://www.stainless.com/).
 
 ## MCP Server
