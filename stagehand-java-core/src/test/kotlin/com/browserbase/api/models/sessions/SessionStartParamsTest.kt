@@ -4,7 +4,6 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +12,6 @@ internal class SessionStartParamsTest {
     @Test
     fun create() {
         SessionStartParams.builder()
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
             .modelName("openai/gpt-4o")
             .actTimeoutMs(0.0)
@@ -159,7 +157,6 @@ internal class SessionStartParamsTest {
     fun headers() {
         val params =
             SessionStartParams.builder()
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
@@ -306,13 +303,7 @@ internal class SessionStartParamsTest {
 
         val headers = params._headers()
 
-        assertThat(headers)
-            .isEqualTo(
-                Headers.builder()
-                    .put("x-sent-at", "2025-01-15T10:30:00Z")
-                    .put("x-stream-response", "true")
-                    .build()
-            )
+        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
     }
 
     @Test
@@ -328,7 +319,6 @@ internal class SessionStartParamsTest {
     fun body() {
         val params =
             SessionStartParams.builder()
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)

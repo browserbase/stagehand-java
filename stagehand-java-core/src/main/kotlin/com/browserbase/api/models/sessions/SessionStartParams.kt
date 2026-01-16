@@ -29,8 +29,6 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -42,21 +40,18 @@ import kotlin.jvm.optionals.getOrNull
  */
 class SessionStartParams
 private constructor(
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
-
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
 
     /**
-     * Model name to use for AI operations
+     * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
+     * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -246,7 +241,6 @@ private constructor(
     /** A builder for [SessionStartParams]. */
     class Builder internal constructor() {
 
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -254,18 +248,11 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(sessionStartParams: SessionStartParams) = apply {
-            xSentAt = sessionStartParams.xSentAt
             xStreamResponse = sessionStartParams.xStreamResponse
             body = sessionStartParams.body.toBuilder()
             additionalHeaders = sessionStartParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionStartParams.additionalQueryParams.toBuilder()
         }
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
-
-        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -290,7 +277,10 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /** Model name to use for AI operations */
+        /**
+         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
+         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
+         */
         fun modelName(modelName: String) = apply { body.modelName(modelName) }
 
         /**
@@ -570,7 +560,6 @@ private constructor(
          */
         fun build(): SessionStartParams =
             SessionStartParams(
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -583,7 +572,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -656,7 +644,8 @@ private constructor(
         )
 
         /**
-         * Model name to use for AI operations
+         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
+         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -898,7 +887,11 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /** Model name to use for AI operations */
+            /**
+             * Model name to use for AI operations. Always use the format 'provider/model-name'
+             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+             * 'google/gemini-2.0-flash')
+             */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**
@@ -7300,7 +7293,6 @@ private constructor(
         }
 
         return other is SessionStartParams &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -7308,8 +7300,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionStartParams{xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionStartParams{xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

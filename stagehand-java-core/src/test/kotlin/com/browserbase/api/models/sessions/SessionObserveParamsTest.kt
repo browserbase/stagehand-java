@@ -3,7 +3,6 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.http.Headers
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,13 +12,12 @@ internal class SessionObserveParamsTest {
     fun create() {
         SessionObserveParams.builder()
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
             .frameId("frameId")
             .instruction("Find all clickable navigation links")
             .options(
                 SessionObserveParams.Options.builder()
-                    .model("openai/gpt-5-nano")
+                    .model("openai/gpt-4o")
                     .selector("nav")
                     .timeout(30000.0)
                     .build()
@@ -42,13 +40,12 @@ internal class SessionObserveParamsTest {
         val params =
             SessionObserveParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                 .frameId("frameId")
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model("openai/gpt-4o")
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -57,13 +54,7 @@ internal class SessionObserveParamsTest {
 
         val headers = params._headers()
 
-        assertThat(headers)
-            .isEqualTo(
-                Headers.builder()
-                    .put("x-sent-at", "2025-01-15T10:30:00Z")
-                    .put("x-stream-response", "true")
-                    .build()
-            )
+        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
     }
 
     @Test
@@ -81,13 +72,12 @@ internal class SessionObserveParamsTest {
         val params =
             SessionObserveParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                 .frameId("frameId")
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model("openai/gpt-4o")
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -101,7 +91,7 @@ internal class SessionObserveParamsTest {
         assertThat(body.options())
             .contains(
                 SessionObserveParams.Options.builder()
-                    .model("openai/gpt-5-nano")
+                    .model("openai/gpt-4o")
                     .selector("nav")
                     .timeout(30000.0)
                     .build()

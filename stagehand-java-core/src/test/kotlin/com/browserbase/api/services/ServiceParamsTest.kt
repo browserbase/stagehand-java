@@ -17,7 +17,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
-import java.time.OffsetDateTime
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -48,7 +47,6 @@ internal class ServiceParamsTest {
 
         sessionService.start(
             SessionStartParams.builder()
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
@@ -214,13 +212,12 @@ internal class ServiceParamsTest {
         sessionService.act(
             SessionActParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model("openai/gpt-4o")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
