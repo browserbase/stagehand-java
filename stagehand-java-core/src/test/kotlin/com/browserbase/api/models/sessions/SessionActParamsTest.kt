@@ -4,7 +4,6 @@ package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -14,13 +13,12 @@ internal class SessionActParamsTest {
     fun create() {
         SessionActParams.builder()
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
             .input("Click the login button")
             .frameId("frameId")
             .options(
                 SessionActParams.Options.builder()
-                    .model("openai/gpt-5-nano")
+                    .model("openai/gpt-4o")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
@@ -50,13 +48,12 @@ internal class SessionActParamsTest {
         val params =
             SessionActParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model("openai/gpt-4o")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -69,13 +66,7 @@ internal class SessionActParamsTest {
 
         val headers = params._headers()
 
-        assertThat(headers)
-            .isEqualTo(
-                Headers.builder()
-                    .put("x-sent-at", "2025-01-15T10:30:00Z")
-                    .put("x-stream-response", "true")
-                    .build()
-            )
+        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
     }
 
     @Test
@@ -96,13 +87,12 @@ internal class SessionActParamsTest {
         val params =
             SessionActParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model("openai/gpt-4o")
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -121,7 +111,7 @@ internal class SessionActParamsTest {
         assertThat(body.options())
             .contains(
                 SessionActParams.Options.builder()
-                    .model("openai/gpt-5-nano")
+                    .model("openai/gpt-4o")
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()

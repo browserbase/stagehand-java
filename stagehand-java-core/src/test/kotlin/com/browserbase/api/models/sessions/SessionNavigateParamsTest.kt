@@ -3,7 +3,6 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.http.Headers
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,7 +12,6 @@ internal class SessionNavigateParamsTest {
     fun create() {
         SessionNavigateParams.builder()
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionNavigateParams.XStreamResponse.TRUE)
             .url("https://example.com")
             .frameId("frameId")
@@ -46,7 +44,6 @@ internal class SessionNavigateParamsTest {
         val params =
             SessionNavigateParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionNavigateParams.XStreamResponse.TRUE)
                 .url("https://example.com")
                 .frameId("frameId")
@@ -62,13 +59,7 @@ internal class SessionNavigateParamsTest {
 
         val headers = params._headers()
 
-        assertThat(headers)
-            .isEqualTo(
-                Headers.builder()
-                    .put("x-sent-at", "2025-01-15T10:30:00Z")
-                    .put("x-stream-response", "true")
-                    .build()
-            )
+        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
     }
 
     @Test
@@ -89,7 +80,6 @@ internal class SessionNavigateParamsTest {
         val params =
             SessionNavigateParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionNavigateParams.XStreamResponse.TRUE)
                 .url("https://example.com")
                 .frameId("frameId")

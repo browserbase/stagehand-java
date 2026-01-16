@@ -77,7 +77,7 @@ internal class ProGuardCompatibilityTest {
     @Test
     fun modelConfigRoundtrip() {
         val jsonMapper = jsonMapper()
-        val modelConfig = ModelConfig.ofName("openai/gpt-5-nano")
+        val modelConfig = ModelConfig.ofString("openai/gpt-4o")
 
         val roundtrippedModelConfig =
             jsonMapper.readValue(

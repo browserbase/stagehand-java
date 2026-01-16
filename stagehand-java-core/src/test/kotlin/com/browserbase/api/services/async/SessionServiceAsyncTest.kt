@@ -12,7 +12,6 @@ import com.browserbase.api.models.sessions.SessionExtractParams
 import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionStartParams
-import java.time.OffsetDateTime
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -36,13 +35,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.act(
                 SessionActParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                     .input("Click the login button")
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -74,13 +72,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.actStreaming(
                 SessionActParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                     .input("Click the login button")
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -113,7 +110,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.end(
                 SessionEndParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
                     ._forceBody(JsonValue.from(mapOf<String, Any>()))
                     .build()
@@ -139,12 +135,11 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.execute(
                 SessionExecuteParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -182,12 +177,11 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.executeStreaming(
                 SessionExecuteParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -226,13 +220,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.extract(
                 SessionExtractParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                     .frameId("frameId")
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -265,13 +258,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.extractStreaming(
                 SessionExtractParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                     .frameId("frameId")
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -305,7 +297,6 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.navigate(
                 SessionNavigateParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionNavigateParams.XStreamResponse.TRUE)
                     .url("https://example.com")
                     .frameId("frameId")
@@ -340,13 +331,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.observe(
                 SessionObserveParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                     .frameId("frameId")
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -374,13 +364,12 @@ internal class SessionServiceAsyncTest {
             sessionServiceAsync.observeStreaming(
                 SessionObserveParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                     .frameId("frameId")
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-5-nano")
+                            .model("openai/gpt-4o")
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -408,7 +397,6 @@ internal class SessionServiceAsyncTest {
         val responseFuture =
             sessionServiceAsync.start(
                 SessionStartParams.builder()
-                    .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                     .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                     .modelName("openai/gpt-4o")
                     .actTimeoutMs(0.0)

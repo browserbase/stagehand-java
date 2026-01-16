@@ -16,8 +16,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -27,7 +25,6 @@ import kotlin.jvm.optionals.getOrNull
 class SessionExecuteParams
 private constructor(
     private val id: String?,
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -36,9 +33,6 @@ private constructor(
 
     /** Unique session identifier */
     fun id(): Optional<String> = Optional.ofNullable(id)
-
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
@@ -112,7 +106,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -121,7 +114,6 @@ private constructor(
         @JvmSynthetic
         internal fun from(sessionExecuteParams: SessionExecuteParams) = apply {
             id = sessionExecuteParams.id
-            xSentAt = sessionExecuteParams.xSentAt
             xStreamResponse = sessionExecuteParams.xStreamResponse
             body = sessionExecuteParams.body.toBuilder()
             additionalHeaders = sessionExecuteParams.additionalHeaders.toBuilder()
@@ -133,12 +125,6 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
-
-        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -189,7 +175,10 @@ private constructor(
         }
 
         /** Target frame ID for the agent */
-        fun frameId(frameId: String) = apply { body.frameId(frameId) }
+        fun frameId(frameId: String?) = apply { body.frameId(frameId) }
+
+        /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+        fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
         /**
          * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -332,7 +321,6 @@ private constructor(
         fun build(): SessionExecuteParams =
             SessionExecuteParams(
                 id,
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -351,7 +339,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -495,7 +482,10 @@ private constructor(
             }
 
             /** Target frame ID for the agent */
-            fun frameId(frameId: String) = frameId(JsonField.of(frameId))
+            fun frameId(frameId: String?) = frameId(JsonField.ofNullable(frameId))
+
+            /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+            fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
             /**
              * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -633,8 +623,9 @@ private constructor(
         fun cua(): Optional<Boolean> = cua.getOptional("cua")
 
         /**
-         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-         * 'anthropic/claude-4.5-opus')
+         * Model name string with provider prefix. Always use the format 'provider/model-name'
+         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+         * 'google/gemini-2.0-flash')
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -737,8 +728,9 @@ private constructor(
             fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
 
             /**
-             * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-             * 'anthropic/claude-4.5-opus')
+             * Model name string with provider prefix. Always use the format 'provider/model-name'
+             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
+             * 'google/gemini-2.0-flash')
              */
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
@@ -751,8 +743,8 @@ private constructor(
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
 
-            /** Alias for calling [model] with `ModelConfig.ofName(name)`. */
-            fun model(name: String) = model(ModelConfig.ofName(name))
+            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
+            fun model(string: String) = model(ModelConfig.ofString(string))
 
             /**
              * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
@@ -1401,7 +1393,6 @@ private constructor(
 
         return other is SessionExecuteParams &&
             id == other.id &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -1409,8 +1400,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(id, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionExecuteParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionExecuteParams{id=$id, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

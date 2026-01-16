@@ -13,19 +13,19 @@ import org.junit.jupiter.api.assertThrows
 internal class ModelConfigTest {
 
     @Test
-    fun ofName() {
-        val name = "openai/gpt-5-nano"
+    fun ofString() {
+        val string = "openai/gpt-4o"
 
-        val modelConfig = ModelConfig.ofName(name)
+        val modelConfig = ModelConfig.ofString(string)
 
-        assertThat(modelConfig.name()).contains(name)
+        assertThat(modelConfig.string()).contains(string)
         assertThat(modelConfig.modelConfigObject()).isEmpty
     }
 
     @Test
-    fun ofNameRoundtrip() {
+    fun ofStringRoundtrip() {
         val jsonMapper = jsonMapper()
-        val modelConfig = ModelConfig.ofName("openai/gpt-5-nano")
+        val modelConfig = ModelConfig.ofString("openai/gpt-4o")
 
         val roundtrippedModelConfig =
             jsonMapper.readValue(
@@ -40,7 +40,7 @@ internal class ModelConfigTest {
     fun ofModelConfigObject() {
         val modelConfigObject =
             ModelConfig.ModelConfigObject.builder()
-                .modelName("openai/gpt-5-nano")
+                .modelName("openai/gpt-4o")
                 .apiKey("sk-some-openai-api-key")
                 .baseUrl("https://api.openai.com/v1")
                 .provider(ModelConfig.ModelConfigObject.Provider.OPENAI)
@@ -48,7 +48,7 @@ internal class ModelConfigTest {
 
         val modelConfig = ModelConfig.ofModelConfigObject(modelConfigObject)
 
-        assertThat(modelConfig.name()).isEmpty
+        assertThat(modelConfig.string()).isEmpty
         assertThat(modelConfig.modelConfigObject()).contains(modelConfigObject)
     }
 
@@ -58,7 +58,7 @@ internal class ModelConfigTest {
         val modelConfig =
             ModelConfig.ofModelConfigObject(
                 ModelConfig.ModelConfigObject.builder()
-                    .modelName("openai/gpt-5-nano")
+                    .modelName("openai/gpt-4o")
                     .apiKey("sk-some-openai-api-key")
                     .baseUrl("https://api.openai.com/v1")
                     .provider(ModelConfig.ModelConfigObject.Provider.OPENAI)
