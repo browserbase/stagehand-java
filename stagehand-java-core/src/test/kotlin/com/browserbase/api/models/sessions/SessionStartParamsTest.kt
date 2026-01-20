@@ -34,6 +34,7 @@ internal class SessionStartParamsTest {
                             .ignoreDefaultArgs(true)
                             .ignoreHttpsErrors(true)
                             .locale("locale")
+                            .port(0.0)
                             .preserveUserDataDir(true)
                             .proxy(
                                 SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -179,6 +180,7 @@ internal class SessionStartParamsTest {
                                 .ignoreDefaultArgs(true)
                                 .ignoreHttpsErrors(true)
                                 .locale("locale")
+                                .port(0.0)
                                 .preserveUserDataDir(true)
                                 .proxy(
                                     SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -341,6 +343,7 @@ internal class SessionStartParamsTest {
                                 .ignoreDefaultArgs(true)
                                 .ignoreHttpsErrors(true)
                                 .locale("locale")
+                                .port(0.0)
                                 .preserveUserDataDir(true)
                                 .proxy(
                                     SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -487,6 +490,7 @@ internal class SessionStartParamsTest {
                             .ignoreDefaultArgs(true)
                             .ignoreHttpsErrors(true)
                             .locale("locale")
+                            .port(0.0)
                             .preserveUserDataDir(true)
                             .proxy(
                                 SessionStartParams.Browser.LaunchOptions.Proxy.builder()
