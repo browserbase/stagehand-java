@@ -789,10 +789,6 @@ private constructor(
         ) : this(model, timeout, variables, mutableMapOf())
 
         /**
-         * Model name string with provider prefix. Always use the format 'provider/model-name'
-         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-         * 'google/gemini-2.0-flash')
-         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -871,11 +867,6 @@ private constructor(
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
 
-            /**
-             * Model name string with provider prefix. Always use the format 'provider/model-name'
-             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-             * 'google/gemini-2.0-flash')
-             */
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
             /**
@@ -886,15 +877,6 @@ private constructor(
              * supported value.
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
-
-            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
-            fun model(string: String) = model(ModelConfig.ofString(string))
-
-            /**
-             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
-             */
-            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
-                model(ModelConfig.ofModelConfigObject(modelConfigObject))
 
             /** Timeout in ms for the action */
             fun timeout(timeout: Double) = timeout(JsonField.of(timeout))

@@ -623,10 +623,6 @@ private constructor(
         fun cua(): Optional<Boolean> = cua.getOptional("cua")
 
         /**
-         * Model name string with provider prefix. Always use the format 'provider/model-name'
-         * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-         * 'google/gemini-2.0-flash')
-         *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
@@ -727,11 +723,6 @@ private constructor(
              */
             fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
 
-            /**
-             * Model name string with provider prefix. Always use the format 'provider/model-name'
-             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-             * 'google/gemini-2.0-flash')
-             */
             fun model(model: ModelConfig) = model(JsonField.of(model))
 
             /**
@@ -742,15 +733,6 @@ private constructor(
              * supported value.
              */
             fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
-
-            /** Alias for calling [model] with `ModelConfig.ofString(string)`. */
-            fun model(string: String) = model(ModelConfig.ofString(string))
-
-            /**
-             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
-             */
-            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
-                model(ModelConfig.ofModelConfigObject(modelConfigObject))
 
             /** AI provider for the agent (legacy, use model: openai/gpt-5-nano instead) */
             fun provider(provider: Provider) = provider(JsonField.of(provider))

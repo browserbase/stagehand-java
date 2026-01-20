@@ -5,7 +5,6 @@ package com.browserbase.api.proguard
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.jsonMapper
 import com.browserbase.api.models.sessions.Action
-import com.browserbase.api.models.sessions.ModelConfig
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -72,19 +71,5 @@ internal class ProGuardCompatibilityTest {
             jsonMapper.readValue(jsonMapper.writeValueAsString(action), jacksonTypeRef<Action>())
 
         assertThat(roundtrippedAction).isEqualTo(action)
-    }
-
-    @Test
-    fun modelConfigRoundtrip() {
-        val jsonMapper = jsonMapper()
-        val modelConfig = ModelConfig.ofString("openai/gpt-4o")
-
-        val roundtrippedModelConfig =
-            jsonMapper.readValue(
-                jsonMapper.writeValueAsString(modelConfig),
-                jacksonTypeRef<ModelConfig>(),
-            )
-
-        assertThat(roundtrippedModelConfig).isEqualTo(modelConfig)
     }
 }

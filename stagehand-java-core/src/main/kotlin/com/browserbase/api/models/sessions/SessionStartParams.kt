@@ -50,8 +50,7 @@ private constructor(
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
 
     /**
-     * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-     * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
+     * Model name to use for AI operations
      *
      * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
      *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -277,10 +276,7 @@ private constructor(
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
-        /**
-         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
-         */
+        /** Model name to use for AI operations */
         fun modelName(modelName: String) = apply { body.modelName(modelName) }
 
         /**
@@ -644,8 +640,7 @@ private constructor(
         )
 
         /**
-         * Model name to use for AI operations. Always use the format 'provider/model-name' (e.g.,
-         * 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929', 'google/gemini-2.0-flash')
+         * Model name to use for AI operations
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
          *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
@@ -887,11 +882,7 @@ private constructor(
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
-            /**
-             * Model name to use for AI operations. Always use the format 'provider/model-name'
-             * (e.g., 'openai/gpt-4o', 'anthropic/claude-sonnet-4-5-20250929',
-             * 'google/gemini-2.0-flash')
-             */
+            /** Model name to use for AI operations */
             fun modelName(modelName: String) = modelName(JsonField.of(modelName))
 
             /**
