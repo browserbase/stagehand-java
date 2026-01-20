@@ -125,7 +125,6 @@ internal class SessionServiceTest {
                 SessionEndParams.builder()
                     .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
                     .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
-                    ._forceBody(JsonValue.from(mapOf<String, Any>()))
                     .build()
             )
 
@@ -470,6 +469,7 @@ internal class SessionServiceTest {
                                     .ignoreDefaultArgs(true)
                                     .ignoreHttpsErrors(true)
                                     .locale("locale")
+                                    .port(0.0)
                                     .preserveUserDataDir(true)
                                     .proxy(
                                         SessionStartParams.Browser.LaunchOptions.Proxy.builder()
