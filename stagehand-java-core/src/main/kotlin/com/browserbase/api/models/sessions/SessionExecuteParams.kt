@@ -58,6 +58,14 @@ private constructor(
     fun frameId(): Optional<String> = body.frameId()
 
     /**
+     * If true, the server captures a cache entry and returns it to the client
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun shouldCache(): Optional<Boolean> = body.shouldCache()
+
+    /**
      * Returns the raw JSON value of [agentConfig].
      *
      * Unlike [agentConfig], this method doesn't throw if the JSON field has an unexpected type.
@@ -77,6 +85,13 @@ private constructor(
      * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _frameId(): JsonField<String> = body._frameId()
+
+    /**
+     * Returns the raw JSON value of [shouldCache].
+     *
+     * Unlike [shouldCache], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _shouldCache(): JsonField<Boolean> = body._shouldCache()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -143,6 +158,7 @@ private constructor(
          * - [agentConfig]
          * - [executeOptions]
          * - [frameId]
+         * - [shouldCache]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -187,6 +203,18 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun frameId(frameId: JsonField<String>) = apply { body.frameId(frameId) }
+
+        /** If true, the server captures a cache entry and returns it to the client */
+        fun shouldCache(shouldCache: Boolean) = apply { body.shouldCache(shouldCache) }
+
+        /**
+         * Sets [Builder.shouldCache] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.shouldCache] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun shouldCache(shouldCache: JsonField<Boolean>) = apply { body.shouldCache(shouldCache) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -352,6 +380,7 @@ private constructor(
         private val agentConfig: JsonField<AgentConfig>,
         private val executeOptions: JsonField<ExecuteOptions>,
         private val frameId: JsonField<String>,
+        private val shouldCache: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -364,7 +393,10 @@ private constructor(
             @ExcludeMissing
             executeOptions: JsonField<ExecuteOptions> = JsonMissing.of(),
             @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
-        ) : this(agentConfig, executeOptions, frameId, mutableMapOf())
+            @JsonProperty("shouldCache")
+            @ExcludeMissing
+            shouldCache: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(agentConfig, executeOptions, frameId, shouldCache, mutableMapOf())
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
@@ -385,6 +417,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun frameId(): Optional<String> = frameId.getOptional("frameId")
+
+        /**
+         * If true, the server captures a cache entry and returns it to the client
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun shouldCache(): Optional<Boolean> = shouldCache.getOptional("shouldCache")
 
         /**
          * Returns the raw JSON value of [agentConfig].
@@ -411,6 +451,15 @@ private constructor(
          * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("frameId") @ExcludeMissing fun _frameId(): JsonField<String> = frameId
+
+        /**
+         * Returns the raw JSON value of [shouldCache].
+         *
+         * Unlike [shouldCache], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("shouldCache")
+        @ExcludeMissing
+        fun _shouldCache(): JsonField<Boolean> = shouldCache
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -444,6 +493,7 @@ private constructor(
             private var agentConfig: JsonField<AgentConfig>? = null
             private var executeOptions: JsonField<ExecuteOptions>? = null
             private var frameId: JsonField<String> = JsonMissing.of()
+            private var shouldCache: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -451,6 +501,7 @@ private constructor(
                 agentConfig = body.agentConfig
                 executeOptions = body.executeOptions
                 frameId = body.frameId
+                shouldCache = body.shouldCache
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -496,6 +547,20 @@ private constructor(
              */
             fun frameId(frameId: JsonField<String>) = apply { this.frameId = frameId }
 
+            /** If true, the server captures a cache entry and returns it to the client */
+            fun shouldCache(shouldCache: Boolean) = shouldCache(JsonField.of(shouldCache))
+
+            /**
+             * Sets [Builder.shouldCache] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.shouldCache] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun shouldCache(shouldCache: JsonField<Boolean>) = apply {
+                this.shouldCache = shouldCache
+            }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -533,6 +598,7 @@ private constructor(
                     checkRequired("agentConfig", agentConfig),
                     checkRequired("executeOptions", executeOptions),
                     frameId,
+                    shouldCache,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -547,6 +613,7 @@ private constructor(
             agentConfig().validate()
             executeOptions().validate()
             frameId()
+            shouldCache()
             validated = true
         }
 
@@ -568,7 +635,8 @@ private constructor(
         internal fun validity(): Int =
             (agentConfig.asKnown().getOrNull()?.validity() ?: 0) +
                 (executeOptions.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (frameId.asKnown().isPresent) 1 else 0)
+                (if (frameId.asKnown().isPresent) 1 else 0) +
+                (if (shouldCache.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -579,17 +647,18 @@ private constructor(
                 agentConfig == other.agentConfig &&
                 executeOptions == other.executeOptions &&
                 frameId == other.frameId &&
+                shouldCache == other.shouldCache &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(agentConfig, executeOptions, frameId, additionalProperties)
+            Objects.hash(agentConfig, executeOptions, frameId, shouldCache, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{agentConfig=$agentConfig, executeOptions=$executeOptions, frameId=$frameId, additionalProperties=$additionalProperties}"
+            "Body{agentConfig=$agentConfig, executeOptions=$executeOptions, frameId=$frameId, shouldCache=$shouldCache, additionalProperties=$additionalProperties}"
     }
 
     class AgentConfig

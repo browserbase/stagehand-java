@@ -173,6 +173,7 @@ internal class SessionServiceTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
@@ -221,6 +222,7 @@ internal class SessionServiceTest {
                             .build()
                     )
                     .frameId("frameId")
+                    .shouldCache(true)
                     .build()
             )
 
