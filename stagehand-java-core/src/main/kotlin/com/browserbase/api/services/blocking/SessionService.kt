@@ -18,6 +18,8 @@ import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
+import com.browserbase.api.models.sessions.SessionReplayParams
+import com.browserbase.api.models.sessions.SessionReplayResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 import com.browserbase.api.models.sessions.StreamEvent
@@ -323,6 +325,36 @@ interface SessionService {
     @MustBeClosed
     fun observeStreaming(id: String, requestOptions: RequestOptions): StreamResponse<StreamEvent> =
         observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+    /** Retrieves replay metrics for a session. */
+    fun replay(id: String): SessionReplayResponse = replay(id, SessionReplayParams.none())
+
+    /** @see replay */
+    fun replay(
+        id: String,
+        params: SessionReplayParams = SessionReplayParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SessionReplayResponse = replay(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see replay */
+    fun replay(
+        id: String,
+        params: SessionReplayParams = SessionReplayParams.none(),
+    ): SessionReplayResponse = replay(id, params, RequestOptions.none())
+
+    /** @see replay */
+    fun replay(
+        params: SessionReplayParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): SessionReplayResponse
+
+    /** @see replay */
+    fun replay(params: SessionReplayParams): SessionReplayResponse =
+        replay(params, RequestOptions.none())
+
+    /** @see replay */
+    fun replay(id: String, requestOptions: RequestOptions): SessionReplayResponse =
+        replay(id, SessionReplayParams.none(), requestOptions)
 
     /**
      * Creates a new browser session with the specified configuration. Returns a session ID used for
@@ -725,6 +757,50 @@ interface SessionService {
             requestOptions: RequestOptions,
         ): HttpResponseFor<StreamResponse<StreamEvent>> =
             observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/sessions/{id}/replay`, but is otherwise the same
+         * as [SessionService.replay].
+         */
+        @MustBeClosed
+        fun replay(id: String): HttpResponseFor<SessionReplayResponse> =
+            replay(id, SessionReplayParams.none())
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(
+            id: String,
+            params: SessionReplayParams = SessionReplayParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SessionReplayResponse> =
+            replay(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(
+            id: String,
+            params: SessionReplayParams = SessionReplayParams.none(),
+        ): HttpResponseFor<SessionReplayResponse> = replay(id, params, RequestOptions.none())
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(
+            params: SessionReplayParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): HttpResponseFor<SessionReplayResponse>
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(params: SessionReplayParams): HttpResponseFor<SessionReplayResponse> =
+            replay(params, RequestOptions.none())
+
+        /** @see replay */
+        @MustBeClosed
+        fun replay(
+            id: String,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SessionReplayResponse> =
+            replay(id, SessionReplayParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as
