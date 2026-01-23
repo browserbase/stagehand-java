@@ -203,7 +203,14 @@ private constructor(
             @JsonProperty("actionId") @ExcludeMissing actionId: JsonField<String> = JsonMissing.of(),
         ) : this(result, actionId, mutableMapOf())
 
-        /** Extracted data matching the requested schema */
+        /**
+         * Extracted data matching the requested schema
+         *
+         * This arbitrary value can be deserialized into a custom type using the `convert` method:
+         * ```java
+         * MyClass myObject = data.result().convert(MyClass.class);
+         * ```
+         */
         @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
 
         /**

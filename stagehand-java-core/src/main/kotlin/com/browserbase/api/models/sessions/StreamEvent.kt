@@ -486,7 +486,15 @@ private constructor(
              */
             fun error(): Optional<String> = error.getOptional("error")
 
-            /** Operation result (present when status is 'finished') */
+            /**
+             * Operation result (present when status is 'finished')
+             *
+             * This arbitrary value can be deserialized into a custom type using the `convert`
+             * method:
+             * ```java
+             * MyClass myObject = streamEventSystemDataOutput.result().convert(MyClass.class);
+             * ```
+             */
             @JsonProperty("result") @ExcludeMissing fun _result(): JsonValue = result
 
             /**
