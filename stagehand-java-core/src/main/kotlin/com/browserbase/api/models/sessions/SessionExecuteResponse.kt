@@ -1688,7 +1688,15 @@ private constructor(
              */
             fun cacheKey(): String = cacheKey.getRequired("cacheKey")
 
-            /** Serialized cache entry that can be written to disk */
+            /**
+             * Serialized cache entry that can be written to disk
+             *
+             * This arbitrary value can be deserialized into a custom type using the `convert`
+             * method:
+             * ```java
+             * MyClass myObject = cacheEntry.entry().convert(MyClass.class);
+             * ```
+             */
             @JsonProperty("entry") @ExcludeMissing fun _entry(): JsonValue = entry
 
             /**
