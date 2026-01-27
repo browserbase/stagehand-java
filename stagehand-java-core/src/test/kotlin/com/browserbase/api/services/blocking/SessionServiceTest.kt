@@ -152,6 +152,7 @@ internal class SessionServiceTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
+                            .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
                                 ModelConfig.builder()
                                     .modelName("openai/gpt-5-nano")
@@ -201,6 +202,7 @@ internal class SessionServiceTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
+                            .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
                                 ModelConfig.builder()
                                     .modelName("openai/gpt-5-nano")
