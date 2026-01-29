@@ -16,6 +16,14 @@ internal class SessionExecuteParamsTest {
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
+                    .executionModel(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                     .model(
                         ModelConfig.builder()
@@ -72,6 +80,14 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
+                        .executionModel(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                         .model(
                             ModelConfig.builder()
@@ -132,6 +148,14 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
+                        .executionModel(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                         .model(
                             ModelConfig.builder()
@@ -164,6 +188,14 @@ internal class SessionExecuteParamsTest {
             .isEqualTo(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
+                    .executionModel(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                     .model(
                         ModelConfig.builder()

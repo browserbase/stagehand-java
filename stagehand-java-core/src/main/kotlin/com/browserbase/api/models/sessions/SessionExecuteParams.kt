@@ -676,6 +676,7 @@ private constructor(
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val cua: JsonField<Boolean>,
+        private val executionModel: JsonField<ExecutionModel>,
         private val mode: JsonField<Mode>,
         private val model: JsonField<Model>,
         private val provider: JsonField<Provider>,
@@ -686,6 +687,9 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("cua") @ExcludeMissing cua: JsonField<Boolean> = JsonMissing.of(),
+            @JsonProperty("executionModel")
+            @ExcludeMissing
+            executionModel: JsonField<ExecutionModel> = JsonMissing.of(),
             @JsonProperty("mode") @ExcludeMissing mode: JsonField<Mode> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
             @JsonProperty("provider")
@@ -694,7 +698,7 @@ private constructor(
             @JsonProperty("systemPrompt")
             @ExcludeMissing
             systemPrompt: JsonField<String> = JsonMissing.of(),
-        ) : this(cua, mode, model, provider, systemPrompt, mutableMapOf())
+        ) : this(cua, executionModel, mode, model, provider, systemPrompt, mutableMapOf())
 
         /**
          * Deprecated. Use mode: 'cua' instead. If both are provided, mode takes precedence.
@@ -703,6 +707,17 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun cua(): Optional<Boolean> = cua.getOptional("cua")
+
+        /**
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+         * execution (observe/act calls within agent tools). If not specified, inherits from the
+         * main model configuration.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun executionModel(): Optional<ExecutionModel> =
+            executionModel.getOptional("executionModel")
 
         /**
          * Tool mode for the agent (dom, hybrid, cua). If set, overrides cua.
@@ -742,6 +757,16 @@ private constructor(
          * Unlike [cua], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("cua") @ExcludeMissing fun _cua(): JsonField<Boolean> = cua
+
+        /**
+         * Returns the raw JSON value of [executionModel].
+         *
+         * Unlike [executionModel], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("executionModel")
+        @ExcludeMissing
+        fun _executionModel(): JsonField<ExecutionModel> = executionModel
 
         /**
          * Returns the raw JSON value of [mode].
@@ -796,6 +821,7 @@ private constructor(
         class Builder internal constructor() {
 
             private var cua: JsonField<Boolean> = JsonMissing.of()
+            private var executionModel: JsonField<ExecutionModel> = JsonMissing.of()
             private var mode: JsonField<Mode> = JsonMissing.of()
             private var model: JsonField<Model> = JsonMissing.of()
             private var provider: JsonField<Provider> = JsonMissing.of()
@@ -805,6 +831,7 @@ private constructor(
             @JvmSynthetic
             internal fun from(agentConfig: AgentConfig) = apply {
                 cua = agentConfig.cua
+                executionModel = agentConfig.executionModel
                 mode = agentConfig.mode
                 model = agentConfig.model
                 provider = agentConfig.provider
@@ -823,6 +850,34 @@ private constructor(
              * value.
              */
             fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
+
+            /**
+             * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+             * execution (observe/act calls within agent tools). If not specified, inherits from the
+             * main model configuration.
+             */
+            fun executionModel(executionModel: ExecutionModel) =
+                executionModel(JsonField.of(executionModel))
+
+            /**
+             * Sets [Builder.executionModel] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.executionModel] with a well-typed [ExecutionModel]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun executionModel(executionModel: JsonField<ExecutionModel>) = apply {
+                this.executionModel = executionModel
+            }
+
+            /**
+             * Alias for calling [executionModel] with `ExecutionModel.ofModelConfig(modelConfig)`.
+             */
+            fun executionModel(modelConfig: ModelConfig) =
+                executionModel(ExecutionModel.ofModelConfig(modelConfig))
+
+            /** Alias for calling [executionModel] with `ExecutionModel.ofString(string)`. */
+            fun executionModel(string: String) = executionModel(ExecutionModel.ofString(string))
 
             /** Tool mode for the agent (dom, hybrid, cua). If set, overrides cua. */
             fun mode(mode: Mode) = mode(JsonField.of(mode))
@@ -907,6 +962,7 @@ private constructor(
             fun build(): AgentConfig =
                 AgentConfig(
                     cua,
+                    executionModel,
                     mode,
                     model,
                     provider,
@@ -923,6 +979,7 @@ private constructor(
             }
 
             cua()
+            executionModel().ifPresent { it.validate() }
             mode().ifPresent { it.validate() }
             model().ifPresent { it.validate() }
             provider().ifPresent { it.validate() }
@@ -947,10 +1004,193 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (cua.asKnown().isPresent) 1 else 0) +
+                (executionModel.asKnown().getOrNull()?.validity() ?: 0) +
                 (mode.asKnown().getOrNull()?.validity() ?: 0) +
                 (model.asKnown().getOrNull()?.validity() ?: 0) +
                 (provider.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (systemPrompt.asKnown().isPresent) 1 else 0)
+
+        /**
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+         * execution (observe/act calls within agent tools). If not specified, inherits from the
+         * main model configuration.
+         */
+        @JsonDeserialize(using = ExecutionModel.Deserializer::class)
+        @JsonSerialize(using = ExecutionModel.Serializer::class)
+        class ExecutionModel
+        private constructor(
+            private val modelConfig: ModelConfig? = null,
+            private val string: String? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun modelConfig(): Optional<ModelConfig> = Optional.ofNullable(modelConfig)
+
+            fun string(): Optional<String> = Optional.ofNullable(string)
+
+            fun isModelConfig(): Boolean = modelConfig != null
+
+            fun isString(): Boolean = string != null
+
+            fun asModelConfig(): ModelConfig = modelConfig.getOrThrow("modelConfig")
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
+
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    modelConfig != null -> visitor.visitModelConfig(modelConfig)
+                    string != null -> visitor.visitString(string)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): ExecutionModel = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitModelConfig(modelConfig: ModelConfig) {
+                            modelConfig.validate()
+                        }
+
+                        override fun visitString(string: String) {}
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitModelConfig(modelConfig: ModelConfig) =
+                            modelConfig.validity()
+
+                        override fun visitString(string: String) = 1
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ExecutionModel &&
+                    modelConfig == other.modelConfig &&
+                    string == other.string
+            }
+
+            override fun hashCode(): Int = Objects.hash(modelConfig, string)
+
+            override fun toString(): String =
+                when {
+                    modelConfig != null -> "ExecutionModel{modelConfig=$modelConfig}"
+                    string != null -> "ExecutionModel{string=$string}"
+                    _json != null -> "ExecutionModel{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid ExecutionModel")
+                }
+
+            companion object {
+
+                @JvmStatic
+                fun ofModelConfig(modelConfig: ModelConfig) =
+                    ExecutionModel(modelConfig = modelConfig)
+
+                @JvmStatic fun ofString(string: String) = ExecutionModel(string = string)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [ExecutionModel] to a value of
+             * type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitModelConfig(modelConfig: ModelConfig): T
+
+                fun visitString(string: String): T
+
+                /**
+                 * Maps an unknown variant of [ExecutionModel] to a value of type [T].
+                 *
+                 * An instance of [ExecutionModel] can contain an unknown variant if it was
+                 * deserialized from data that doesn't match any known variant. For example, if the
+                 * SDK is on an older version than the API, then the API may respond with new
+                 * variants that the SDK is unaware of.
+                 *
+                 * @throws StagehandInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw StagehandInvalidDataException("Unknown ExecutionModel: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<ExecutionModel>(ExecutionModel::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): ExecutionModel {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<ModelConfig>())?.let {
+                                    ExecutionModel(modelConfig = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    ExecutionModel(string = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants (e.g. deserializing from boolean).
+                        0 -> ExecutionModel(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<ExecutionModel>(ExecutionModel::class) {
+
+                override fun serialize(
+                    value: ExecutionModel,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.modelConfig != null -> generator.writeObject(value.modelConfig)
+                        value.string != null -> generator.writeObject(value.string)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid ExecutionModel")
+                    }
+                }
+            }
+        }
 
         /** Tool mode for the agent (dom, hybrid, cua). If set, overrides cua. */
         class Mode @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -1408,6 +1648,7 @@ private constructor(
 
             return other is AgentConfig &&
                 cua == other.cua &&
+                executionModel == other.executionModel &&
                 mode == other.mode &&
                 model == other.model &&
                 provider == other.provider &&
@@ -1416,13 +1657,21 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(cua, mode, model, provider, systemPrompt, additionalProperties)
+            Objects.hash(
+                cua,
+                executionModel,
+                mode,
+                model,
+                provider,
+                systemPrompt,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "AgentConfig{cua=$cua, mode=$mode, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
+            "AgentConfig{cua=$cua, executionModel=$executionModel, mode=$mode, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
     }
 
     class ExecuteOptions
