@@ -28,7 +28,7 @@ internal fun sseHandler(jsonMapper: JsonMapper): Handler<StreamResponse<SseMessa
             val message = state.decode(line) ?: continue
 
             when {
-                message.data.startsWith("finished") -> {
+                message.data.startsWith("{\"data\":{\"status\":\"finished\"") -> {
                     // In this case we don't break because we still want to iterate through the full
                     // stream.
                     done = true

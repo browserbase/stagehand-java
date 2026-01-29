@@ -62,6 +62,8 @@ If you're looking for other languages, you can find them
 ## What is Stagehand?
 The Stagehand Java SDK is similar to the Stagehand Kotlin SDK but with minor differences that make it more ergonomic for use in Java, such as `Optional` instead of nullable values, `Stream` instead of `Sequence`, and `CompletableFuture` instead of suspend functions.
 
+The Stagehand Java SDK is similar to the Stagehand Kotlin SDK but with minor differences that make it more ergonomic for use in Java, such as `Optional` instead of nullable values, `Stream` instead of `Sequence`, and `CompletableFuture` instead of suspend functions.
+
 It is generated with [Stainless](https://www.stainless.com/).
 
 Stagehand is a browser automation framework used to control web browsers with natural language and code. By combining the power of AI with the precision of code, Stagehand makes web automation flexible, maintainable, and actually reliable.
