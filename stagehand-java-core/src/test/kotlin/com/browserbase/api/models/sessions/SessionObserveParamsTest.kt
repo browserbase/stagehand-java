@@ -17,7 +17,14 @@ internal class SessionObserveParamsTest {
             .instruction("Find all clickable navigation links")
             .options(
                 SessionObserveParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .selector("nav")
                     .timeout(30000.0)
                     .build()
@@ -45,7 +52,14 @@ internal class SessionObserveParamsTest {
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -77,7 +91,14 @@ internal class SessionObserveParamsTest {
                 .instruction("Find all clickable navigation links")
                 .options(
                     SessionObserveParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .selector("nav")
                         .timeout(30000.0)
                         .build()
@@ -91,7 +112,14 @@ internal class SessionObserveParamsTest {
         assertThat(body.options())
             .contains(
                 SessionObserveParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .selector("nav")
                     .timeout(30000.0)
                     .build()

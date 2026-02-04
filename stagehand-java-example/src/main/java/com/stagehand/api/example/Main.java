@@ -136,11 +136,10 @@ public class Main {
                                             .maxSteps(15.0)
                                             .build())
                                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
-                                            .model(ModelConfig.ofModelConfigObject(
-                                                    ModelConfig.ModelConfigObject.builder()
-                                                            .modelName("openai/gpt-5-nano")
-                                                            .apiKey(System.getenv("MODEL_API_KEY"))
-                                                            .build()))
+                                            .model(ModelConfig.builder()
+                                                    .modelName("openai/gpt-5-nano")
+                                                    .apiKey(System.getenv("MODEL_API_KEY"))
+                                                    .build())
                                             .cua(false)
                                             .build())
                                     .build(),

@@ -18,7 +18,14 @@ internal class SessionActParamsTest {
             .frameId("frameId")
             .options(
                 SessionActParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()
@@ -53,7 +60,14 @@ internal class SessionActParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -92,7 +106,14 @@ internal class SessionActParamsTest {
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()
@@ -111,7 +132,14 @@ internal class SessionActParamsTest {
         assertThat(body.options())
             .contains(
                 SessionActParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .timeout(30000.0)
                     .variables(
                         SessionActParams.Options.Variables.builder()

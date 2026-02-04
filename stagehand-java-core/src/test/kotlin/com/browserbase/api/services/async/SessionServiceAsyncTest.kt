@@ -5,6 +5,7 @@ package com.browserbase.api.services.async
 import com.browserbase.api.TestServerExtension
 import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
@@ -40,7 +41,14 @@ internal class SessionServiceAsyncTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -77,7 +85,14 @@ internal class SessionServiceAsyncTest {
                     .frameId("frameId")
                     .options(
                         SessionActParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .timeout(30000.0)
                             .variables(
                                 SessionActParams.Options.Variables.builder()
@@ -139,7 +154,14 @@ internal class SessionServiceAsyncTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -181,7 +203,14 @@ internal class SessionServiceAsyncTest {
                     .agentConfig(
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                             .systemPrompt("systemPrompt")
                             .build()
@@ -225,7 +254,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -263,7 +299,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -336,7 +379,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("nav")
                             .timeout(30000.0)
                             .build()
@@ -369,7 +419,14 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
-                            .model("openai/gpt-4o")
+                            .model(
+                                ModelConfig.builder()
+                                    .modelName("openai/gpt-5-nano")
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
+                                    .provider(ModelConfig.Provider.OPENAI)
+                                    .build()
+                            )
                             .selector("nav")
                             .timeout(30000.0)
                             .build()

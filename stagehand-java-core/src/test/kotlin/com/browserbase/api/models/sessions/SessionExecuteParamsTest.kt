@@ -16,7 +16,14 @@ internal class SessionExecuteParamsTest {
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()
@@ -63,7 +70,14 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -114,7 +128,14 @@ internal class SessionExecuteParamsTest {
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -137,7 +158,14 @@ internal class SessionExecuteParamsTest {
             .isEqualTo(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()

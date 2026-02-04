@@ -18,7 +18,14 @@ internal class SessionExtractParamsTest {
             .instruction("Extract all product names and prices from the page")
             .options(
                 SessionExtractParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .selector("#main-content")
                     .timeout(30000.0)
                     .build()
@@ -51,7 +58,14 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .selector("#main-content")
                         .timeout(30000.0)
                         .build()
@@ -88,7 +102,14 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
-                        .model("openai/gpt-4o")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .selector("#main-content")
                         .timeout(30000.0)
                         .build()
@@ -108,7 +129,14 @@ internal class SessionExtractParamsTest {
         assertThat(body.options())
             .contains(
                 SessionExtractParams.Options.builder()
-                    .model("openai/gpt-4o")
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .selector("#main-content")
                     .timeout(30000.0)
                     .build()
