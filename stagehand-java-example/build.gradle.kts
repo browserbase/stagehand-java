@@ -9,6 +9,7 @@ repositories {
 
 dependencies {
     implementation(project(":stagehand-java"))
+    implementation("com.microsoft.playwright:playwright:1.43.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {
