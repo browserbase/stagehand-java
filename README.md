@@ -115,6 +115,8 @@ export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
 export MODEL_API_KEY="sk-proj-your-llm-api-key"
 
 ./gradlew :stagehand-java-example:run
+# Or run the remote Browserbase + Playwright SSE example
+./gradlew :stagehand-java-example:run -Pexample=RemoteBrowserPlaywright
 ```
 
 ```bash
