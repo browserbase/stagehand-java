@@ -107,17 +107,18 @@ This library requires Java 8 through Java 21. Java 22+ is not currently supporte
 A complete working example is available at [`stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java`](stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java).
 There is also a local-browser Playwright example at [`stagehand-java-example/src/main/java/com/stagehand/api/example/LocalBrowserPlaywrightExample.java`](stagehand-java-example/src/main/java/com/stagehand/api/example/LocalBrowserPlaywrightExample.java).
 
-To run it, first export the required environment variables, then use Gradle:
+To run it, first set up the example environment file, then use Gradle:
 
 ```bash
-export BROWSERBASE_API_KEY="your-bb-api-key"
-export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
-export MODEL_API_KEY="sk-proj-your-llm-api-key"
+cp examples/.env.example examples/.env
+# Edit examples/.env with your credentials.
 
 ./gradlew :stagehand-java-example:run
 # Or run the remote Browserbase + Playwright SSE example
 ./gradlew :stagehand-java-example:run -Pexample=RemoteBrowserPlaywright
 ```
+
+The examples load `examples/.env` automatically.
 
 ```bash
 ./gradlew :stagehand-java-example:run -Pexample=LocalBrowserPlaywright

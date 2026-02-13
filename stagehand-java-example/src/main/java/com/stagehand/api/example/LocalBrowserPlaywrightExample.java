@@ -21,7 +21,8 @@ import com.microsoft.playwright.Playwright;
 
 public class LocalBrowserPlaywrightExample {
     public static void main(String[] args) {
-        StagehandClient client = StagehandOkHttpClient.fromEnv();
+        Env.load();
+        StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         SessionStartParams startParams = SessionStartParams.builder()
                 .modelName("openai/gpt-5-nano")
@@ -105,7 +106,7 @@ public class LocalBrowserPlaywrightExample {
                                 .agentConfig(SessionExecuteParams.AgentConfig.builder()
                                         .model(ModelConfig.builder()
                                                 .modelName("openai/gpt-5-nano")
-                                                .apiKey(System.getenv("MODEL_API_KEY"))
+                                                .apiKey(System.getProperty("stagehand.modelApiKey"))
                                                 .build())
                                         .cua(false)
                                         .build())
