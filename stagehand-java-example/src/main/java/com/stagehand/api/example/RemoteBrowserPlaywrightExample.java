@@ -5,27 +5,19 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 import com.browserbase.api.core.JsonValue;
 import com.browserbase.api.core.RequestOptions;
 import com.browserbase.api.core.http.StreamResponse;
-import com.browserbase.api.models.sessions.Action;
 import com.browserbase.api.models.sessions.ModelConfig;
 import com.browserbase.api.models.sessions.SessionActParams;
-import com.browserbase.api.models.sessions.SessionActResponse;
 import com.browserbase.api.models.sessions.SessionEndParams;
 import com.browserbase.api.models.sessions.SessionExecuteParams;
-import com.browserbase.api.models.sessions.SessionExecuteResponse;
 import com.browserbase.api.models.sessions.SessionExtractParams;
-import com.browserbase.api.models.sessions.SessionExtractResponse;
 import com.browserbase.api.models.sessions.SessionNavigateParams;
 import com.browserbase.api.models.sessions.SessionObserveParams;
-import com.browserbase.api.models.sessions.SessionObserveResponse;
 import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 import com.browserbase.api.models.sessions.StreamEvent;
-import com.browserbase.api.models.sessions.StreamEvent.Data.StreamEventLogDataOutput;
-import com.browserbase.api.models.sessions.StreamEvent.Data.StreamEventSystemDataOutput;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Remote Browserbase + Playwright example demonstrating SSE streaming.
@@ -46,9 +38,10 @@ import java.util.Optional;
  */
 public class RemoteBrowserPlaywrightExample {
     public static void main(String[] args) {
+        Env.load();
         // Create client using environment variables
         // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
-        StagehandClient client = StagehandOkHttpClient.fromEnv();
+        StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         // Start a new remote Browserbase session (Playwright)
         SessionStartResponse startResponse = client.sessions()
@@ -58,7 +51,7 @@ public class RemoteBrowserPlaywrightExample {
                                 .type(SessionStartParams.Browser.Type.BROWSERBASE)
                                 .build())
                         .browserbaseSessionCreateParams(SessionStartParams.BrowserbaseSessionCreateParams.builder()
-                                .projectId(System.getenv("BROWSERBASE_PROJECT_ID"))
+                                .projectId(System.getProperty("stagehand.browserbaseProjectId"))
                                 .build())
                         .build());
 
@@ -78,30 +71,21 @@ public class RemoteBrowserPlaywrightExample {
             SessionObserveParams observeParams = SessionObserveParams.builder()
                     .id(sessionId)
                     .instruction("find the link to view comments for the top post")
+                    .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
                     .build();
-            SessionObserveResponse observeResponse = streamResponse(
-                    "observe", client.sessions().observeStreaming(observeParams), SessionObserveResponse.class);
-
-            List<SessionObserveResponse.Data.Result> results =
-                    observeResponse.data().result();
-            System.out.println("Found " + results.size() + " possible actions");
-
-            if (results.isEmpty()) {
-                System.out.println("No actions found");
-                return;
+            try (StreamResponse<StreamEvent> observeStream = client.sessions().observeStreaming(observeParams)) {
+                printStreamEvents("observe", observeStream);
             }
 
-            // Use the first result - convert to Action since they share the same shape
-            SessionObserveResponse.Data.Result result = results.get(0);
-            Action action = JsonValue.from(result).convert(Action.class);
-            System.out.println("Acting on: " + action.description());
-
             // Pass the structured action to Act (streaming)
-            SessionActParams actParams =
-                    SessionActParams.builder().id(sessionId).input(action).build();
-            SessionActResponse actResponse =
-                    streamResponse("act", client.sessions().actStreaming(actParams), SessionActResponse.class);
-            System.out.println("Act completed: " + actResponse.data().result().message());
+            SessionActParams actParams = SessionActParams.builder()
+                    .id(sessionId)
+                    .input("Click the comments link for the top post")
+                    .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                    .build();
+            try (StreamResponse<StreamEvent> actStream = client.sessions().actStreaming(actParams)) {
+                printStreamEvents("act", actStream);
+            }
 
             // Extract data from the page (streaming)
             SessionExtractParams extractParams = SessionExtractParams.builder()
@@ -126,63 +110,41 @@ public class RemoteBrowserPlaywrightExample {
                                                     "The username of the comment author"))))
                             .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
                             .build())
+                    .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
                     .build();
-            SessionExtractResponse extractResponse = streamResponse(
-                    "extract", client.sessions().extractStreaming(extractParams), SessionExtractResponse.class);
-
-            // Get the extracted result
-            JsonValue extractedResult = extractResponse.data()._result();
-            System.out.println("Extracted data: " + extractedResult);
-
-            // Get the author from the extracted data
-            String author = "unknown";
-            Optional<Map<String, JsonValue>> extractedObject = extractedResult.asObject();
-            if (extractedObject.isPresent()) {
-                JsonValue authorValue = extractedObject.get().get("author");
-                if (authorValue != null) {
-                    author = (String) authorValue.asString().orElse("unknown");
-                }
+            try (StreamResponse<StreamEvent> extractStream = client.sessions().extractStreaming(extractParams)) {
+                printStreamEvents("extract", extractStream);
             }
-            System.out.println("Looking up profile for author: " + author);
 
             // Use the Agent to find the author's profile (streaming)
             SessionExecuteParams executeParams = SessionExecuteParams.builder()
                     .id(sessionId)
                     .executeOptions(SessionExecuteParams.ExecuteOptions.builder()
-                            .instruction(String.format(
-                                    "Find any personal website, GitHub, LinkedIn, or other best"
-                                            + " profile URL for the Hacker News user '%s'. Click on their"
-                                            + " username to go to their profile page and look for any"
-                                            + " links they have shared. Use Google Search with their"
-                                            + " username or other details from their profile if you dont"
-                                            + " find any direct links.",
-                                    author))
+                            .instruction(String.format("Find any personal website, GitHub, LinkedIn, or other best"
+                                    + " profile URL for the top comment author on this page."
+                                    + " Click on the username to go to their profile page and"
+                                    + " look for any links they have shared. Use Google Search"
+                                    + " with their username or other details from their profile"
+                                    + " if you don't find any direct links."))
                             .maxSteps(15.0)
                             .build())
                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
                             .model(ModelConfig.builder()
                                     .modelName("openai/gpt-5-nano")
-                                    .apiKey(System.getenv("MODEL_API_KEY"))
+                                    .apiKey(System.getProperty("stagehand.modelApiKey"))
                                     .build())
                             .cua(false)
                             .build())
+                    .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                     .build();
-            SessionExecuteResponse executeResponse = streamResponse(
-                    "agent",
-                    client.sessions()
-                            .executeStreaming(
-                                    executeParams,
-                                    RequestOptions.builder()
-                                            .timeout(Duration.ofMinutes(5))
-                                            .build()),
-                    SessionExecuteResponse.class);
-
-            System.out.println(
-                    "Agent completed: " + executeResponse.data().result().message());
-            System.out.println(
-                    "Agent success: " + executeResponse.data().result().success());
-            System.out.println("Agent actions taken: "
-                    + executeResponse.data().result().actions().size());
+            try (StreamResponse<StreamEvent> executeStream = client.sessions()
+                    .executeStreaming(
+                            executeParams,
+                            RequestOptions.builder()
+                                    .timeout(Duration.ofMinutes(5))
+                                    .build())) {
+                printStreamEvents("execute", executeStream);
+            }
 
         } finally {
             // End the session to clean up resources
@@ -191,41 +153,8 @@ public class RemoteBrowserPlaywrightExample {
         }
     }
 
-    private static <T> T streamResponse(
-            String label, StreamResponse<StreamEvent> streamResponse, Class<T> responseClass) {
-        StreamEventSystemDataOutput finalEvent = null;
-
-        try (StreamResponse<StreamEvent> response = streamResponse) {
-            for (StreamEvent event : (Iterable<StreamEvent>) response.stream()::iterator) {
-                StreamEvent.Data data = event.data();
-
-                if (data.isStreamEventLogDataOutput()) {
-                    StreamEventLogDataOutput log = data.asStreamEventLogDataOutput();
-                    System.out.println("[" + label + "] " + log.message());
-                    continue;
-                }
-
-                if (data.isStreamEventSystemDataOutput()) {
-                    StreamEventSystemDataOutput systemData = data.asStreamEventSystemDataOutput();
-                    System.out.println(
-                            "[" + label + "] status=" + systemData.status().value());
-
-                    if (systemData.status().value() == StreamEventSystemDataOutput.Status.Value.ERROR) {
-                        throw new RuntimeException(
-                                "Stream error: " + systemData.error().orElse("unknown"));
-                    }
-
-                    if (systemData.status().value() == StreamEventSystemDataOutput.Status.Value.FINISHED) {
-                        finalEvent = systemData;
-                    }
-                }
-            }
-        }
-
-        if (finalEvent == null) {
-            throw new IllegalStateException("No final stream result for " + label);
-        }
-
-        return finalEvent._result().convert(responseClass);
+    private static void printStreamEvents(String label, StreamResponse<StreamEvent> stream) {
+        stream.stream().forEach(event -> System.out.println("[" + label + "] " + event.type() + " " + event.data()));
+        System.out.println("[" + label + "] stream complete");
     }
 }

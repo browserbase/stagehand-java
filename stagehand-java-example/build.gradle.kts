@@ -21,9 +21,11 @@ application {
     // Use `./gradlew :stagehand-java-example:run` to run `Main`
     // Use `./gradlew :stagehand-java-example:run -Pexample=Something` to run `SomethingExample`
     mainClass = "com.stagehand.api.example.${
-        if (project.hasProperty("example"))
-            "${project.property("example")}Example"
-        else
+        if (project.hasProperty("example")) {
+            val example = project.property("example").toString()
+            if (example == "Main") "Main" else "${example}Example"
+        } else {
             "Main"
+        }
     }"
 }

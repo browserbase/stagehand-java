@@ -29,9 +29,10 @@ import java.util.Optional;
  */
 public class Main {
     public static void main(String[] args) {
+        Env.load();
         // Create client using environment variables
         // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
-        StagehandClient client = StagehandOkHttpClient.fromEnv();
+        StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         // Start a new browser session
         SessionStartResponse startResponse = client.sessions()
@@ -138,7 +139,7 @@ public class Main {
                                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
                                             .model(ModelConfig.builder()
                                                     .modelName("openai/gpt-5-nano")
-                                                    .apiKey(System.getenv("MODEL_API_KEY"))
+                                                    .apiKey(System.getProperty("stagehand.modelApiKey"))
                                                     .build())
                                             .cua(false)
                                             .build())
