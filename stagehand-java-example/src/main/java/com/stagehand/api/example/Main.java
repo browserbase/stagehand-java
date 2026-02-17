@@ -37,7 +37,7 @@ public class Main {
         // Start a new browser session
         SessionStartResponse startResponse = client.sessions()
                 .start(SessionStartParams.builder()
-                        .modelName("openai/gpt-5-nano")
+                        .modelName("anthropic/claude-sonnet-4-6")
                         .build());
 
         String sessionId = startResponse.data().sessionId();
@@ -138,7 +138,7 @@ public class Main {
                                             .build())
                                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
                                             .model(ModelConfig.builder()
-                                                    .modelName("openai/gpt-5-nano")
+                                                    .modelName("anthropic/claude-sonnet-4-6")
                                                     .apiKey(System.getProperty("stagehand.modelApiKey"))
                                                     .build())
                                             .cua(false)

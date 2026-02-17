@@ -25,7 +25,7 @@ public class LocalBrowserPlaywrightExample {
         StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         SessionStartParams startParams = SessionStartParams.builder()
-                .modelName("openai/gpt-5-nano")
+                .modelName("anthropic/claude-sonnet-4-6")
                 .browser(SessionStartParams.Browser.builder()
                         .type(SessionStartParams.Browser.Type.LOCAL)
                         .launchOptions(SessionStartParams.Browser.LaunchOptions.builder()
@@ -105,7 +105,7 @@ public class LocalBrowserPlaywrightExample {
                                         .build())
                                 .agentConfig(SessionExecuteParams.AgentConfig.builder()
                                         .model(ModelConfig.builder()
-                                                .modelName("openai/gpt-5-nano")
+                                                .modelName("anthropic/claude-sonnet-4-6")
                                                 .apiKey(System.getProperty("stagehand.modelApiKey"))
                                                 .build())
                                         .cua(false)
