@@ -2,6 +2,7 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.jsonMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import org.assertj.core.api.Assertions.assertThat
@@ -20,20 +21,36 @@ internal class SessionReplayResponseTest {
                                 .addAction(
                                     SessionReplayResponse.Data.Page.Action.builder()
                                         .method("method")
+                                        .parameters(
+                                            SessionReplayResponse.Data.Page.Action.Parameters
+                                                .builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .result(
+                                            SessionReplayResponse.Data.Page.Action.Result.builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .timestamp(0.0)
+                                        .endTime(0.0)
                                         .tokenUsage(
                                             SessionReplayResponse.Data.Page.Action.TokenUsage
                                                 .builder()
-                                                .cachedInputTokens(0.0)
+                                                .cost(0.0)
                                                 .inputTokens(0.0)
                                                 .outputTokens(0.0)
-                                                .reasoningTokens(0.0)
                                                 .timeMs(0.0)
                                                 .build()
                                         )
                                         .build()
                                 )
+                                .duration(0.0)
+                                .timestamp(0.0)
+                                .url("url")
                                 .build()
                         )
+                        .clientLanguage("clientLanguage")
                         .build()
                 )
                 .success(true)
@@ -47,19 +64,34 @@ internal class SessionReplayResponseTest {
                             .addAction(
                                 SessionReplayResponse.Data.Page.Action.builder()
                                     .method("method")
+                                    .parameters(
+                                        SessionReplayResponse.Data.Page.Action.Parameters.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .result(
+                                        SessionReplayResponse.Data.Page.Action.Result.builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                            .build()
+                                    )
+                                    .timestamp(0.0)
+                                    .endTime(0.0)
                                     .tokenUsage(
                                         SessionReplayResponse.Data.Page.Action.TokenUsage.builder()
-                                            .cachedInputTokens(0.0)
+                                            .cost(0.0)
                                             .inputTokens(0.0)
                                             .outputTokens(0.0)
-                                            .reasoningTokens(0.0)
                                             .timeMs(0.0)
                                             .build()
                                     )
                                     .build()
                             )
+                            .duration(0.0)
+                            .timestamp(0.0)
+                            .url("url")
                             .build()
                     )
+                    .clientLanguage("clientLanguage")
                     .build()
             )
         assertThat(sessionReplayResponse.success()).isEqualTo(true)
@@ -77,20 +109,36 @@ internal class SessionReplayResponseTest {
                                 .addAction(
                                     SessionReplayResponse.Data.Page.Action.builder()
                                         .method("method")
+                                        .parameters(
+                                            SessionReplayResponse.Data.Page.Action.Parameters
+                                                .builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .result(
+                                            SessionReplayResponse.Data.Page.Action.Result.builder()
+                                                .putAdditionalProperty("foo", JsonValue.from("bar"))
+                                                .build()
+                                        )
+                                        .timestamp(0.0)
+                                        .endTime(0.0)
                                         .tokenUsage(
                                             SessionReplayResponse.Data.Page.Action.TokenUsage
                                                 .builder()
-                                                .cachedInputTokens(0.0)
+                                                .cost(0.0)
                                                 .inputTokens(0.0)
                                                 .outputTokens(0.0)
-                                                .reasoningTokens(0.0)
                                                 .timeMs(0.0)
                                                 .build()
                                         )
                                         .build()
                                 )
+                                .duration(0.0)
+                                .timestamp(0.0)
+                                .url("url")
                                 .build()
                         )
+                        .clientLanguage("clientLanguage")
                         .build()
                 )
                 .success(true)
