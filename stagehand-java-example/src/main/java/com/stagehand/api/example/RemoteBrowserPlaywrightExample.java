@@ -130,7 +130,7 @@ public class RemoteBrowserPlaywrightExample {
                             .build())
                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
                             .model(ModelConfig.builder()
-                                    .modelName("anthropic/claude-sonnet-4-6")
+                                    .modelName("anthropic/claude-opus-4-6")
                                     .apiKey(System.getProperty("stagehand.modelApiKey"))
                                     .build())
                             .cua(false)
