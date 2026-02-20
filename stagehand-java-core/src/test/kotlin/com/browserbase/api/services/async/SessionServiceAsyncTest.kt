@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 
 internal class SessionServiceAsyncTest {
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun act() {
         val client =
@@ -61,7 +61,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun actStreaming() {
         val client =
@@ -105,7 +105,7 @@ internal class SessionServiceAsyncTest {
         onCompleteFuture.get()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun end() {
         val client =
@@ -128,7 +128,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun execute() {
         val client =
@@ -186,7 +186,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun executeStreaming() {
         val client =
@@ -245,7 +245,7 @@ internal class SessionServiceAsyncTest {
         onCompleteFuture.get()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun extract() {
         val client =
@@ -289,7 +289,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun extractStreaming() {
         val client =
@@ -334,7 +334,7 @@ internal class SessionServiceAsyncTest {
         onCompleteFuture.get()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun navigate() {
         val client =
@@ -367,7 +367,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun observe() {
         val client =
@@ -406,7 +406,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun observeStreaming() {
         val client =
@@ -446,7 +446,7 @@ internal class SessionServiceAsyncTest {
         onCompleteFuture.get()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun replay() {
         val client =
@@ -469,7 +469,7 @@ internal class SessionServiceAsyncTest {
         response.validate()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun start() {
         val client =
