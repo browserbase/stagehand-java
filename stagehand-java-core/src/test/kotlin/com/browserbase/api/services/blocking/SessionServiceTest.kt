@@ -2,7 +2,6 @@
 
 package com.browserbase.api.services.blocking
 
-import com.browserbase.api.TestServerExtension
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.models.sessions.ModelConfig
@@ -16,9 +15,7 @@ import com.browserbase.api.models.sessions.SessionReplayParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 
-@ExtendWith(TestServerExtension::class)
 internal class SessionServiceTest {
 
     @Disabled("Prism tests are disabled")
@@ -26,7 +23,6 @@ internal class SessionServiceTest {
     fun act() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -69,7 +65,6 @@ internal class SessionServiceTest {
     fun actStreaming() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -114,7 +109,6 @@ internal class SessionServiceTest {
     fun end() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -137,7 +131,6 @@ internal class SessionServiceTest {
     fun execute() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -195,7 +188,6 @@ internal class SessionServiceTest {
     fun executeStreaming() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -255,7 +247,6 @@ internal class SessionServiceTest {
     fun extract() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -299,7 +290,6 @@ internal class SessionServiceTest {
     fun extractStreaming() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -345,7 +335,6 @@ internal class SessionServiceTest {
     fun navigate() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -378,7 +367,6 @@ internal class SessionServiceTest {
     fun observe() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -417,7 +405,6 @@ internal class SessionServiceTest {
     fun observeStreaming() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -458,7 +445,6 @@ internal class SessionServiceTest {
     fun replay() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
@@ -481,7 +467,6 @@ internal class SessionServiceTest {
     fun start() {
         val client =
             StagehandOkHttpClient.builder()
-                .baseUrl(TestServerExtension.BASE_URL)
                 .browserbaseApiKey("My Browserbase API Key")
                 .browserbaseProjectId("My Browserbase Project ID")
                 .modelApiKey("My Model API Key")
