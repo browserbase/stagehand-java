@@ -214,6 +214,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "act")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -327,6 +328,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -406,6 +408,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -519,6 +522,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
