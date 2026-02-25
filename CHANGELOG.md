@@ -1,5 +1,69 @@
 # Changelog
 
+## 0.7.0 (2026-02-25)
+
+Full Changelog: [v0.6.1...v0.7.0](https://github.com/browserbase/stagehand-java/compare/v0.6.1...v0.7.0)
+
+### Features
+
+* [docsrevert spec gen changes ([a617093](https://github.com/browserbase/stagehand-java/commit/a617093b37a616450166c85400b5ee21e68161b8))
+* [feat]: add support for local caching of agent when using api (2) ([3d9f1bb](https://github.com/browserbase/stagehand-java/commit/3d9f1bb130e77142e24dd4d0c7426a87df65e21a))
+* add auto-bedrock support based on bedrock/provider.model-name ([d2ae617](https://github.com/browserbase/stagehand-java/commit/d2ae6176a35c30107c3eac7dfe6e73a1e11a1684))
+* Add bedrock to provider enum in Zod schemas and OpenAPI spec ([6094f1e](https://github.com/browserbase/stagehand-java/commit/6094f1e40953452c5bd2c605f26e9a0eb6ffe596))
+* Add executionModel serialization to api client ([2628417](https://github.com/browserbase/stagehand-java/commit/2628417132606dab5289282976ba4e9ef25b829d))
+* add v3 integration tests matching cloud exactly ([769ed85](https://github.com/browserbase/stagehand-java/commit/769ed852faede431af5cef830df999d8eeaa24fa))
+* **api:** manual updates ([007f9c7](https://github.com/browserbase/stagehand-java/commit/007f9c77a3ead3279c2a2432cbcd4c9cd365b386))
+* **api:** manual updates ([cb5323a](https://github.com/browserbase/stagehand-java/commit/cb5323a5034a25ed82b7a09eb010542d5bad9d9c))
+* **api:** manual updates ([ede49b6](https://github.com/browserbase/stagehand-java/commit/ede49b6c8137a59bcbfc1d2cc82a0fdda805ea11))
+* **client:** add connection pooling option ([43e1dd6](https://github.com/browserbase/stagehand-java/commit/43e1dd65672f2f732fe2125b08964f9409ae20dc))
+* **client:** send `X-Stainless-Kotlin-Version` header ([988e6c8](https://github.com/browserbase/stagehand-java/commit/988e6c8dc90bab42c243684a1d3a57e33a393861))
+* End endpoint cleanup ([10ccbd9](https://github.com/browserbase/stagehand-java/commit/10ccbd915a545b6c35c95adada8c834808a35b88))
+* Include replay endpoint in stainless spec so SDK clients can get run metrics ([e307cff](https://github.com/browserbase/stagehand-java/commit/e307cff5f7c2d63ca4b84f40d4656e5690dda7e3))
+* move Stainless compatibility transforms from gen-openapi.ts into stainless.yml ([57d6b94](https://github.com/browserbase/stagehand-java/commit/57d6b94a1391ebd8b8023063f78d5b76bf91b65c))
+* Multi-region stagehand api support ([58093e7](https://github.com/browserbase/stagehand-java/commit/58093e73be3d09204a92c3068425f278ecda5a71))
+* randomize region used for evals, split out pnpm and turbo cache, veri… ([10ef9a5](https://github.com/browserbase/stagehand-java/commit/10ef9a5b77b7c5652ee50708097158c699571ba2))
+* Removed MCP from readme for now ([2b8ab62](https://github.com/browserbase/stagehand-java/commit/2b8ab629120e0733755b598d0050e6c5af1a47b9))
+* Update stainless.yml for project and publish settings ([65820a9](https://github.com/browserbase/stagehand-java/commit/65820a92b5569954133f10962c38ac85015aeda2))
+* x-stainless-any fix, optional frame id, ModelConfigString fix ([ec581cf](https://github.com/browserbase/stagehand-java/commit/ec581cf6dcb166547521e8e64b1239876fd5a527))
+
+
+### Bug Fixes
+
+* **client:** disallow coercion from float to int ([012dbc8](https://github.com/browserbase/stagehand-java/commit/012dbc823262bf9707c4bac7ec161c79a0592e97))
+* **client:** fully respect max retries ([f8b09f0](https://github.com/browserbase/stagehand-java/commit/f8b09f098ce22d6e8dce3f46ff67cc199f3e10ab))
+* **client:** preserve time zone in lenient date-time parsing ([934b350](https://github.com/browserbase/stagehand-java/commit/934b350a93f668b988d465580a3f5cc0d1be8d37))
+* **client:** send retry count header for max retries 0 ([f8b09f0](https://github.com/browserbase/stagehand-java/commit/f8b09f098ce22d6e8dce3f46ff67cc199f3e10ab))
+* date time deserialization leniency ([63d6c36](https://github.com/browserbase/stagehand-java/commit/63d6c361ba8510cedd21bbf355881dd603ff06f1))
+* **docs:** fix mcp installation instructions for remote servers ([793e911](https://github.com/browserbase/stagehand-java/commit/793e911f5e1bd911a5c92de375c3a158b94da45b))
+* set Accept header in more places ([93c8fb8](https://github.com/browserbase/stagehand-java/commit/93c8fb892a58414bf1abc44536ce32b0a38e3386))
+
+
+### Chores
+
+* **ci:** upgrade `actions/github-script` ([4aa63b9](https://github.com/browserbase/stagehand-java/commit/4aa63b9de7d588e226a6b8de221daf152a4978dc))
+* **ci:** upgrade `actions/setup-java` ([8b3f116](https://github.com/browserbase/stagehand-java/commit/8b3f116aff59f0a870c8bb55410fcd37c122b708))
+* drop apache dependency ([6c15fb1](https://github.com/browserbase/stagehand-java/commit/6c15fb100b3b5b534cf3828e0505d61d39acff6f))
+* **internal:** allow passing args to `./scripts/test` ([f771390](https://github.com/browserbase/stagehand-java/commit/f771390dc0796c154ad877c07d4e488192f40bc1))
+* **internal:** clean up maven repo artifact script and add html documentation to repo root ([2918f13](https://github.com/browserbase/stagehand-java/commit/2918f1366c3193d21548dec899d3ae053dbd350a))
+* **internal:** correct cache invalidation for `SKIP_MOCK_TESTS` ([b407a38](https://github.com/browserbase/stagehand-java/commit/b407a387d4131ab1a3e335dea7ed40501d327605))
+* **internal:** depend on packages directly in example ([f8b09f0](https://github.com/browserbase/stagehand-java/commit/f8b09f098ce22d6e8dce3f46ff67cc199f3e10ab))
+* **internal:** expand imports ([5fdbce4](https://github.com/browserbase/stagehand-java/commit/5fdbce4f7cfaa4cad320509daf7127e28c903db0))
+* **internal:** improve maven repo docs ([0723676](https://github.com/browserbase/stagehand-java/commit/07236764dcf17210682b14d2f30b41b87a35061c))
+* **internal:** make `OkHttp` constructor internal ([a90a520](https://github.com/browserbase/stagehand-java/commit/a90a520e7c24fb74bfdfe745c838c7ed100a7fed))
+* **internal:** remove mock server code ([894267f](https://github.com/browserbase/stagehand-java/commit/894267f3648ee302413ff4238eec6e377c49133b))
+* **internal:** update `actions/checkout` version ([77009b1](https://github.com/browserbase/stagehand-java/commit/77009b1b8512e7eb8f194fbc11564958d92f3028))
+* **internal:** update `TestServerExtension` comment ([a422294](https://github.com/browserbase/stagehand-java/commit/a422294e50e1af7dfad542cab6e611dd8bc5cd84))
+* **internal:** update maven repo doc to include authentication ([2dead90](https://github.com/browserbase/stagehand-java/commit/2dead900d2bf803af18b39d4754e29db132d3849))
+* **internal:** upgrade AssertJ ([2a37357](https://github.com/browserbase/stagehand-java/commit/2a373577d46598634b9c31b0242fd55609371e9d))
+* make `Properties` more resilient to `null` ([bccf234](https://github.com/browserbase/stagehand-java/commit/bccf23474d0e4ea75239f803650717d29e5b5f24))
+* test on Jackson 2.14.0 to avoid encountering FasterXML/jackson-databind[#3240](https://github.com/browserbase/stagehand-java/issues/3240) in tests ([63d6c36](https://github.com/browserbase/stagehand-java/commit/63d6c361ba8510cedd21bbf355881dd603ff06f1))
+* update mock server docs ([971d983](https://github.com/browserbase/stagehand-java/commit/971d9833199160486a9d0e5b786c0537a0fbe6f0))
+
+
+### Documentation
+
+* add comment for arbitrary value fields ([6fa48db](https://github.com/browserbase/stagehand-java/commit/6fa48db3f27bcdc1e2a8255364f205f3823a03c9))
+
 ## 0.6.1 (2026-01-13)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/browserbase/stagehand-java/compare/v0.6.0...v0.6.1)
