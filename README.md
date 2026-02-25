@@ -1,3 +1,14 @@
+# Stagehand Java API Library
+
+<!-- x-release-please-start-version -->
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/0.7.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/0.7.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.7.0)
+
+<!-- x-release-please-end -->
+
+The Stagehand Java SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
+<!-- x-stagehand-custom-start -->
 <div id="toc" align="center" style="margin-bottom: 0;">
   <ul style="list-style: none; margin: 0; padding: 0;">
     <a href="https://stagehand.dev">
@@ -48,8 +59,12 @@ If you're looking for other languages, you can find them
     <img alt="Director" src="https://raw.githubusercontent.com/browserbase/stagehand/main/media/director_icon.svg" width="25" />
   </picture>
 </div>
+<!-- x-stagehand-custom-end -->
 
 ## What is Stagehand?
+The Stagehand Java SDK is similar to the Stagehand Kotlin SDK but with minor differences that make it more ergonomic for use in Java, such as `Optional` instead of nullable values, `Stream` instead of `Sequence`, and `CompletableFuture` instead of suspend functions.
+
+It is generated with [Stainless](https://www.stainless.com/).
 
 Stagehand is a browser automation framework used to control web browsers with natural language and code. By combining the power of AI with the precision of code, Stagehand makes web automation flexible, maintainable, and actually reliable.
 
@@ -70,7 +85,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:0.6.1")
+implementation("com.browserbase.api:stagehand-java:0.7.0")
 ```
 
 ### Maven
@@ -79,7 +94,7 @@ implementation("com.browserbase.api:stagehand-java:0.6.1")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>0.6.1</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 
@@ -91,156 +106,143 @@ This library requires Java 8 through Java 21. Java 22+ is not currently supporte
 
 ## Running the Example
 
-A complete working example is available at [`stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java`](stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java).
+Examples live at:
+- `stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java`
+- `stagehand-java-example/src/main/java/com/stagehand/api/example/RemoteBrowserPlaywrightExample.java`
+- `stagehand-java-example/src/main/java/com/stagehand/api/example/LocalBrowserPlaywrightExample.java`
 
-To run it, first export the required environment variables, then use Gradle:
+Set your environment variables (from `examples/.env.example`):
+
+- `STAGEHAND_API_URL`
+- `MODEL_API_KEY`
+- `BROWSERBASE_API_KEY`
+- `BROWSERBASE_PROJECT_ID`
 
 ```bash
-export BROWSERBASE_API_KEY="your-bb-api-key"
-export BROWSERBASE_PROJECT_ID="your-bb-project-uuid"
-export MODEL_API_KEY="sk-proj-your-llm-api-key"
+cp examples/.env.example examples/.env
+# Edit examples/.env with your credentials.
+```
 
+The examples load `examples/.env` automatically.
+
+Example dependencies:
+
+- `Main.java`: stagehand-java only
+- `RemoteBrowserPlaywrightExample.java`: Playwright for Java + Playwright browsers
+- `LocalBrowserPlaywrightExample.java`: Playwright for Java + Playwright browsers
+
+Install Playwright for Java and its browsers before running the Playwright examples.
+
+```bash
 ./gradlew :stagehand-java-example:run
+./gradlew :stagehand-java-example:run -Pexample=RemoteBrowserPlaywright
+./gradlew :stagehand-java-example:run -Pexample=LocalBrowserPlaywright
 ```
 
 ## Usage
 
-This example demonstrates the full Stagehand workflow: starting a session, navigating to a page, observing possible actions, acting on elements, extracting data, and running an autonomous agent.
+This mirrors `stagehand-java-example/src/main/java/com/stagehand/api/example/RemoteBrowserPlaywrightExample.java`.
 
 ```java
 import com.browserbase.api.client.StagehandClient;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 import com.browserbase.api.core.JsonValue;
+import com.browserbase.api.core.http.StreamResponse;
 import com.browserbase.api.models.sessions.*;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public class Main {
+public class RemoteBrowserPlaywrightExample {
     public static void main(String[] args) {
-        // Create client using environment variables:
-        // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
-        StagehandClient client = StagehandOkHttpClient.fromEnv();
+        Env.load();
+        StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
-        // Start a new browser session
         SessionStartResponse startResponse = client.sessions().start(
-            SessionStartParams.builder()
-                .modelName("openai/gpt-5-nano")
-                .build()
-        );
+                SessionStartParams.builder()
+                        .modelName("anthropic/claude-sonnet-4-6")
+                        .browser(SessionStartParams.Browser.builder()
+                                .type(SessionStartParams.Browser.Type.BROWSERBASE)
+                                .build())
+                        .build());
 
         String sessionId = startResponse.data().sessionId();
-        System.out.println("Session started: " + sessionId);
+        String cdpUrl = startResponse.data().cdpUrl().orElse(null);
+        if (cdpUrl == null || cdpUrl.isEmpty()) {
+            throw new IllegalStateException("No cdpUrl returned for remote session.");
+        }
 
-        try {
-            // Navigate to a webpage
-            client.sessions().navigate(
-                SessionNavigateParams.builder()
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().connectOverCDP(cdpUrl);
+            BrowserContext context = browser.contexts().isEmpty() ? browser.newContext() : browser.contexts().get(0);
+            Page page = context.pages().isEmpty() ? context.newPage() : context.pages().get(0);
+
+            client.sessions().navigate(SessionNavigateParams.builder()
                     .id(sessionId)
                     .url("https://news.ycombinator.com")
-                    .build()
-            );
-            System.out.println("Navigated to Hacker News");
+                    .build());
 
-            // Observe to find possible actions on the page
-            SessionObserveResponse observeResponse = client.sessions().observe(
-                SessionObserveParams.builder()
+            SessionObserveParams observeParams = SessionObserveParams.builder()
                     .id(sessionId)
                     .instruction("find the link to view comments for the top post")
-                    .build()
-            );
-
-            List<SessionObserveResponse.Data.Result> results = observeResponse.data().result();
-            System.out.println("Found " + results.size() + " possible actions");
-
-            if (results.isEmpty()) {
-                System.out.println("No actions found");
-                return;
+                    .xStreamResponse(SessionObserveParams.XStreamResponse.TRUE)
+                    .build();
+            try (StreamResponse<StreamEvent> observeStream = client.sessions().observeStreaming(observeParams)) {
+                observeStream.stream().forEach(event -> System.out.println("[observe] " + event.type()));
             }
 
-            // Take the first action returned by Observe
-            // Convert the result to an Action to pass to Act
-            SessionObserveResponse.Data.Result result = results.get(0);
-            Action action = JsonValue.from(result).convert(Action.class);
-            System.out.println("Acting on: " + action.description());
-
-            // Pass the structured action to Act
-            SessionActResponse actResponse = client.sessions().act(
-                SessionActParams.builder()
+            SessionActParams actParams = SessionActParams.builder()
                     .id(sessionId)
-                    .input(action)
-                    .build()
-            );
-            System.out.println("Act completed: " + actResponse.data().result().message());
+                    .input("Click the comments link for the top post")
+                    .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
+                    .build();
+            try (StreamResponse<StreamEvent> actStream = client.sessions().actStreaming(actParams)) {
+                actStream.stream().forEach(event -> System.out.println("[act] " + event.type()));
+            }
 
-            // Extract structured data from the page using a JSON schema
-            SessionExtractResponse extractResponse = client.sessions().extract(
-                SessionExtractParams.builder()
+            SessionExtractParams.Schema schema = SessionExtractParams.Schema.builder()
+                    .putAdditionalProperty("type", JsonValue.from("object"))
+                    .putAdditionalProperty("properties", JsonValue.from(Map.of(
+                            "commentText", Map.of("type", "string"),
+                            "author", Map.of("type", "string")
+                    )))
+                    .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
+                    .build();
+
+            SessionExtractParams extractParams = SessionExtractParams.builder()
                     .id(sessionId)
                     .instruction("extract the text of the top comment on this page")
-                    .schema(SessionExtractParams.Schema.builder()
-                        .putAdditionalProperty("type", JsonValue.from("object"))
-                        .putAdditionalProperty("properties", JsonValue.from(Map.of(
-                            "commentText", Map.of(
-                                "type", "string",
-                                "description", "The text content of the top comment"
-                            ),
-                            "author", Map.of(
-                                "type", "string",
-                                "description", "The username of the comment author"
-                            )
-                        )))
-                        .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
-                        .build())
-                    .build()
-            );
+                    .schema(schema)
+                    .xStreamResponse(SessionExtractParams.XStreamResponse.TRUE)
+                    .build();
+            try (StreamResponse<StreamEvent> extractStream = client.sessions().extractStreaming(extractParams)) {
+                extractStream.stream().forEach(event -> System.out.println("[extract] " + event.type()));
+            }
 
-            JsonValue extractedResult = extractResponse.data()._result();
-            System.out.println("Extracted data: " + extractedResult);
-
-            // Get the author from the extracted data
-            String author = extractedResult.asObject()
-                .flatMap(obj -> Optional.ofNullable(obj.get("author")))
-                .flatMap(JsonValue::asString)
-                .orElse("unknown");
-            System.out.println("Looking up profile for author: " + author);
-
-            // Run an autonomous agent to accomplish a complex task
-            SessionExecuteResponse executeResponse = client.sessions().execute(
-                SessionExecuteParams.builder()
+            SessionExecuteParams executeParams = SessionExecuteParams.builder()
                     .id(sessionId)
                     .executeOptions(SessionExecuteParams.ExecuteOptions.builder()
-                        .instruction(String.format(
-                            "Find any personal website, GitHub, or LinkedIn profile for user '%s'. " +
-                            "Click on their username to view their profile page.",
-                            author
-                        ))
-                        .maxSteps(10.0)
-                        .build())
+                            .instruction("Click the 'Learn more' link if available")
+                            .maxSteps(3.0)
+                            .build())
                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
-                        .model(ModelConfig.ofModelConfigObject(
-                            ModelConfig.ModelConfigObject.builder()
-                                .modelName("openai/gpt-5-nano")
-                                .apiKey(System.getenv("MODEL_API_KEY"))
-                                .build()
-                        ))
-                        .cua(false)
-                        .build())
-                    .build()
-            );
-
-            System.out.println("Agent completed: " + executeResponse.data().result().message());
-            System.out.println("Agent success: " + executeResponse.data().result().success());
-
+                            .model(ModelConfig.builder()
+                                    .modelName("anthropic/claude-opus-4-6")
+                                    .apiKey(System.getProperty("stagehand.modelApiKey"))
+                                    .build())
+                            .cua(false)
+                            .build())
+                    .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
+                    .build();
+            try (StreamResponse<StreamEvent> executeStream = client.sessions().executeStreaming(executeParams)) {
+                executeStream.stream().forEach(event -> System.out.println("[execute] " + event.type()));
+            }
         } finally {
-            // End the browser session to clean up resources
-            client.sessions().end(
-                SessionEndParams.builder()
-                    .id(sessionId)
-                    .build()
-            );
-            System.out.println("Session ended");
+            client.sessions().end(SessionEndParams.builder().id(sessionId).build());
         }
     }
 }
@@ -479,7 +481,7 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .modelName("openai/gpt-5-nano")
+    .modelName("anthropic/claude-sonnet-4-6")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 
@@ -555,6 +557,8 @@ If the SDK threw an exception, but you're _certain_ the version is compatible, t
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
 
+Also note that there are bugs in older Jackson versions that can affect the SDK. We don't work around all Jackson bugs ([example](https://github.com/FasterXML/jackson-databind/issues/3240)) and expect users to upgrade Jackson for those instead.
+
 ## Network options
 
 ### Retries
@@ -629,6 +633,25 @@ StagehandClient client = StagehandOkHttpClient.builder()
     ))
     .build();
 ```
+
+### Connection pooling
+
+To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
+
+```java
+import com.browserbase.api.client.StagehandClient;
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
+import java.time.Duration;
+
+StagehandClient client = StagehandOkHttpClient.builder()
+    .fromEnv()
+    // If `maxIdleConnections` is set, then `keepAliveDuration` must be set, and vice versa.
+    .maxIdleConnections(10)
+    .keepAliveDuration(Duration.ofMinutes(2))
+    .build();
+```
+
+If both options are unset, OkHttp's default connection pool settings are used.
 
 ### HTTPS
 

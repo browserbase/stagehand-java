@@ -6,19 +6,20 @@ import com.browserbase.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-internal class SessionEndParamsTest {
+internal class SessionReplayParamsTest {
 
     @Test
     fun create() {
-        SessionEndParams.builder()
+        SessionReplayParams.builder()
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-            .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
+            .xStreamResponse(SessionReplayParams.XStreamResponse.TRUE)
             .build()
     }
 
     @Test
     fun pathParams() {
-        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
+        val params =
+            SessionReplayParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         assertThat(params._pathParam(0)).isEqualTo("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
         // out-of-bound path param
@@ -28,9 +29,9 @@ internal class SessionEndParamsTest {
     @Test
     fun headers() {
         val params =
-            SessionEndParams.builder()
+            SessionReplayParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xStreamResponse(SessionEndParams.XStreamResponse.TRUE)
+                .xStreamResponse(SessionReplayParams.XStreamResponse.TRUE)
                 .build()
 
         val headers = params._headers()
@@ -40,7 +41,8 @@ internal class SessionEndParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionEndParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
+        val params =
+            SessionReplayParams.builder().id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123").build()
 
         val headers = params._headers()
 

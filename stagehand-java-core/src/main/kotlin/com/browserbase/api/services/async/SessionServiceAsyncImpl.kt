@@ -35,6 +35,8 @@ import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
+import com.browserbase.api.models.sessions.SessionReplayParams
+import com.browserbase.api.models.sessions.SessionReplayResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 import com.browserbase.api.models.sessions.StreamEvent
@@ -136,6 +138,13 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
             .thenApply { it.parse() }
             .toAsync(clientOptions.streamHandlerExecutor)
 
+    override fun replay(
+        params: SessionReplayParams,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<SessionReplayResponse> =
+        // get /v1/sessions/{id}/replay
+        withRawResponse().replay(params, requestOptions).thenApply { it.parse() }
+
     override fun start(
         params: SessionStartParams,
         requestOptions: RequestOptions,
@@ -205,6 +214,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "act")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -250,7 +260,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "end")
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepareAsync(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
@@ -318,6 +328,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -397,6 +408,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -510,6 +522,7 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -534,6 +547,39 @@ class SessionServiceAsyncImpl internal constructor(private val clientOptions: Cl
                                     streamResponse.map { it.validate() }
                                 } else {
                                     streamResponse
+                                }
+                            }
+                    }
+                }
+        }
+
+        private val replayHandler: Handler<SessionReplayResponse> =
+            jsonHandler<SessionReplayResponse>(clientOptions.jsonMapper)
+
+        override fun replay(
+            params: SessionReplayParams,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "replay")
+                    .build()
+                    .prepareAsync(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            return request
+                .thenComposeAsync { clientOptions.httpClient.executeAsync(it, requestOptions) }
+                .thenApply { response ->
+                    errorHandler.handle(response).parseable {
+                        response
+                            .use { replayHandler.handle(it) }
+                            .also {
+                                if (requestOptions.responseValidation!!) {
+                                    it.validate()
                                 }
                             }
                     }

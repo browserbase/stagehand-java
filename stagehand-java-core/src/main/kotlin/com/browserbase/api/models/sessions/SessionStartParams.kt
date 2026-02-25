@@ -29,8 +29,6 @@ import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -42,15 +40,11 @@ import kotlin.jvm.optionals.getOrNull
  */
 class SessionStartParams
 private constructor(
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
-
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
@@ -246,7 +240,6 @@ private constructor(
     /** A builder for [SessionStartParams]. */
     class Builder internal constructor() {
 
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -254,18 +247,11 @@ private constructor(
 
         @JvmSynthetic
         internal fun from(sessionStartParams: SessionStartParams) = apply {
-            xSentAt = sessionStartParams.xSentAt
             xStreamResponse = sessionStartParams.xStreamResponse
             body = sessionStartParams.body.toBuilder()
             additionalHeaders = sessionStartParams.additionalHeaders.toBuilder()
             additionalQueryParams = sessionStartParams.additionalQueryParams.toBuilder()
         }
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
-
-        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -570,7 +556,6 @@ private constructor(
          */
         fun build(): SessionStartParams =
             SessionStartParams(
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -583,7 +568,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -1400,6 +1384,7 @@ private constructor(
             private val ignoreDefaultArgs: JsonField<IgnoreDefaultArgs>,
             private val ignoreHttpsErrors: JsonField<Boolean>,
             private val locale: JsonField<String>,
+            private val port: JsonField<Double>,
             private val preserveUserDataDir: JsonField<Boolean>,
             private val proxy: JsonField<Proxy>,
             private val userDataDir: JsonField<String>,
@@ -1451,6 +1436,7 @@ private constructor(
                 @JsonProperty("locale")
                 @ExcludeMissing
                 locale: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("port") @ExcludeMissing port: JsonField<Double> = JsonMissing.of(),
                 @JsonProperty("preserveUserDataDir")
                 @ExcludeMissing
                 preserveUserDataDir: JsonField<Boolean> = JsonMissing.of(),
@@ -1476,6 +1462,7 @@ private constructor(
                 ignoreDefaultArgs,
                 ignoreHttpsErrors,
                 locale,
+                port,
                 preserveUserDataDir,
                 proxy,
                 userDataDir,
@@ -1572,6 +1559,12 @@ private constructor(
              *   if the server responded with an unexpected value).
              */
             fun locale(): Optional<String> = locale.getOptional("locale")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun port(): Optional<Double> = port.getOptional("port")
 
             /**
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -1724,6 +1717,13 @@ private constructor(
             @JsonProperty("locale") @ExcludeMissing fun _locale(): JsonField<String> = locale
 
             /**
+             * Returns the raw JSON value of [port].
+             *
+             * Unlike [port], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("port") @ExcludeMissing fun _port(): JsonField<Double> = port
+
+            /**
              * Returns the raw JSON value of [preserveUserDataDir].
              *
              * Unlike [preserveUserDataDir], this method doesn't throw if the JSON field has an
@@ -1795,6 +1795,7 @@ private constructor(
                 private var ignoreDefaultArgs: JsonField<IgnoreDefaultArgs> = JsonMissing.of()
                 private var ignoreHttpsErrors: JsonField<Boolean> = JsonMissing.of()
                 private var locale: JsonField<String> = JsonMissing.of()
+                private var port: JsonField<Double> = JsonMissing.of()
                 private var preserveUserDataDir: JsonField<Boolean> = JsonMissing.of()
                 private var proxy: JsonField<Proxy> = JsonMissing.of()
                 private var userDataDir: JsonField<String> = JsonMissing.of()
@@ -1817,6 +1818,7 @@ private constructor(
                     ignoreDefaultArgs = launchOptions.ignoreDefaultArgs
                     ignoreHttpsErrors = launchOptions.ignoreHttpsErrors
                     locale = launchOptions.locale
+                    port = launchOptions.port
                     preserveUserDataDir = launchOptions.preserveUserDataDir
                     proxy = launchOptions.proxy
                     userDataDir = launchOptions.userDataDir
@@ -2027,6 +2029,17 @@ private constructor(
                  */
                 fun locale(locale: JsonField<String>) = apply { this.locale = locale }
 
+                fun port(port: Double) = port(JsonField.of(port))
+
+                /**
+                 * Sets [Builder.port] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.port] with a well-typed [Double] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun port(port: JsonField<Double>) = apply { this.port = port }
+
                 fun preserveUserDataDir(preserveUserDataDir: Boolean) =
                     preserveUserDataDir(JsonField.of(preserveUserDataDir))
 
@@ -2119,6 +2132,7 @@ private constructor(
                         ignoreDefaultArgs,
                         ignoreHttpsErrors,
                         locale,
+                        port,
                         preserveUserDataDir,
                         proxy,
                         userDataDir,
@@ -2148,6 +2162,7 @@ private constructor(
                 ignoreDefaultArgs().ifPresent { it.validate() }
                 ignoreHttpsErrors()
                 locale()
+                port()
                 preserveUserDataDir()
                 proxy().ifPresent { it.validate() }
                 userDataDir()
@@ -2185,6 +2200,7 @@ private constructor(
                     (ignoreDefaultArgs.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (ignoreHttpsErrors.asKnown().isPresent) 1 else 0) +
                     (if (locale.asKnown().isPresent) 1 else 0) +
+                    (if (port.asKnown().isPresent) 1 else 0) +
                     (if (preserveUserDataDir.asKnown().isPresent) 1 else 0) +
                     (proxy.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (userDataDir.asKnown().isPresent) 1 else 0) +
@@ -2868,6 +2884,7 @@ private constructor(
                     ignoreDefaultArgs == other.ignoreDefaultArgs &&
                     ignoreHttpsErrors == other.ignoreHttpsErrors &&
                     locale == other.locale &&
+                    port == other.port &&
                     preserveUserDataDir == other.preserveUserDataDir &&
                     proxy == other.proxy &&
                     userDataDir == other.userDataDir &&
@@ -2891,6 +2908,7 @@ private constructor(
                     ignoreDefaultArgs,
                     ignoreHttpsErrors,
                     locale,
+                    port,
                     preserveUserDataDir,
                     proxy,
                     userDataDir,
@@ -2902,7 +2920,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
+                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, port=$port, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
         }
 
         /** Browser type to use */
@@ -7300,7 +7318,6 @@ private constructor(
         }
 
         return other is SessionStartParams &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -7308,8 +7325,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionStartParams{xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionStartParams{xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

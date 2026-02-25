@@ -5,7 +5,6 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 import com.browserbase.api.core.JsonValue;
 import com.browserbase.api.core.RequestOptions;
 import com.browserbase.api.models.sessions.*;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -30,39 +29,38 @@ import java.util.Optional;
  */
 public class Main {
     public static void main(String[] args) {
+        Env.load();
         // Create client using environment variables
         // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
-        StagehandClient client = StagehandOkHttpClient.fromEnv();
+        StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         // Start a new browser session
-        SessionStartResponse startResponse = client.sessions().start(
-            SessionStartParams.builder()
-                .modelName("openai/gpt-5-nano")
-                .build()
-        );
+        SessionStartResponse startResponse = client.sessions()
+                .start(SessionStartParams.builder()
+                        .modelName("anthropic/claude-sonnet-4-6")
+                        .build());
 
         String sessionId = startResponse.data().sessionId();
         System.out.println("Session started: " + sessionId);
 
         try {
             // Navigate to Hacker News
-            client.sessions().navigate(
-                SessionNavigateParams.builder()
-                    .id(sessionId)
-                    .url("https://news.ycombinator.com")
-                    .build()
-            );
+            client.sessions()
+                    .navigate(SessionNavigateParams.builder()
+                            .id(sessionId)
+                            .url("https://news.ycombinator.com")
+                            .build());
             System.out.println("Navigated to Hacker News");
 
             // Observe to find possible actions - looking for the comments link
-            SessionObserveResponse observeResponse = client.sessions().observe(
-                SessionObserveParams.builder()
-                    .id(sessionId)
-                    .instruction("find the link to view comments for the top post")
-                    .build()
-            );
+            SessionObserveResponse observeResponse = client.sessions()
+                    .observe(SessionObserveParams.builder()
+                            .id(sessionId)
+                            .instruction("find the link to view comments for the top post")
+                            .build());
 
-            List<SessionObserveResponse.Data.Result> results = observeResponse.data().result();
+            List<SessionObserveResponse.Data.Result> results =
+                    observeResponse.data().result();
             System.out.println("Found " + results.size() + " possible actions");
 
             if (results.isEmpty()) {
@@ -76,36 +74,34 @@ public class Main {
             System.out.println("Acting on: " + action.description());
 
             // Pass the structured action to Act
-            SessionActResponse actResponse = client.sessions().act(
-                SessionActParams.builder()
-                    .id(sessionId)
-                    .input(action)
-                    .build()
-            );
+            SessionActResponse actResponse = client.sessions()
+                    .act(SessionActParams.builder().id(sessionId).input(action).build());
             System.out.println("Act completed: " + actResponse.data().result().message());
 
             // Extract data from the page
             // We're now on the comments page, so extract the top comment text
-            SessionExtractResponse extractResponse = client.sessions().extract(
-                SessionExtractParams.builder()
-                    .id(sessionId)
-                    .instruction("extract the text of the top comment on this page")
-                    .schema(SessionExtractParams.Schema.builder()
-                        .putAdditionalProperty("type", JsonValue.from("object"))
-                        .putAdditionalProperty("properties", JsonValue.from(Map.of(
-                            "commentText", Map.of(
-                                "type", "string",
-                                "description", "The text content of the top comment"
-                            ),
-                            "author", Map.of(
-                                "type", "string",
-                                "description", "The username of the comment author"
-                            )
-                        )))
-                        .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
-                        .build())
-                    .build()
-            );
+            SessionExtractResponse extractResponse = client.sessions()
+                    .extract(SessionExtractParams.builder()
+                            .id(sessionId)
+                            .instruction("extract the text of the top comment on this page")
+                            .schema(SessionExtractParams.Schema.builder()
+                                    .putAdditionalProperty("type", JsonValue.from("object"))
+                                    .putAdditionalProperty(
+                                            "properties",
+                                            JsonValue.from(Map.of(
+                                                    "commentText",
+                                                            Map.of(
+                                                                    "type", "string",
+                                                                    "description",
+                                                                            "The text content of the top comment"),
+                                                    "author",
+                                                            Map.of(
+                                                                    "type", "string",
+                                                                    "description",
+                                                                            "The username of the comment author"))))
+                                    .putAdditionalProperty("required", JsonValue.from(List.of("commentText")))
+                                    .build())
+                            .build());
 
             // Get the extracted result
             JsonValue extractedResult = extractResponse.data()._result();
@@ -125,42 +121,43 @@ public class Main {
             // Use the Agent to find the author's profile
             // Execute runs an autonomous agent that can navigate and interact with pages
             // Use a longer timeout (5 minutes) since agent execution can take a while
-            SessionExecuteResponse executeResponse = client.sessions().execute(
-                SessionExecuteParams.builder()
-                    .id(sessionId)
-                    .executeOptions(SessionExecuteParams.ExecuteOptions.builder()
-                        .instruction(String.format(
-                            "Find any personal website, GitHub, LinkedIn, or other best profile URL for the Hacker News user '%s'. " +
-                            "Click on their username to go to their profile page and look for any links they have shared. " +
-                            "Use Google Search with their username or other details from their profile if you dont find any direct links.",
-                            author
-                        ))
-                        .maxSteps(15.0)
-                        .build())
-                    .agentConfig(SessionExecuteParams.AgentConfig.builder()
-                        .model(ModelConfig.ofModelConfigObject(
-                            ModelConfig.ModelConfigObject.builder()
-                                .modelName("openai/gpt-5-nano")
-                                .apiKey(System.getenv("MODEL_API_KEY"))
-                                .build()
-                        ))
-                        .cua(false)
-                        .build())
-                    .build(),
-                RequestOptions.builder().timeout(Duration.ofMinutes(5)).build()
-            );
+            SessionExecuteResponse executeResponse = client.sessions()
+                    .execute(
+                            SessionExecuteParams.builder()
+                                    .id(sessionId)
+                                    .executeOptions(SessionExecuteParams.ExecuteOptions.builder()
+                                            .instruction(String.format(
+                                                    "Find any personal website, GitHub, LinkedIn, or other best"
+                                                        + " profile URL for the Hacker News user '%s'. Click on their"
+                                                        + " username to go to their profile page and look for any"
+                                                        + " links they have shared. Use Google Search with their"
+                                                        + " username or other details from their profile if you dont"
+                                                        + " find any direct links.",
+                                                    author))
+                                            .maxSteps(15.0)
+                                            .build())
+                                    .agentConfig(SessionExecuteParams.AgentConfig.builder()
+                                            .model(ModelConfig.builder()
+                                                    .modelName("anthropic/claude-opus-4-6")
+                                                    .apiKey(System.getProperty("stagehand.modelApiKey"))
+                                                    .build())
+                                            .cua(false)
+                                            .build())
+                                    .build(),
+                            RequestOptions.builder()
+                                    .timeout(Duration.ofMinutes(5))
+                                    .build());
 
-            System.out.println("Agent completed: " + executeResponse.data().result().message());
-            System.out.println("Agent success: " + executeResponse.data().result().success());
-            System.out.println("Agent actions taken: " + executeResponse.data().result().actions().size());
+            System.out.println(
+                    "Agent completed: " + executeResponse.data().result().message());
+            System.out.println(
+                    "Agent success: " + executeResponse.data().result().success());
+            System.out.println("Agent actions taken: "
+                    + executeResponse.data().result().actions().size());
 
         } finally {
             // End the session to clean up resources
-            client.sessions().end(
-                SessionEndParams.builder()
-                    .id(sessionId)
-                    .build()
-            );
+            client.sessions().end(SessionEndParams.builder().id(sessionId).build());
             System.out.println("Session ended");
         }
     }

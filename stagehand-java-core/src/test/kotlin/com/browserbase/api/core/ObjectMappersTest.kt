@@ -3,12 +3,14 @@ package com.browserbase.api.core
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.readValue
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import kotlin.reflect.KClass
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.junitpioneer.jupiter.cartesian.CartesianTest
@@ -46,11 +48,7 @@ internal class ObjectMappersTest {
             val VALID_CONVERSIONS =
                 listOf(
                     FLOAT to DOUBLE,
-                    FLOAT to INTEGER,
-                    FLOAT to LONG,
                     DOUBLE to FLOAT,
-                    DOUBLE to INTEGER,
-                    DOUBLE to LONG,
                     INTEGER to FLOAT,
                     INTEGER to DOUBLE,
                     INTEGER to LONG,
@@ -58,14 +56,6 @@ internal class ObjectMappersTest {
                     LONG to DOUBLE,
                     LONG to INTEGER,
                     CLASS to MAP,
-                    // These aren't actually valid, but coercion configs don't work for String until
-                    // v2.14.0: https://github.com/FasterXML/jackson-databind/issues/3240
-                    // We currently test on v2.13.4.
-                    BOOLEAN to STRING,
-                    FLOAT to STRING,
-                    DOUBLE to STRING,
-                    INTEGER to STRING,
-                    LONG to STRING,
                 )
         }
     }
@@ -84,19 +74,44 @@ internal class ObjectMappersTest {
         }
     }
 
-    enum class LenientLocalDateTimeTestCase(val string: String) {
-        DATE("1998-04-21"),
-        DATE_TIME("1998-04-21T04:00:00"),
-        ZONED_DATE_TIME_1("1998-04-21T04:00:00+03:00"),
-        ZONED_DATE_TIME_2("1998-04-21T04:00:00Z"),
+    enum class LenientOffsetDateTimeTestCase(
+        val string: String,
+        val expectedOffsetDateTime: OffsetDateTime,
+    ) {
+        DATE(
+            "1998-04-21",
+            expectedOffsetDateTime =
+                OffsetDateTime.of(LocalDate.of(1998, 4, 21), LocalTime.of(0, 0), ZoneOffset.UTC),
+        ),
+        DATE_TIME(
+            "1998-04-21T04:00:00",
+            expectedOffsetDateTime =
+                OffsetDateTime.of(LocalDate.of(1998, 4, 21), LocalTime.of(4, 0), ZoneOffset.UTC),
+        ),
+        ZONED_DATE_TIME_1(
+            "1998-04-21T04:00:00+03:00",
+            expectedOffsetDateTime =
+                OffsetDateTime.of(
+                    LocalDate.of(1998, 4, 21),
+                    LocalTime.of(4, 0),
+                    ZoneOffset.ofHours(3),
+                ),
+        ),
+        ZONED_DATE_TIME_2(
+            "1998-04-21T04:00:00Z",
+            expectedOffsetDateTime =
+                OffsetDateTime.of(LocalDate.of(1998, 4, 21), LocalTime.of(4, 0), ZoneOffset.UTC),
+        ),
     }
 
     @ParameterizedTest
     @EnumSource
-    fun readLocalDateTime_lenient(testCase: LenientLocalDateTimeTestCase) {
+    fun readOffsetDateTime_lenient(testCase: LenientOffsetDateTimeTestCase) {
         val jsonMapper = jsonMapper()
         val json = jsonMapper.writeValueAsString(testCase.string)
 
-        assertDoesNotThrow { jsonMapper().readValue<LocalDateTime>(json) }
+        val offsetDateTime = jsonMapper().readValue<OffsetDateTime>(json)
+
+        assertThat(offsetDateTime).isEqualTo(testCase.expectedOffsetDateTime)
     }
 }

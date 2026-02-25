@@ -23,7 +23,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.status
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeEach
@@ -75,7 +74,6 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -98,6 +96,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -252,7 +251,6 @@ internal class ErrorHandlingTest {
             assertThrows<BadRequestException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -275,6 +273,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -429,7 +428,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -452,6 +450,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -606,7 +605,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnauthorizedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -629,6 +627,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -783,7 +782,6 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -806,6 +804,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -960,7 +959,6 @@ internal class ErrorHandlingTest {
             assertThrows<PermissionDeniedException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -983,6 +981,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -1137,7 +1136,6 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -1160,6 +1158,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -1314,7 +1313,6 @@ internal class ErrorHandlingTest {
             assertThrows<NotFoundException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -1337,6 +1335,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -1491,7 +1490,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -1514,6 +1512,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -1668,7 +1667,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnprocessableEntityException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -1691,6 +1689,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -1845,7 +1844,6 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -1868,6 +1866,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2022,7 +2021,6 @@ internal class ErrorHandlingTest {
             assertThrows<RateLimitException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2045,6 +2043,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2199,7 +2198,6 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2222,6 +2220,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2376,7 +2375,6 @@ internal class ErrorHandlingTest {
             assertThrows<InternalServerException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2399,6 +2397,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2553,7 +2552,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2576,6 +2574,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2730,7 +2729,6 @@ internal class ErrorHandlingTest {
             assertThrows<UnexpectedStatusCodeException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2753,6 +2751,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -2905,7 +2904,6 @@ internal class ErrorHandlingTest {
             assertThrows<StagehandException> {
                 sessionService.start(
                     SessionStartParams.builder()
-                        .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                         .modelName("openai/gpt-4o")
                         .actTimeoutMs(0.0)
@@ -2928,6 +2926,7 @@ internal class ErrorHandlingTest {
                                         .ignoreDefaultArgs(true)
                                         .ignoreHttpsErrors(true)
                                         .locale("locale")
+                                        .port(0.0)
                                         .preserveUserDataDir(true)
                                         .proxy(
                                             SessionStartParams.Browser.LaunchOptions.Proxy.builder()

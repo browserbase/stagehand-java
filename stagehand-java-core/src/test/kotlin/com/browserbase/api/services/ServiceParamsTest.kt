@@ -5,6 +5,7 @@ package com.browserbase.api.services
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
+import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.github.tomakehurst.wiremock.client.WireMock.anyUrl
@@ -17,7 +18,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo
 import com.github.tomakehurst.wiremock.junit5.WireMockTest
-import java.time.OffsetDateTime
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -40,7 +40,7 @@ internal class ServiceParamsTest {
                 .build()
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun start() {
         val sessionService = client.sessions()
@@ -48,7 +48,6 @@ internal class ServiceParamsTest {
 
         sessionService.start(
             SessionStartParams.builder()
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
                 .modelName("openai/gpt-4o")
                 .actTimeoutMs(0.0)
@@ -71,6 +70,7 @@ internal class ServiceParamsTest {
                                 .ignoreDefaultArgs(true)
                                 .ignoreHttpsErrors(true)
                                 .locale("locale")
+                                .port(0.0)
                                 .preserveUserDataDir(true)
                                 .proxy(
                                     SessionStartParams.Browser.LaunchOptions.Proxy.builder()
@@ -205,7 +205,7 @@ internal class ServiceParamsTest {
         )
     }
 
-    @Disabled("Prism tests are disabled")
+    @Disabled("Mock server tests are disabled")
     @Test
     fun act() {
         val sessionService = client.sessions()
@@ -214,13 +214,19 @@ internal class ServiceParamsTest {
         sessionService.act(
             SessionActParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionActParams.XStreamResponse.TRUE)
                 .input("Click the login button")
                 .frameId("frameId")
                 .options(
                     SessionActParams.Options.builder()
-                        .model("openai/gpt-5-nano")
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .timeout(30000.0)
                         .variables(
                             SessionActParams.Options.Variables.builder()

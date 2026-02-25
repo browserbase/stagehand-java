@@ -2,13 +2,17 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.BaseDeserializer
+import com.browserbase.api.core.BaseSerializer
 import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
+import com.browserbase.api.core.allMaxBy
 import com.browserbase.api.core.checkRequired
+import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
 import com.browserbase.api.errors.StagehandInvalidDataException
@@ -16,8 +20,13 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -27,7 +36,6 @@ import kotlin.jvm.optionals.getOrNull
 class SessionExecuteParams
 private constructor(
     private val id: String?,
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -36,9 +44,6 @@ private constructor(
 
     /** Unique session identifier */
     fun id(): Optional<String> = Optional.ofNullable(id)
-
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
@@ -64,6 +69,14 @@ private constructor(
     fun frameId(): Optional<String> = body.frameId()
 
     /**
+     * If true, the server captures a cache entry and returns it to the client
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun shouldCache(): Optional<Boolean> = body.shouldCache()
+
+    /**
      * Returns the raw JSON value of [agentConfig].
      *
      * Unlike [agentConfig], this method doesn't throw if the JSON field has an unexpected type.
@@ -83,6 +96,13 @@ private constructor(
      * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
      */
     fun _frameId(): JsonField<String> = body._frameId()
+
+    /**
+     * Returns the raw JSON value of [shouldCache].
+     *
+     * Unlike [shouldCache], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    fun _shouldCache(): JsonField<Boolean> = body._shouldCache()
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = body._additionalProperties()
 
@@ -112,7 +132,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -121,7 +140,6 @@ private constructor(
         @JvmSynthetic
         internal fun from(sessionExecuteParams: SessionExecuteParams) = apply {
             id = sessionExecuteParams.id
-            xSentAt = sessionExecuteParams.xSentAt
             xStreamResponse = sessionExecuteParams.xStreamResponse
             body = sessionExecuteParams.body.toBuilder()
             additionalHeaders = sessionExecuteParams.additionalHeaders.toBuilder()
@@ -133,12 +151,6 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
-
-        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -157,6 +169,7 @@ private constructor(
          * - [agentConfig]
          * - [executeOptions]
          * - [frameId]
+         * - [shouldCache]
          */
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
@@ -189,7 +202,10 @@ private constructor(
         }
 
         /** Target frame ID for the agent */
-        fun frameId(frameId: String) = apply { body.frameId(frameId) }
+        fun frameId(frameId: String?) = apply { body.frameId(frameId) }
+
+        /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+        fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
         /**
          * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -198,6 +214,18 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun frameId(frameId: JsonField<String>) = apply { body.frameId(frameId) }
+
+        /** If true, the server captures a cache entry and returns it to the client */
+        fun shouldCache(shouldCache: Boolean) = apply { body.shouldCache(shouldCache) }
+
+        /**
+         * Sets [Builder.shouldCache] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.shouldCache] with a well-typed [Boolean] value instead.
+         * This method is primarily for setting the field to an undocumented or not yet supported
+         * value.
+         */
+        fun shouldCache(shouldCache: JsonField<Boolean>) = apply { body.shouldCache(shouldCache) }
 
         fun additionalBodyProperties(additionalBodyProperties: Map<String, JsonValue>) = apply {
             body.additionalProperties(additionalBodyProperties)
@@ -332,7 +360,6 @@ private constructor(
         fun build(): SessionExecuteParams =
             SessionExecuteParams(
                 id,
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -351,7 +378,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -365,6 +391,7 @@ private constructor(
         private val agentConfig: JsonField<AgentConfig>,
         private val executeOptions: JsonField<ExecuteOptions>,
         private val frameId: JsonField<String>,
+        private val shouldCache: JsonField<Boolean>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -377,7 +404,10 @@ private constructor(
             @ExcludeMissing
             executeOptions: JsonField<ExecuteOptions> = JsonMissing.of(),
             @JsonProperty("frameId") @ExcludeMissing frameId: JsonField<String> = JsonMissing.of(),
-        ) : this(agentConfig, executeOptions, frameId, mutableMapOf())
+            @JsonProperty("shouldCache")
+            @ExcludeMissing
+            shouldCache: JsonField<Boolean> = JsonMissing.of(),
+        ) : this(agentConfig, executeOptions, frameId, shouldCache, mutableMapOf())
 
         /**
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
@@ -398,6 +428,14 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun frameId(): Optional<String> = frameId.getOptional("frameId")
+
+        /**
+         * If true, the server captures a cache entry and returns it to the client
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun shouldCache(): Optional<Boolean> = shouldCache.getOptional("shouldCache")
 
         /**
          * Returns the raw JSON value of [agentConfig].
@@ -424,6 +462,15 @@ private constructor(
          * Unlike [frameId], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("frameId") @ExcludeMissing fun _frameId(): JsonField<String> = frameId
+
+        /**
+         * Returns the raw JSON value of [shouldCache].
+         *
+         * Unlike [shouldCache], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("shouldCache")
+        @ExcludeMissing
+        fun _shouldCache(): JsonField<Boolean> = shouldCache
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -457,6 +504,7 @@ private constructor(
             private var agentConfig: JsonField<AgentConfig>? = null
             private var executeOptions: JsonField<ExecuteOptions>? = null
             private var frameId: JsonField<String> = JsonMissing.of()
+            private var shouldCache: JsonField<Boolean> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -464,6 +512,7 @@ private constructor(
                 agentConfig = body.agentConfig
                 executeOptions = body.executeOptions
                 frameId = body.frameId
+                shouldCache = body.shouldCache
                 additionalProperties = body.additionalProperties.toMutableMap()
             }
 
@@ -495,7 +544,10 @@ private constructor(
             }
 
             /** Target frame ID for the agent */
-            fun frameId(frameId: String) = frameId(JsonField.of(frameId))
+            fun frameId(frameId: String?) = frameId(JsonField.ofNullable(frameId))
+
+            /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+            fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
             /**
              * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -505,6 +557,20 @@ private constructor(
              * supported value.
              */
             fun frameId(frameId: JsonField<String>) = apply { this.frameId = frameId }
+
+            /** If true, the server captures a cache entry and returns it to the client */
+            fun shouldCache(shouldCache: Boolean) = shouldCache(JsonField.of(shouldCache))
+
+            /**
+             * Sets [Builder.shouldCache] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.shouldCache] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun shouldCache(shouldCache: JsonField<Boolean>) = apply {
+                this.shouldCache = shouldCache
+            }
 
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
@@ -543,6 +609,7 @@ private constructor(
                     checkRequired("agentConfig", agentConfig),
                     checkRequired("executeOptions", executeOptions),
                     frameId,
+                    shouldCache,
                     additionalProperties.toMutableMap(),
                 )
         }
@@ -557,6 +624,7 @@ private constructor(
             agentConfig().validate()
             executeOptions().validate()
             frameId()
+            shouldCache()
             validated = true
         }
 
@@ -578,7 +646,8 @@ private constructor(
         internal fun validity(): Int =
             (agentConfig.asKnown().getOrNull()?.validity() ?: 0) +
                 (executeOptions.asKnown().getOrNull()?.validity() ?: 0) +
-                (if (frameId.asKnown().isPresent) 1 else 0)
+                (if (frameId.asKnown().isPresent) 1 else 0) +
+                (if (shouldCache.asKnown().isPresent) 1 else 0)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -589,24 +658,27 @@ private constructor(
                 agentConfig == other.agentConfig &&
                 executeOptions == other.executeOptions &&
                 frameId == other.frameId &&
+                shouldCache == other.shouldCache &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(agentConfig, executeOptions, frameId, additionalProperties)
+            Objects.hash(agentConfig, executeOptions, frameId, shouldCache, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Body{agentConfig=$agentConfig, executeOptions=$executeOptions, frameId=$frameId, additionalProperties=$additionalProperties}"
+            "Body{agentConfig=$agentConfig, executeOptions=$executeOptions, frameId=$frameId, shouldCache=$shouldCache, additionalProperties=$additionalProperties}"
     }
 
     class AgentConfig
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
         private val cua: JsonField<Boolean>,
-        private val model: JsonField<ModelConfig>,
+        private val executionModel: JsonField<ExecutionModel>,
+        private val mode: JsonField<Mode>,
+        private val model: JsonField<Model>,
         private val provider: JsonField<Provider>,
         private val systemPrompt: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -615,17 +687,21 @@ private constructor(
         @JsonCreator
         private constructor(
             @JsonProperty("cua") @ExcludeMissing cua: JsonField<Boolean> = JsonMissing.of(),
-            @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
+            @JsonProperty("executionModel")
+            @ExcludeMissing
+            executionModel: JsonField<ExecutionModel> = JsonMissing.of(),
+            @JsonProperty("mode") @ExcludeMissing mode: JsonField<Mode> = JsonMissing.of(),
+            @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
             @JsonProperty("provider")
             @ExcludeMissing
             provider: JsonField<Provider> = JsonMissing.of(),
             @JsonProperty("systemPrompt")
             @ExcludeMissing
             systemPrompt: JsonField<String> = JsonMissing.of(),
-        ) : this(cua, model, provider, systemPrompt, mutableMapOf())
+        ) : this(cua, executionModel, mode, model, provider, systemPrompt, mutableMapOf())
 
         /**
-         * Enable Computer Use Agent mode
+         * Deprecated. Use mode: 'cua' instead. If both are provided, mode takes precedence.
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
@@ -633,13 +709,31 @@ private constructor(
         fun cua(): Optional<Boolean> = cua.getOptional("cua")
 
         /**
-         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-         * 'anthropic/claude-4.5-opus')
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+         * execution (observe/act calls within agent tools). If not specified, inherits from the
+         * main model configuration.
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun model(): Optional<ModelConfig> = model.getOptional("model")
+        fun executionModel(): Optional<ExecutionModel> =
+            executionModel.getOptional("executionModel")
+
+        /**
+         * Tool mode for the agent (dom, hybrid, cua). If set, overrides cua.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun mode(): Optional<Mode> = mode.getOptional("mode")
+
+        /**
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano')
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun model(): Optional<Model> = model.getOptional("model")
 
         /**
          * AI provider for the agent (legacy, use model: openai/gpt-5-nano instead)
@@ -665,11 +759,28 @@ private constructor(
         @JsonProperty("cua") @ExcludeMissing fun _cua(): JsonField<Boolean> = cua
 
         /**
+         * Returns the raw JSON value of [executionModel].
+         *
+         * Unlike [executionModel], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("executionModel")
+        @ExcludeMissing
+        fun _executionModel(): JsonField<ExecutionModel> = executionModel
+
+        /**
+         * Returns the raw JSON value of [mode].
+         *
+         * Unlike [mode], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("mode") @ExcludeMissing fun _mode(): JsonField<Mode> = mode
+
+        /**
          * Returns the raw JSON value of [model].
          *
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
+        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<Model> = model
 
         /**
          * Returns the raw JSON value of [provider].
@@ -710,7 +821,9 @@ private constructor(
         class Builder internal constructor() {
 
             private var cua: JsonField<Boolean> = JsonMissing.of()
-            private var model: JsonField<ModelConfig> = JsonMissing.of()
+            private var executionModel: JsonField<ExecutionModel> = JsonMissing.of()
+            private var mode: JsonField<Mode> = JsonMissing.of()
+            private var model: JsonField<Model> = JsonMissing.of()
             private var provider: JsonField<Provider> = JsonMissing.of()
             private var systemPrompt: JsonField<String> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -718,13 +831,15 @@ private constructor(
             @JvmSynthetic
             internal fun from(agentConfig: AgentConfig) = apply {
                 cua = agentConfig.cua
+                executionModel = agentConfig.executionModel
+                mode = agentConfig.mode
                 model = agentConfig.model
                 provider = agentConfig.provider
                 systemPrompt = agentConfig.systemPrompt
                 additionalProperties = agentConfig.additionalProperties.toMutableMap()
             }
 
-            /** Enable Computer Use Agent mode */
+            /** Deprecated. Use mode: 'cua' instead. If both are provided, mode takes precedence. */
             fun cua(cua: Boolean) = cua(JsonField.of(cua))
 
             /**
@@ -737,28 +852,62 @@ private constructor(
             fun cua(cua: JsonField<Boolean>) = apply { this.cua = cua }
 
             /**
-             * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-             * 'anthropic/claude-4.5-opus')
+             * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+             * execution (observe/act calls within agent tools). If not specified, inherits from the
+             * main model configuration.
              */
-            fun model(model: ModelConfig) = model(JsonField.of(model))
+            fun executionModel(executionModel: ExecutionModel) =
+                executionModel(JsonField.of(executionModel))
+
+            /**
+             * Sets [Builder.executionModel] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.executionModel] with a well-typed [ExecutionModel]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun executionModel(executionModel: JsonField<ExecutionModel>) = apply {
+                this.executionModel = executionModel
+            }
+
+            /**
+             * Alias for calling [executionModel] with `ExecutionModel.ofModelConfig(modelConfig)`.
+             */
+            fun executionModel(modelConfig: ModelConfig) =
+                executionModel(ExecutionModel.ofModelConfig(modelConfig))
+
+            /** Alias for calling [executionModel] with `ExecutionModel.ofString(string)`. */
+            fun executionModel(string: String) = executionModel(ExecutionModel.ofString(string))
+
+            /** Tool mode for the agent (dom, hybrid, cua). If set, overrides cua. */
+            fun mode(mode: Mode) = mode(JsonField.of(mode))
+
+            /**
+             * Sets [Builder.mode] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.mode] with a well-typed [Mode] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun mode(mode: JsonField<Mode>) = apply { this.mode = mode }
+
+            /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
+            fun model(model: Model) = model(JsonField.of(model))
 
             /**
              * Sets [Builder.model] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.model] with a well-typed [ModelConfig] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.model] with a well-typed [Model] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
+            fun model(model: JsonField<Model>) = apply { this.model = model }
 
-            /** Alias for calling [model] with `ModelConfig.ofName(name)`. */
-            fun model(name: String) = model(ModelConfig.ofName(name))
+            /** Alias for calling [model] with `Model.ofConfig(config)`. */
+            fun model(config: ModelConfig) = model(Model.ofConfig(config))
 
-            /**
-             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
-             */
-            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
-                model(ModelConfig.ofModelConfigObject(modelConfigObject))
+            /** Alias for calling [model] with `Model.ofString(string)`. */
+            fun model(string: String) = model(Model.ofString(string))
 
             /** AI provider for the agent (legacy, use model: openai/gpt-5-nano instead) */
             fun provider(provider: Provider) = provider(JsonField.of(provider))
@@ -811,7 +960,15 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): AgentConfig =
-                AgentConfig(cua, model, provider, systemPrompt, additionalProperties.toMutableMap())
+                AgentConfig(
+                    cua,
+                    executionModel,
+                    mode,
+                    model,
+                    provider,
+                    systemPrompt,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -822,6 +979,8 @@ private constructor(
             }
 
             cua()
+            executionModel().ifPresent { it.validate() }
+            mode().ifPresent { it.validate() }
             model().ifPresent { it.validate() }
             provider().ifPresent { it.validate() }
             systemPrompt()
@@ -845,9 +1004,499 @@ private constructor(
         @JvmSynthetic
         internal fun validity(): Int =
             (if (cua.asKnown().isPresent) 1 else 0) +
+                (executionModel.asKnown().getOrNull()?.validity() ?: 0) +
+                (mode.asKnown().getOrNull()?.validity() ?: 0) +
                 (model.asKnown().getOrNull()?.validity() ?: 0) +
                 (provider.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (systemPrompt.asKnown().isPresent) 1 else 0)
+
+        /**
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano') for tool
+         * execution (observe/act calls within agent tools). If not specified, inherits from the
+         * main model configuration.
+         */
+        @JsonDeserialize(using = ExecutionModel.Deserializer::class)
+        @JsonSerialize(using = ExecutionModel.Serializer::class)
+        class ExecutionModel
+        private constructor(
+            private val modelConfig: ModelConfig? = null,
+            private val string: String? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun modelConfig(): Optional<ModelConfig> = Optional.ofNullable(modelConfig)
+
+            fun string(): Optional<String> = Optional.ofNullable(string)
+
+            fun isModelConfig(): Boolean = modelConfig != null
+
+            fun isString(): Boolean = string != null
+
+            fun asModelConfig(): ModelConfig = modelConfig.getOrThrow("modelConfig")
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
+
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    modelConfig != null -> visitor.visitModelConfig(modelConfig)
+                    string != null -> visitor.visitString(string)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): ExecutionModel = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitModelConfig(modelConfig: ModelConfig) {
+                            modelConfig.validate()
+                        }
+
+                        override fun visitString(string: String) {}
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitModelConfig(modelConfig: ModelConfig) =
+                            modelConfig.validity()
+
+                        override fun visitString(string: String) = 1
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ExecutionModel &&
+                    modelConfig == other.modelConfig &&
+                    string == other.string
+            }
+
+            override fun hashCode(): Int = Objects.hash(modelConfig, string)
+
+            override fun toString(): String =
+                when {
+                    modelConfig != null -> "ExecutionModel{modelConfig=$modelConfig}"
+                    string != null -> "ExecutionModel{string=$string}"
+                    _json != null -> "ExecutionModel{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid ExecutionModel")
+                }
+
+            companion object {
+
+                @JvmStatic
+                fun ofModelConfig(modelConfig: ModelConfig) =
+                    ExecutionModel(modelConfig = modelConfig)
+
+                @JvmStatic fun ofString(string: String) = ExecutionModel(string = string)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [ExecutionModel] to a value of
+             * type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitModelConfig(modelConfig: ModelConfig): T
+
+                fun visitString(string: String): T
+
+                /**
+                 * Maps an unknown variant of [ExecutionModel] to a value of type [T].
+                 *
+                 * An instance of [ExecutionModel] can contain an unknown variant if it was
+                 * deserialized from data that doesn't match any known variant. For example, if the
+                 * SDK is on an older version than the API, then the API may respond with new
+                 * variants that the SDK is unaware of.
+                 *
+                 * @throws StagehandInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw StagehandInvalidDataException("Unknown ExecutionModel: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<ExecutionModel>(ExecutionModel::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): ExecutionModel {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<ModelConfig>())?.let {
+                                    ExecutionModel(modelConfig = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    ExecutionModel(string = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants (e.g. deserializing from boolean).
+                        0 -> ExecutionModel(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<ExecutionModel>(ExecutionModel::class) {
+
+                override fun serialize(
+                    value: ExecutionModel,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.modelConfig != null -> generator.writeObject(value.modelConfig)
+                        value.string != null -> generator.writeObject(value.string)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid ExecutionModel")
+                    }
+                }
+            }
+        }
+
+        /** Tool mode for the agent (dom, hybrid, cua). If set, overrides cua. */
+        class Mode @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val DOM = of("dom")
+
+                @JvmField val HYBRID = of("hybrid")
+
+                @JvmField val CUA = of("cua")
+
+                @JvmStatic fun of(value: String) = Mode(JsonField.of(value))
+            }
+
+            /** An enum containing [Mode]'s known values. */
+            enum class Known {
+                DOM,
+                HYBRID,
+                CUA,
+            }
+
+            /**
+             * An enum containing [Mode]'s known values, as well as an [_UNKNOWN] member.
+             *
+             * An instance of [Mode] can contain an unknown value in a couple of cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                DOM,
+                HYBRID,
+                CUA,
+                /** An enum member indicating that [Mode] was instantiated with an unknown value. */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    DOM -> Value.DOM
+                    HYBRID -> Value.HYBRID
+                    CUA -> Value.CUA
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    DOM -> Known.DOM
+                    HYBRID -> Known.HYBRID
+                    CUA -> Known.CUA
+                    else -> throw StagehandInvalidDataException("Unknown Mode: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StagehandInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): Mode = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Mode && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
+        }
+
+        /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
+        @JsonDeserialize(using = Model.Deserializer::class)
+        @JsonSerialize(using = Model.Serializer::class)
+        class Model
+        private constructor(
+            private val config: ModelConfig? = null,
+            private val string: String? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun config(): Optional<ModelConfig> = Optional.ofNullable(config)
+
+            fun string(): Optional<String> = Optional.ofNullable(string)
+
+            fun isConfig(): Boolean = config != null
+
+            fun isString(): Boolean = string != null
+
+            fun asConfig(): ModelConfig = config.getOrThrow("config")
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
+
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    config != null -> visitor.visitConfig(config)
+                    string != null -> visitor.visitString(string)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): Model = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitConfig(config: ModelConfig) {
+                            config.validate()
+                        }
+
+                        override fun visitString(string: String) {}
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitConfig(config: ModelConfig) = config.validity()
+
+                        override fun visitString(string: String) = 1
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Model && config == other.config && string == other.string
+            }
+
+            override fun hashCode(): Int = Objects.hash(config, string)
+
+            override fun toString(): String =
+                when {
+                    config != null -> "Model{config=$config}"
+                    string != null -> "Model{string=$string}"
+                    _json != null -> "Model{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid Model")
+                }
+
+            companion object {
+
+                @JvmStatic fun ofConfig(config: ModelConfig) = Model(config = config)
+
+                @JvmStatic fun ofString(string: String) = Model(string = string)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [Model] to a value of type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitConfig(config: ModelConfig): T
+
+                fun visitString(string: String): T
+
+                /**
+                 * Maps an unknown variant of [Model] to a value of type [T].
+                 *
+                 * An instance of [Model] can contain an unknown variant if it was deserialized from
+                 * data that doesn't match any known variant. For example, if the SDK is on an older
+                 * version than the API, then the API may respond with new variants that the SDK is
+                 * unaware of.
+                 *
+                 * @throws StagehandInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw StagehandInvalidDataException("Unknown Model: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<Model>(Model::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): Model {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<ModelConfig>())?.let {
+                                    Model(config = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    Model(string = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants (e.g. deserializing from boolean).
+                        0 -> Model(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<Model>(Model::class) {
+
+                override fun serialize(
+                    value: Model,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.config != null -> generator.writeObject(value.config)
+                        value.string != null -> generator.writeObject(value.string)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid Model")
+                    }
+                }
+            }
+        }
 
         /** AI provider for the agent (legacy, use model: openai/gpt-5-nano instead) */
         class Provider @JsonCreator private constructor(private val value: JsonField<String>) :
@@ -873,6 +1522,8 @@ private constructor(
 
                 @JvmField val MICROSOFT = of("microsoft")
 
+                @JvmField val BEDROCK = of("bedrock")
+
                 @JvmStatic fun of(value: String) = Provider(JsonField.of(value))
             }
 
@@ -882,6 +1533,7 @@ private constructor(
                 ANTHROPIC,
                 GOOGLE,
                 MICROSOFT,
+                BEDROCK,
             }
 
             /**
@@ -898,6 +1550,7 @@ private constructor(
                 ANTHROPIC,
                 GOOGLE,
                 MICROSOFT,
+                BEDROCK,
                 /**
                  * An enum member indicating that [Provider] was instantiated with an unknown value.
                  */
@@ -917,6 +1570,7 @@ private constructor(
                     ANTHROPIC -> Value.ANTHROPIC
                     GOOGLE -> Value.GOOGLE
                     MICROSOFT -> Value.MICROSOFT
+                    BEDROCK -> Value.BEDROCK
                     else -> Value._UNKNOWN
                 }
 
@@ -935,6 +1589,7 @@ private constructor(
                     ANTHROPIC -> Known.ANTHROPIC
                     GOOGLE -> Known.GOOGLE
                     MICROSOFT -> Known.MICROSOFT
+                    BEDROCK -> Known.BEDROCK
                     else -> throw StagehandInvalidDataException("Unknown Provider: $value")
                 }
 
@@ -999,6 +1654,8 @@ private constructor(
 
             return other is AgentConfig &&
                 cua == other.cua &&
+                executionModel == other.executionModel &&
+                mode == other.mode &&
                 model == other.model &&
                 provider == other.provider &&
                 systemPrompt == other.systemPrompt &&
@@ -1006,13 +1663,21 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(cua, model, provider, systemPrompt, additionalProperties)
+            Objects.hash(
+                cua,
+                executionModel,
+                mode,
+                model,
+                provider,
+                systemPrompt,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "AgentConfig{cua=$cua, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
+            "AgentConfig{cua=$cua, executionModel=$executionModel, mode=$mode, model=$model, provider=$provider, systemPrompt=$systemPrompt, additionalProperties=$additionalProperties}"
     }
 
     class ExecuteOptions
@@ -1401,7 +2066,6 @@ private constructor(
 
         return other is SessionExecuteParams &&
             id == other.id &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -1409,8 +2073,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(id, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionExecuteParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionExecuteParams{id=$id, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -19,6 +19,8 @@ import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
+import com.browserbase.api.models.sessions.SessionReplayParams
+import com.browserbase.api.models.sessions.SessionReplayResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 import com.browserbase.api.models.sessions.StreamEvent
@@ -336,6 +338,41 @@ interface SessionServiceAsync {
         requestOptions: RequestOptions,
     ): AsyncStreamResponse<StreamEvent> =
         observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+    /** Retrieves replay metrics for a session. */
+    fun replay(id: String): CompletableFuture<SessionReplayResponse> =
+        replay(id, SessionReplayParams.none())
+
+    /** @see replay */
+    fun replay(
+        id: String,
+        params: SessionReplayParams = SessionReplayParams.none(),
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<SessionReplayResponse> =
+        replay(params.toBuilder().id(id).build(), requestOptions)
+
+    /** @see replay */
+    fun replay(
+        id: String,
+        params: SessionReplayParams = SessionReplayParams.none(),
+    ): CompletableFuture<SessionReplayResponse> = replay(id, params, RequestOptions.none())
+
+    /** @see replay */
+    fun replay(
+        params: SessionReplayParams,
+        requestOptions: RequestOptions = RequestOptions.none(),
+    ): CompletableFuture<SessionReplayResponse>
+
+    /** @see replay */
+    fun replay(params: SessionReplayParams): CompletableFuture<SessionReplayResponse> =
+        replay(params, RequestOptions.none())
+
+    /** @see replay */
+    fun replay(
+        id: String,
+        requestOptions: RequestOptions,
+    ): CompletableFuture<SessionReplayResponse> =
+        replay(id, SessionReplayParams.none(), requestOptions)
 
     /**
      * Creates a new browser session with the specified configuration. Returns a session ID used for
@@ -738,6 +775,47 @@ interface SessionServiceAsync {
             requestOptions: RequestOptions,
         ): CompletableFuture<HttpResponseFor<StreamResponse<StreamEvent>>> =
             observeStreaming(id, SessionObserveParams.none(), requestOptions)
+
+        /**
+         * Returns a raw HTTP response for `get /v1/sessions/{id}/replay`, but is otherwise the same
+         * as [SessionServiceAsync.replay].
+         */
+        fun replay(id: String): CompletableFuture<HttpResponseFor<SessionReplayResponse>> =
+            replay(id, SessionReplayParams.none())
+
+        /** @see replay */
+        fun replay(
+            id: String,
+            params: SessionReplayParams = SessionReplayParams.none(),
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>> =
+            replay(params.toBuilder().id(id).build(), requestOptions)
+
+        /** @see replay */
+        fun replay(
+            id: String,
+            params: SessionReplayParams = SessionReplayParams.none(),
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>> =
+            replay(id, params, RequestOptions.none())
+
+        /** @see replay */
+        fun replay(
+            params: SessionReplayParams,
+            requestOptions: RequestOptions = RequestOptions.none(),
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>>
+
+        /** @see replay */
+        fun replay(
+            params: SessionReplayParams
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>> =
+            replay(params, RequestOptions.none())
+
+        /** @see replay */
+        fun replay(
+            id: String,
+            requestOptions: RequestOptions,
+        ): CompletableFuture<HttpResponseFor<SessionReplayResponse>> =
+            replay(id, SessionReplayParams.none(), requestOptions)
 
         /**
          * Returns a raw HTTP response for `post /v1/sessions/start`, but is otherwise the same as

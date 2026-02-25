@@ -3,7 +3,6 @@
 package com.browserbase.api.models.sessions
 
 import com.browserbase.api.core.http.Headers
-import java.time.OffsetDateTime
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -13,12 +12,27 @@ internal class SessionExecuteParamsTest {
     fun create() {
         SessionExecuteParams.builder()
             .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-            .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
             .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
             .agentConfig(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-5-nano")
+                    .executionModel(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
+                    .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()
@@ -33,6 +47,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
             .frameId("frameId")
+            .shouldCache(true)
             .build()
     }
 
@@ -61,12 +76,27 @@ internal class SessionExecuteParamsTest {
         val params =
             SessionExecuteParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-5-nano")
+                        .executionModel(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
+                        .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -81,17 +111,12 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val headers = params._headers()
 
-        assertThat(headers)
-            .isEqualTo(
-                Headers.builder()
-                    .put("x-sent-at", "2025-01-15T10:30:00Z")
-                    .put("x-stream-response", "true")
-                    .build()
-            )
+        assertThat(headers).isEqualTo(Headers.builder().put("x-stream-response", "true").build())
     }
 
     @Test
@@ -119,12 +144,27 @@ internal class SessionExecuteParamsTest {
         val params =
             SessionExecuteParams.builder()
                 .id("c4dbf3a9-9a58-4b22-8a1c-9f20f9f9e123")
-                .xSentAt(OffsetDateTime.parse("2025-01-15T10:30:00Z"))
                 .xStreamResponse(SessionExecuteParams.XStreamResponse.TRUE)
                 .agentConfig(
                     SessionExecuteParams.AgentConfig.builder()
                         .cua(true)
-                        .model("openai/gpt-5-nano")
+                        .executionModel(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
+                        .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                        .model(
+                            ModelConfig.builder()
+                                .modelName("openai/gpt-5-nano")
+                                .apiKey("sk-some-openai-api-key")
+                                .baseUrl("https://api.openai.com/v1")
+                                .provider(ModelConfig.Provider.OPENAI)
+                                .build()
+                        )
                         .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                         .systemPrompt("systemPrompt")
                         .build()
@@ -139,6 +179,7 @@ internal class SessionExecuteParamsTest {
                         .build()
                 )
                 .frameId("frameId")
+                .shouldCache(true)
                 .build()
 
         val body = params._body()
@@ -147,7 +188,23 @@ internal class SessionExecuteParamsTest {
             .isEqualTo(
                 SessionExecuteParams.AgentConfig.builder()
                     .cua(true)
-                    .model("openai/gpt-5-nano")
+                    .executionModel(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
+                    .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
+                    .model(
+                        ModelConfig.builder()
+                            .modelName("openai/gpt-5-nano")
+                            .apiKey("sk-some-openai-api-key")
+                            .baseUrl("https://api.openai.com/v1")
+                            .provider(ModelConfig.Provider.OPENAI)
+                            .build()
+                    )
                     .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
                     .systemPrompt("systemPrompt")
                     .build()
@@ -163,6 +220,7 @@ internal class SessionExecuteParamsTest {
                     .build()
             )
         assertThat(body.frameId()).contains("frameId")
+        assertThat(body.shouldCache()).contains(true)
     }
 
     @Test

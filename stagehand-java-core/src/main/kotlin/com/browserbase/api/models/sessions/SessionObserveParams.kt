@@ -2,12 +2,16 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.BaseDeserializer
+import com.browserbase.api.core.BaseSerializer
 import com.browserbase.api.core.Enum
 import com.browserbase.api.core.ExcludeMissing
 import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
+import com.browserbase.api.core.allMaxBy
+import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
 import com.browserbase.api.errors.StagehandInvalidDataException
@@ -15,8 +19,13 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.time.OffsetDateTime
-import java.time.format.DateTimeFormatter
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.ObjectCodec
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import java.util.Collections
 import java.util.Objects
 import java.util.Optional
@@ -28,7 +37,6 @@ import kotlin.jvm.optionals.getOrNull
 class SessionObserveParams
 private constructor(
     private val id: String?,
-    private val xSentAt: OffsetDateTime?,
     private val xStreamResponse: XStreamResponse?,
     private val body: Body,
     private val additionalHeaders: Headers,
@@ -37,9 +45,6 @@ private constructor(
 
     /** Unique session identifier */
     fun id(): Optional<String> = Optional.ofNullable(id)
-
-    /** ISO timestamp when request was sent */
-    fun xSentAt(): Optional<OffsetDateTime> = Optional.ofNullable(xSentAt)
 
     /** Whether to stream the response via SSE */
     fun xStreamResponse(): Optional<XStreamResponse> = Optional.ofNullable(xStreamResponse)
@@ -109,7 +114,6 @@ private constructor(
     class Builder internal constructor() {
 
         private var id: String? = null
-        private var xSentAt: OffsetDateTime? = null
         private var xStreamResponse: XStreamResponse? = null
         private var body: Body.Builder = Body.builder()
         private var additionalHeaders: Headers.Builder = Headers.builder()
@@ -118,7 +122,6 @@ private constructor(
         @JvmSynthetic
         internal fun from(sessionObserveParams: SessionObserveParams) = apply {
             id = sessionObserveParams.id
-            xSentAt = sessionObserveParams.xSentAt
             xStreamResponse = sessionObserveParams.xStreamResponse
             body = sessionObserveParams.body.toBuilder()
             additionalHeaders = sessionObserveParams.additionalHeaders.toBuilder()
@@ -130,12 +133,6 @@ private constructor(
 
         /** Alias for calling [Builder.id] with `id.orElse(null)`. */
         fun id(id: Optional<String>) = id(id.getOrNull())
-
-        /** ISO timestamp when request was sent */
-        fun xSentAt(xSentAt: OffsetDateTime?) = apply { this.xSentAt = xSentAt }
-
-        /** Alias for calling [Builder.xSentAt] with `xSentAt.orElse(null)`. */
-        fun xSentAt(xSentAt: Optional<OffsetDateTime>) = xSentAt(xSentAt.getOrNull())
 
         /** Whether to stream the response via SSE */
         fun xStreamResponse(xStreamResponse: XStreamResponse?) = apply {
@@ -158,7 +155,10 @@ private constructor(
         fun body(body: Body) = apply { this.body = body.toBuilder() }
 
         /** Target frame ID for the observation */
-        fun frameId(frameId: String) = apply { body.frameId(frameId) }
+        fun frameId(frameId: String?) = apply { body.frameId(frameId) }
+
+        /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+        fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
         /**
          * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -315,7 +315,6 @@ private constructor(
         fun build(): SessionObserveParams =
             SessionObserveParams(
                 id,
-                xSentAt,
                 xStreamResponse,
                 body.build(),
                 additionalHeaders.build(),
@@ -334,7 +333,6 @@ private constructor(
     override fun _headers(): Headers =
         Headers.builder()
             .apply {
-                xSentAt?.let { put("x-sent-at", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
                 xStreamResponse?.let { put("x-stream-response", it.toString()) }
                 putAll(additionalHeaders)
             }
@@ -440,7 +438,10 @@ private constructor(
             }
 
             /** Target frame ID for the observation */
-            fun frameId(frameId: String) = frameId(JsonField.of(frameId))
+            fun frameId(frameId: String?) = frameId(JsonField.ofNullable(frameId))
+
+            /** Alias for calling [Builder.frameId] with `frameId.orElse(null)`. */
+            fun frameId(frameId: Optional<String>) = frameId(frameId.getOrNull())
 
             /**
              * Sets [Builder.frameId] to an arbitrary JSON value.
@@ -562,7 +563,7 @@ private constructor(
     class Options
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
-        private val model: JsonField<ModelConfig>,
+        private val model: JsonField<Model>,
         private val selector: JsonField<String>,
         private val timeout: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -570,7 +571,7 @@ private constructor(
 
         @JsonCreator
         private constructor(
-            @JsonProperty("model") @ExcludeMissing model: JsonField<ModelConfig> = JsonMissing.of(),
+            @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
             @JsonProperty("selector")
             @ExcludeMissing
             selector: JsonField<String> = JsonMissing.of(),
@@ -578,13 +579,12 @@ private constructor(
         ) : this(model, selector, timeout, mutableMapOf())
 
         /**
-         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-         * 'anthropic/claude-4.5-opus')
+         * Model configuration object or model name string (e.g., 'openai/gpt-5-nano')
          *
          * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
          *   the server responded with an unexpected value).
          */
-        fun model(): Optional<ModelConfig> = model.getOptional("model")
+        fun model(): Optional<Model> = model.getOptional("model")
 
         /**
          * CSS selector to scope observation to a specific element
@@ -607,7 +607,7 @@ private constructor(
          *
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
-        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<ModelConfig> = model
+        @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<Model> = model
 
         /**
          * Returns the raw JSON value of [selector].
@@ -644,7 +644,7 @@ private constructor(
         /** A builder for [Options]. */
         class Builder internal constructor() {
 
-            private var model: JsonField<ModelConfig> = JsonMissing.of()
+            private var model: JsonField<Model> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
             private var timeout: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -657,29 +657,23 @@ private constructor(
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
 
-            /**
-             * Model name string with provider prefix (e.g., 'openai/gpt-5-nano',
-             * 'anthropic/claude-4.5-opus')
-             */
-            fun model(model: ModelConfig) = model(JsonField.of(model))
+            /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
+            fun model(model: Model) = model(JsonField.of(model))
 
             /**
              * Sets [Builder.model] to an arbitrary JSON value.
              *
-             * You should usually call [Builder.model] with a well-typed [ModelConfig] value
-             * instead. This method is primarily for setting the field to an undocumented or not yet
-             * supported value.
+             * You should usually call [Builder.model] with a well-typed [Model] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
              */
-            fun model(model: JsonField<ModelConfig>) = apply { this.model = model }
+            fun model(model: JsonField<Model>) = apply { this.model = model }
 
-            /** Alias for calling [model] with `ModelConfig.ofName(name)`. */
-            fun model(name: String) = model(ModelConfig.ofName(name))
+            /** Alias for calling [model] with `Model.ofConfig(config)`. */
+            fun model(config: ModelConfig) = model(Model.ofConfig(config))
 
-            /**
-             * Alias for calling [model] with `ModelConfig.ofModelConfigObject(modelConfigObject)`.
-             */
-            fun model(modelConfigObject: ModelConfig.ModelConfigObject) =
-                model(ModelConfig.ofModelConfigObject(modelConfigObject))
+            /** Alias for calling [model] with `Model.ofString(string)`. */
+            fun model(string: String) = model(Model.ofString(string))
 
             /** CSS selector to scope observation to a specific element */
             fun selector(selector: String) = selector(JsonField.of(selector))
@@ -765,6 +759,178 @@ private constructor(
             (model.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (selector.asKnown().isPresent) 1 else 0) +
                 (if (timeout.asKnown().isPresent) 1 else 0)
+
+        /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
+        @JsonDeserialize(using = Model.Deserializer::class)
+        @JsonSerialize(using = Model.Serializer::class)
+        class Model
+        private constructor(
+            private val config: ModelConfig? = null,
+            private val string: String? = null,
+            private val _json: JsonValue? = null,
+        ) {
+
+            fun config(): Optional<ModelConfig> = Optional.ofNullable(config)
+
+            fun string(): Optional<String> = Optional.ofNullable(string)
+
+            fun isConfig(): Boolean = config != null
+
+            fun isString(): Boolean = string != null
+
+            fun asConfig(): ModelConfig = config.getOrThrow("config")
+
+            fun asString(): String = string.getOrThrow("string")
+
+            fun _json(): Optional<JsonValue> = Optional.ofNullable(_json)
+
+            fun <T> accept(visitor: Visitor<T>): T =
+                when {
+                    config != null -> visitor.visitConfig(config)
+                    string != null -> visitor.visitString(string)
+                    else -> visitor.unknown(_json)
+                }
+
+            private var validated: Boolean = false
+
+            fun validate(): Model = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                accept(
+                    object : Visitor<Unit> {
+                        override fun visitConfig(config: ModelConfig) {
+                            config.validate()
+                        }
+
+                        override fun visitString(string: String) {}
+                    }
+                )
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                accept(
+                    object : Visitor<Int> {
+                        override fun visitConfig(config: ModelConfig) = config.validity()
+
+                        override fun visitString(string: String) = 1
+
+                        override fun unknown(json: JsonValue?) = 0
+                    }
+                )
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Model && config == other.config && string == other.string
+            }
+
+            override fun hashCode(): Int = Objects.hash(config, string)
+
+            override fun toString(): String =
+                when {
+                    config != null -> "Model{config=$config}"
+                    string != null -> "Model{string=$string}"
+                    _json != null -> "Model{_unknown=$_json}"
+                    else -> throw IllegalStateException("Invalid Model")
+                }
+
+            companion object {
+
+                @JvmStatic fun ofConfig(config: ModelConfig) = Model(config = config)
+
+                @JvmStatic fun ofString(string: String) = Model(string = string)
+            }
+
+            /**
+             * An interface that defines how to map each variant of [Model] to a value of type [T].
+             */
+            interface Visitor<out T> {
+
+                fun visitConfig(config: ModelConfig): T
+
+                fun visitString(string: String): T
+
+                /**
+                 * Maps an unknown variant of [Model] to a value of type [T].
+                 *
+                 * An instance of [Model] can contain an unknown variant if it was deserialized from
+                 * data that doesn't match any known variant. For example, if the SDK is on an older
+                 * version than the API, then the API may respond with new variants that the SDK is
+                 * unaware of.
+                 *
+                 * @throws StagehandInvalidDataException in the default implementation.
+                 */
+                fun unknown(json: JsonValue?): T {
+                    throw StagehandInvalidDataException("Unknown Model: $json")
+                }
+            }
+
+            internal class Deserializer : BaseDeserializer<Model>(Model::class) {
+
+                override fun ObjectCodec.deserialize(node: JsonNode): Model {
+                    val json = JsonValue.fromJsonNode(node)
+
+                    val bestMatches =
+                        sequenceOf(
+                                tryDeserialize(node, jacksonTypeRef<ModelConfig>())?.let {
+                                    Model(config = it, _json = json)
+                                },
+                                tryDeserialize(node, jacksonTypeRef<String>())?.let {
+                                    Model(string = it, _json = json)
+                                },
+                            )
+                            .filterNotNull()
+                            .allMaxBy { it.validity() }
+                            .toList()
+                    return when (bestMatches.size) {
+                        // This can happen if what we're deserializing is completely incompatible
+                        // with all the possible variants (e.g. deserializing from boolean).
+                        0 -> Model(_json = json)
+                        1 -> bestMatches.single()
+                        // If there's more than one match with the highest validity, then use the
+                        // first completely valid match, or simply the first match if none are
+                        // completely valid.
+                        else -> bestMatches.firstOrNull { it.isValid() } ?: bestMatches.first()
+                    }
+                }
+            }
+
+            internal class Serializer : BaseSerializer<Model>(Model::class) {
+
+                override fun serialize(
+                    value: Model,
+                    generator: JsonGenerator,
+                    provider: SerializerProvider,
+                ) {
+                    when {
+                        value.config != null -> generator.writeObject(value.config)
+                        value.string != null -> generator.writeObject(value.string)
+                        value._json != null -> generator.writeObject(value._json)
+                        else -> throw IllegalStateException("Invalid Model")
+                    }
+                }
+            }
+        }
 
         override fun equals(other: Any?): Boolean {
             if (this === other) {
@@ -927,7 +1093,6 @@ private constructor(
 
         return other is SessionObserveParams &&
             id == other.id &&
-            xSentAt == other.xSentAt &&
             xStreamResponse == other.xStreamResponse &&
             body == other.body &&
             additionalHeaders == other.additionalHeaders &&
@@ -935,8 +1100,8 @@ private constructor(
     }
 
     override fun hashCode(): Int =
-        Objects.hash(id, xSentAt, xStreamResponse, body, additionalHeaders, additionalQueryParams)
+        Objects.hash(id, xStreamResponse, body, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "SessionObserveParams{id=$id, xSentAt=$xSentAt, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "SessionObserveParams{id=$id, xStreamResponse=$xStreamResponse, body=$body, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

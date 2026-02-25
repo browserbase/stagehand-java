@@ -33,6 +33,8 @@ import com.browserbase.api.models.sessions.SessionNavigateParams
 import com.browserbase.api.models.sessions.SessionNavigateResponse
 import com.browserbase.api.models.sessions.SessionObserveParams
 import com.browserbase.api.models.sessions.SessionObserveResponse
+import com.browserbase.api.models.sessions.SessionReplayParams
+import com.browserbase.api.models.sessions.SessionReplayResponse
 import com.browserbase.api.models.sessions.SessionStartParams
 import com.browserbase.api.models.sessions.SessionStartResponse
 import com.browserbase.api.models.sessions.StreamEvent
@@ -115,6 +117,13 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
         // post /v1/sessions/{id}/observe
         withRawResponse().observeStreaming(params, requestOptions).parse()
 
+    override fun replay(
+        params: SessionReplayParams,
+        requestOptions: RequestOptions,
+    ): SessionReplayResponse =
+        // get /v1/sessions/{id}/replay
+        withRawResponse().replay(params, requestOptions).parse()
+
     override fun start(
         params: SessionStartParams,
         requestOptions: RequestOptions,
@@ -181,6 +190,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "act")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -223,7 +233,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "end")
-                    .body(json(clientOptions.jsonMapper, params._body()))
+                    .apply { params._body().ifPresent { body(json(clientOptions.jsonMapper, it)) } }
                     .build()
                     .prepare(clientOptions, params)
             val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
@@ -285,6 +295,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "agentExecute")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -358,6 +369,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "extract")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -462,6 +474,7 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                     .method(HttpMethod.POST)
                     .baseUrl(clientOptions.baseUrl())
                     .addPathSegments("v1", "sessions", params._pathParam(0), "observe")
+                    .putHeader("Accept", "text/event-stream")
                     .body(
                         json(
                             clientOptions.jsonMapper,
@@ -484,6 +497,36 @@ class SessionServiceImpl internal constructor(private val clientOptions: ClientO
                             streamResponse.map { it.validate() }
                         } else {
                             streamResponse
+                        }
+                    }
+            }
+        }
+
+        private val replayHandler: Handler<SessionReplayResponse> =
+            jsonHandler<SessionReplayResponse>(clientOptions.jsonMapper)
+
+        override fun replay(
+            params: SessionReplayParams,
+            requestOptions: RequestOptions,
+        ): HttpResponseFor<SessionReplayResponse> {
+            // We check here instead of in the params builder because this can be specified
+            // positionally or in the params class.
+            checkRequired("id", params.id().getOrNull())
+            val request =
+                HttpRequest.builder()
+                    .method(HttpMethod.GET)
+                    .baseUrl(clientOptions.baseUrl())
+                    .addPathSegments("v1", "sessions", params._pathParam(0), "replay")
+                    .build()
+                    .prepare(clientOptions, params)
+            val requestOptions = requestOptions.applyDefaults(RequestOptions.from(clientOptions))
+            val response = clientOptions.httpClient.execute(request, requestOptions)
+            return errorHandler.handle(response).parseable {
+                response
+                    .use { replayHandler.handle(it) }
+                    .also {
+                        if (requestOptions.responseValidation!!) {
+                            it.validate()
                         }
                     }
             }
