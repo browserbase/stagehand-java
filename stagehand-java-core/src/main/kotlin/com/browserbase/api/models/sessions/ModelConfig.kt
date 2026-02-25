@@ -283,6 +283,8 @@ private constructor(
 
             @JvmField val MICROSOFT = of("microsoft")
 
+            @JvmField val BEDROCK = of("bedrock")
+
             @JvmStatic fun of(value: String) = Provider(JsonField.of(value))
         }
 
@@ -292,6 +294,7 @@ private constructor(
             ANTHROPIC,
             GOOGLE,
             MICROSOFT,
+            BEDROCK,
         }
 
         /**
@@ -308,6 +311,7 @@ private constructor(
             ANTHROPIC,
             GOOGLE,
             MICROSOFT,
+            BEDROCK,
             /** An enum member indicating that [Provider] was instantiated with an unknown value. */
             _UNKNOWN,
         }
@@ -325,6 +329,7 @@ private constructor(
                 ANTHROPIC -> Value.ANTHROPIC
                 GOOGLE -> Value.GOOGLE
                 MICROSOFT -> Value.MICROSOFT
+                BEDROCK -> Value.BEDROCK
                 else -> Value._UNKNOWN
             }
 
@@ -343,6 +348,7 @@ private constructor(
                 ANTHROPIC -> Known.ANTHROPIC
                 GOOGLE -> Known.GOOGLE
                 MICROSOFT -> Known.MICROSOFT
+                BEDROCK -> Known.BEDROCK
                 else -> throw StagehandInvalidDataException("Unknown Provider: $value")
             }
 
