@@ -1,3 +1,5 @@
+// File generated from our OpenAPI spec by Stainless.
+
 package com.browserbase.api.core.http
 
 import com.browserbase.api.core.DefaultSleeper
