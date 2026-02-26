@@ -111,6 +111,8 @@ Examples live at:
 - `stagehand-java-example/src/main/java/com/stagehand/api/example/RemoteBrowserPlaywrightExample.java`
 - `stagehand-java-example/src/main/java/com/stagehand/api/example/LocalBrowserPlaywrightExample.java`
 
+Multiregion support: see `stagehand-java-example/src/main/java/com/stagehand/api/example/LocalServerMultiregionBrowserExample.java`.
+
 Set your environment variables (from `examples/.env.example`):
 
 - `STAGEHAND_API_URL`
