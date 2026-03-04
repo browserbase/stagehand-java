@@ -7,7 +7,7 @@
 
 <!-- x-release-please-end -->
 
-The Stagehand Java SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
+The Stagehand Java SDK provides direct access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
 <!-- x-stagehand-custom-start -->
 <div id="toc" align="center" style="margin-bottom: 0;">
   <ul style="list-style: none; margin: 0; padding: 0;">
