@@ -2,12 +2,12 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/0.7.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/0.7.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.7.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/0.7.1)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/0.7.1/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/0.7.1)
 
 <!-- x-release-please-end -->
 
-The Stagehand Java SDK provides convenient access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
+The Stagehand Java SDK provides direct access to the [Stagehand REST API](https://docs.stagehand.dev) from applications written in Java.
 <!-- x-stagehand-custom-start -->
 <div id="toc" align="center" style="margin-bottom: 0;">
   <ul style="list-style: none; margin: 0; padding: 0;">
@@ -85,7 +85,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:0.7.0")
+implementation("com.browserbase.api:stagehand-java:0.7.1")
 ```
 
 ### Maven
@@ -94,7 +94,7 @@ implementation("com.browserbase.api:stagehand-java:0.7.0")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>0.7.0</version>
+  <version>0.7.1</version>
 </dependency>
 ```
 
@@ -110,6 +110,8 @@ Examples live at:
 - `stagehand-java-example/src/main/java/com/stagehand/api/example/Main.java`
 - `stagehand-java-example/src/main/java/com/stagehand/api/example/RemoteBrowserPlaywrightExample.java`
 - `stagehand-java-example/src/main/java/com/stagehand/api/example/LocalBrowserPlaywrightExample.java`
+
+Multiregion support: see `stagehand-java-example/src/main/java/com/stagehand/api/example/LocalServerMultiregionBrowserExample.java`.
 
 Set your environment variables (from `examples/.env.example`):
 

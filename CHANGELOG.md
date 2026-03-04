@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.1 (2026-03-04)
+
+Full Changelog: [v0.7.0...v0.7.1](https://github.com/browserbase/stagehand-java/compare/v0.7.0...v0.7.1)
+
+### Documentation
+
+* tweak README wording for release validation ([d60513d](https://github.com/browserbase/stagehand-java/commit/d60513dcbf3b65b64f2e8e86ef965927df74d40d))
+
 ## 0.7.0 (2026-02-25)
 
 Full Changelog: [v0.6.1...v0.7.0](https://github.com/browserbase/stagehand-java/compare/v0.6.1...v0.7.0)
