@@ -58,6 +58,11 @@ internal class ServiceParamsTest {
                             SessionStartParams.Browser.LaunchOptions.builder()
                                 .acceptDownloads(true)
                                 .addArg("string")
+                                .cdpHeaders(
+                                    SessionStartParams.Browser.LaunchOptions.CdpHeaders.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .cdpUrl("cdpUrl")
                                 .chromiumSandbox(true)
                                 .connectTimeoutMs(0.0)
