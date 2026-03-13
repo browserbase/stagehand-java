@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.8.0 (2026-03-11)
+
+Full Changelog: [v0.7.1...v0.8.0](https://github.com/browserbase/stagehand-java/compare/v0.7.1...v0.8.0)
+
+### Features
+
+* Add missing cdpHeaders field to v3 server openapi spec ([5a9506d](https://github.com/browserbase/stagehand-java/commit/5a9506d5dfeb1ae172834941aad3bbd9e96f2973))
+
+
+### Bug Fixes
+
+* **client:** incorrect `Retry-After` parsing ([76ea3fc](https://github.com/browserbase/stagehand-java/commit/76ea3fc583bfe9ca7295856db85378b44d765b0f))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([4a1399c](https://github.com/browserbase/stagehand-java/commit/4a1399c7a535d9bf8934e9d142878e57a1537b8d))
+* **internal:** bump palantir-java-format ([3bf036a](https://github.com/browserbase/stagehand-java/commit/3bf036aed5ba8fb90fe4bf5bc6b62a49f09f7dcc))
+* **internal:** codegen related update ([f94c8c9](https://github.com/browserbase/stagehand-java/commit/f94c8c9a86af4592fba5c42645ccc1099a8ab1fe))
+
 ## 0.7.1 (2026-03-04)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/browserbase/stagehand-java/compare/v0.7.0...v0.7.1)

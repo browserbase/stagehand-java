@@ -1372,6 +1372,7 @@ private constructor(
         private constructor(
             private val acceptDownloads: JsonField<Boolean>,
             private val args: JsonField<List<String>>,
+            private val cdpHeaders: JsonField<CdpHeaders>,
             private val cdpUrl: JsonField<String>,
             private val chromiumSandbox: JsonField<Boolean>,
             private val connectTimeoutMs: JsonField<Double>,
@@ -1400,6 +1401,9 @@ private constructor(
                 @JsonProperty("args")
                 @ExcludeMissing
                 args: JsonField<List<String>> = JsonMissing.of(),
+                @JsonProperty("cdpHeaders")
+                @ExcludeMissing
+                cdpHeaders: JsonField<CdpHeaders> = JsonMissing.of(),
                 @JsonProperty("cdpUrl")
                 @ExcludeMissing
                 cdpUrl: JsonField<String> = JsonMissing.of(),
@@ -1450,6 +1454,7 @@ private constructor(
             ) : this(
                 acceptDownloads,
                 args,
+                cdpHeaders,
                 cdpUrl,
                 chromiumSandbox,
                 connectTimeoutMs,
@@ -1482,6 +1487,12 @@ private constructor(
              *   if the server responded with an unexpected value).
              */
             fun args(): Optional<List<String>> = args.getOptional("args")
+
+            /**
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun cdpHeaders(): Optional<CdpHeaders> = cdpHeaders.getOptional("cdpHeaders")
 
             /**
              * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g.
@@ -1607,6 +1618,16 @@ private constructor(
              * Unlike [args], this method doesn't throw if the JSON field has an unexpected type.
              */
             @JsonProperty("args") @ExcludeMissing fun _args(): JsonField<List<String>> = args
+
+            /**
+             * Returns the raw JSON value of [cdpHeaders].
+             *
+             * Unlike [cdpHeaders], this method doesn't throw if the JSON field has an unexpected
+             * type.
+             */
+            @JsonProperty("cdpHeaders")
+            @ExcludeMissing
+            fun _cdpHeaders(): JsonField<CdpHeaders> = cdpHeaders
 
             /**
              * Returns the raw JSON value of [cdpUrl].
@@ -1783,6 +1804,7 @@ private constructor(
 
                 private var acceptDownloads: JsonField<Boolean> = JsonMissing.of()
                 private var args: JsonField<MutableList<String>>? = null
+                private var cdpHeaders: JsonField<CdpHeaders> = JsonMissing.of()
                 private var cdpUrl: JsonField<String> = JsonMissing.of()
                 private var chromiumSandbox: JsonField<Boolean> = JsonMissing.of()
                 private var connectTimeoutMs: JsonField<Double> = JsonMissing.of()
@@ -1806,6 +1828,7 @@ private constructor(
                 internal fun from(launchOptions: LaunchOptions) = apply {
                     acceptDownloads = launchOptions.acceptDownloads
                     args = launchOptions.args.map { it.toMutableList() }
+                    cdpHeaders = launchOptions.cdpHeaders
                     cdpUrl = launchOptions.cdpUrl
                     chromiumSandbox = launchOptions.chromiumSandbox
                     connectTimeoutMs = launchOptions.connectTimeoutMs
@@ -1863,6 +1886,19 @@ private constructor(
                         (args ?: JsonField.of(mutableListOf())).also {
                             checkKnown("args", it).add(arg)
                         }
+                }
+
+                fun cdpHeaders(cdpHeaders: CdpHeaders) = cdpHeaders(JsonField.of(cdpHeaders))
+
+                /**
+                 * Sets [Builder.cdpHeaders] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.cdpHeaders] with a well-typed [CdpHeaders] value
+                 * instead. This method is primarily for setting the field to an undocumented or not
+                 * yet supported value.
+                 */
+                fun cdpHeaders(cdpHeaders: JsonField<CdpHeaders>) = apply {
+                    this.cdpHeaders = cdpHeaders
                 }
 
                 fun cdpUrl(cdpUrl: String) = cdpUrl(JsonField.of(cdpUrl))
@@ -2120,6 +2156,7 @@ private constructor(
                     LaunchOptions(
                         acceptDownloads,
                         (args ?: JsonMissing.of()).map { it.toImmutable() },
+                        cdpHeaders,
                         cdpUrl,
                         chromiumSandbox,
                         connectTimeoutMs,
@@ -2150,6 +2187,7 @@ private constructor(
 
                 acceptDownloads()
                 args()
+                cdpHeaders().ifPresent { it.validate() }
                 cdpUrl()
                 chromiumSandbox()
                 connectTimeoutMs()
@@ -2188,6 +2226,7 @@ private constructor(
             internal fun validity(): Int =
                 (if (acceptDownloads.asKnown().isPresent) 1 else 0) +
                     (args.asKnown().getOrNull()?.size ?: 0) +
+                    (cdpHeaders.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (cdpUrl.asKnown().isPresent) 1 else 0) +
                     (if (chromiumSandbox.asKnown().isPresent) 1 else 0) +
                     (if (connectTimeoutMs.asKnown().isPresent) 1 else 0) +
@@ -2205,6 +2244,110 @@ private constructor(
                     (proxy.asKnown().getOrNull()?.validity() ?: 0) +
                     (if (userDataDir.asKnown().isPresent) 1 else 0) +
                     (viewport.asKnown().getOrNull()?.validity() ?: 0)
+
+            class CdpHeaders
+            @JsonCreator
+            private constructor(
+                @com.fasterxml.jackson.annotation.JsonValue
+                private val additionalProperties: Map<String, JsonValue>
+            ) {
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [CdpHeaders]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [CdpHeaders]. */
+                class Builder internal constructor() {
+
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(cdpHeaders: CdpHeaders) = apply {
+                        additionalProperties = cdpHeaders.additionalProperties.toMutableMap()
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [CdpHeaders].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): CdpHeaders = CdpHeaders(additionalProperties.toImmutable())
+                }
+
+                private var validated: Boolean = false
+
+                fun validate(): CdpHeaders = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    additionalProperties.count { (_, value) ->
+                        !value.isNull() && !value.isMissing()
+                    }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is CdpHeaders && additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() = "CdpHeaders{additionalProperties=$additionalProperties}"
+            }
 
             @JsonDeserialize(using = IgnoreDefaultArgs.Deserializer::class)
             @JsonSerialize(using = IgnoreDefaultArgs.Serializer::class)
@@ -2872,6 +3015,7 @@ private constructor(
                 return other is LaunchOptions &&
                     acceptDownloads == other.acceptDownloads &&
                     args == other.args &&
+                    cdpHeaders == other.cdpHeaders &&
                     cdpUrl == other.cdpUrl &&
                     chromiumSandbox == other.chromiumSandbox &&
                     connectTimeoutMs == other.connectTimeoutMs &&
@@ -2896,6 +3040,7 @@ private constructor(
                 Objects.hash(
                     acceptDownloads,
                     args,
+                    cdpHeaders,
                     cdpUrl,
                     chromiumSandbox,
                     connectTimeoutMs,
@@ -2920,7 +3065,7 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() =
-                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, port=$port, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
+                "LaunchOptions{acceptDownloads=$acceptDownloads, args=$args, cdpHeaders=$cdpHeaders, cdpUrl=$cdpUrl, chromiumSandbox=$chromiumSandbox, connectTimeoutMs=$connectTimeoutMs, deviceScaleFactor=$deviceScaleFactor, devtools=$devtools, downloadsPath=$downloadsPath, executablePath=$executablePath, hasTouch=$hasTouch, headless=$headless, ignoreDefaultArgs=$ignoreDefaultArgs, ignoreHttpsErrors=$ignoreHttpsErrors, locale=$locale, port=$port, preserveUserDataDir=$preserveUserDataDir, proxy=$proxy, userDataDir=$userDataDir, viewport=$viewport, additionalProperties=$additionalProperties}"
         }
 
         /** Browser type to use */
