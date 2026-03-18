@@ -18,22 +18,11 @@ import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 internal fun sseHandler(jsonMapper: JsonMapper): Handler<StreamResponse<SseMessage>> =
     streamHandler { response, lines ->
         val state = SseState(jsonMapper)
-        var done = false
         for (line in lines) {
-            // Stop emitting messages, but iterate through the full stream.
-            if (done) {
-                continue
-            }
-
             val message = state.decode(line) ?: continue
 
             when {
-                message.data.startsWith("{\"data\":{\"status\":\"finished\"") -> {
-                    // In this case we don't break because we still want to iterate through the full
-                    // stream.
-                    done = true
-                    continue
-                }
+                message.data.startsWith("{\"data\":{\"status\":\"finished\"") -> yield(message)
                 message.data.startsWith("error") -> {
                     throw SseException.builder()
                         .statusCode(response.statusCode())
