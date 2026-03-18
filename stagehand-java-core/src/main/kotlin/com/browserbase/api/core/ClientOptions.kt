@@ -485,23 +485,24 @@ private constructor(
             headers.put("X-Stainless-Runtime", "JRE")
             headers.put("X-Stainless-Runtime-Version", getJavaVersion())
             headers.put("X-Stainless-Kotlin-Version", KotlinVersion.CURRENT.toString())
+            // We replace after all the default headers to allow end-users to overwrite them.
+            headers.replaceAll(this.headers.build())
+            queryParams.replaceAll(this.queryParams.build())
             browserbaseApiKey.let {
                 if (!it.isEmpty()) {
-                    headers.put("x-bb-api-key", it)
+                    headers.replace("x-bb-api-key", it)
                 }
             }
             browserbaseProjectId.let {
                 if (!it.isEmpty()) {
-                    headers.put("x-bb-project-id", it)
+                    headers.replace("x-bb-project-id", it)
                 }
             }
             modelApiKey.let {
                 if (!it.isEmpty()) {
-                    headers.put("x-model-api-key", it)
+                    headers.replace("x-model-api-key", it)
                 }
             }
-            headers.replaceAll(this.headers.build())
-            queryParams.replaceAll(this.queryParams.build())
 
             return ClientOptions(
                 httpClient,
