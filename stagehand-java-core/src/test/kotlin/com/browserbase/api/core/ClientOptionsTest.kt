@@ -17,6 +17,37 @@ internal class ClientOptionsTest {
     private val httpClient = mock<HttpClient>()
 
     @Test
+    fun putHeader_canOverwriteDefaultHeader() {
+        val clientOptions =
+            ClientOptions.builder()
+                .httpClient(httpClient)
+                .putHeader("User-Agent", "My User Agent")
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+
+        assertThat(clientOptions.headers.values("User-Agent")).containsExactly("My User Agent")
+    }
+
+    @Test
+    fun toBuilder_bbApiKeyAuthCanBeUpdated() {
+        var clientOptions =
+            ClientOptions.builder()
+                .httpClient(httpClient)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+
+        clientOptions =
+            clientOptions.toBuilder().browserbaseApiKey("another My Browserbase API Key").build()
+
+        assertThat(clientOptions.headers.values("x-bb-api-key"))
+            .containsExactly("another My Browserbase API Key")
+    }
+
+    @Test
     fun toBuilder_whenOriginalClientOptionsGarbageCollected_doesNotCloseOriginalClient() {
         var clientOptions =
             ClientOptions.builder()
