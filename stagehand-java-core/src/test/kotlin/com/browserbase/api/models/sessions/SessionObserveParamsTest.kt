@@ -2,6 +2,7 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -27,6 +28,20 @@ internal class SessionObserveParamsTest {
                     )
                     .selector("nav")
                     .timeout(30000.0)
+                    .variables(
+                        SessionObserveParams.Options.Variables.builder()
+                            .putAdditionalProperty(
+                                "username",
+                                JsonValue.from(
+                                    mapOf(
+                                        "value" to "john@example.com",
+                                        "description" to "The login email",
+                                    )
+                                ),
+                            )
+                            .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                            .build()
+                    )
                     .build()
             )
             .build()
@@ -62,6 +77,20 @@ internal class SessionObserveParamsTest {
                         )
                         .selector("nav")
                         .timeout(30000.0)
+                        .variables(
+                            SessionObserveParams.Options.Variables.builder()
+                                .putAdditionalProperty(
+                                    "username",
+                                    JsonValue.from(
+                                        mapOf(
+                                            "value" to "john@example.com",
+                                            "description" to "The login email",
+                                        )
+                                    ),
+                                )
+                                .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -101,6 +130,20 @@ internal class SessionObserveParamsTest {
                         )
                         .selector("nav")
                         .timeout(30000.0)
+                        .variables(
+                            SessionObserveParams.Options.Variables.builder()
+                                .putAdditionalProperty(
+                                    "username",
+                                    JsonValue.from(
+                                        mapOf(
+                                            "value" to "john@example.com",
+                                            "description" to "The login email",
+                                        )
+                                    ),
+                                )
+                                .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                                .build()
+                        )
                         .build()
                 )
                 .build()
@@ -122,6 +165,20 @@ internal class SessionObserveParamsTest {
                     )
                     .selector("nav")
                     .timeout(30000.0)
+                    .variables(
+                        SessionObserveParams.Options.Variables.builder()
+                            .putAdditionalProperty(
+                                "username",
+                                JsonValue.from(
+                                    mapOf(
+                                        "value" to "john@example.com",
+                                        "description" to "The login email",
+                                    )
+                                ),
+                            )
+                            .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                            .build()
+                    )
                     .build()
             )
     }

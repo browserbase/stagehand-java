@@ -14,6 +14,7 @@ import com.browserbase.api.core.allMaxBy
 import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
+import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -566,6 +567,7 @@ private constructor(
         private val model: JsonField<Model>,
         private val selector: JsonField<String>,
         private val timeout: JsonField<Double>,
+        private val variables: JsonField<Variables>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -576,7 +578,10 @@ private constructor(
             @ExcludeMissing
             selector: JsonField<String> = JsonMissing.of(),
             @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
-        ) : this(model, selector, timeout, mutableMapOf())
+            @JsonProperty("variables")
+            @ExcludeMissing
+            variables: JsonField<Variables> = JsonMissing.of(),
+        ) : this(model, selector, timeout, variables, mutableMapOf())
 
         /**
          * Model configuration object or model name string (e.g., 'openai/gpt-5-nano')
@@ -603,6 +608,16 @@ private constructor(
         fun timeout(): Optional<Double> = timeout.getOptional("timeout")
 
         /**
+         * Variables whose names are exposed to the model so observe() returns %variableName%
+         * placeholders in suggested action arguments instead of literal values. Accepts flat
+         * primitives or { value, description? } objects.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun variables(): Optional<Variables> = variables.getOptional("variables")
+
+        /**
          * Returns the raw JSON value of [model].
          *
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
@@ -622,6 +637,15 @@ private constructor(
          * Unlike [timeout], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("timeout") @ExcludeMissing fun _timeout(): JsonField<Double> = timeout
+
+        /**
+         * Returns the raw JSON value of [variables].
+         *
+         * Unlike [variables], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("variables")
+        @ExcludeMissing
+        fun _variables(): JsonField<Variables> = variables
 
         @JsonAnySetter
         private fun putAdditionalProperty(key: String, value: JsonValue) {
@@ -647,6 +671,7 @@ private constructor(
             private var model: JsonField<Model> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
             private var timeout: JsonField<Double> = JsonMissing.of()
+            private var variables: JsonField<Variables> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -654,6 +679,7 @@ private constructor(
                 model = options.model
                 selector = options.selector
                 timeout = options.timeout
+                variables = options.variables
                 additionalProperties = options.additionalProperties.toMutableMap()
             }
 
@@ -699,6 +725,22 @@ private constructor(
              */
             fun timeout(timeout: JsonField<Double>) = apply { this.timeout = timeout }
 
+            /**
+             * Variables whose names are exposed to the model so observe() returns %variableName%
+             * placeholders in suggested action arguments instead of literal values. Accepts flat
+             * primitives or { value, description? } objects.
+             */
+            fun variables(variables: Variables) = variables(JsonField.of(variables))
+
+            /**
+             * Sets [Builder.variables] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.variables] with a well-typed [Variables] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun variables(variables: JsonField<Variables>) = apply { this.variables = variables }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -724,7 +766,7 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Options =
-                Options(model, selector, timeout, additionalProperties.toMutableMap())
+                Options(model, selector, timeout, variables, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -737,6 +779,7 @@ private constructor(
             model().ifPresent { it.validate() }
             selector()
             timeout()
+            variables().ifPresent { it.validate() }
             validated = true
         }
 
@@ -758,7 +801,8 @@ private constructor(
         internal fun validity(): Int =
             (model.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (selector.asKnown().isPresent) 1 else 0) +
-                (if (timeout.asKnown().isPresent) 1 else 0)
+                (if (timeout.asKnown().isPresent) 1 else 0) +
+                (variables.asKnown().getOrNull()?.validity() ?: 0)
 
         /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
         @JsonDeserialize(using = Model.Deserializer::class)
@@ -932,6 +976,113 @@ private constructor(
             }
         }
 
+        /**
+         * Variables whose names are exposed to the model so observe() returns %variableName%
+         * placeholders in suggested action arguments instead of literal values. Accepts flat
+         * primitives or { value, description? } objects.
+         */
+        class Variables
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Variables]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Variables]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(variables: Variables) = apply {
+                    additionalProperties = variables.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Variables].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Variables = Variables(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            fun validate(): Variables = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Variables && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Variables{additionalProperties=$additionalProperties}"
+        }
+
         override fun equals(other: Any?): Boolean {
             if (this === other) {
                 return true
@@ -941,17 +1092,18 @@ private constructor(
                 model == other.model &&
                 selector == other.selector &&
                 timeout == other.timeout &&
+                variables == other.variables &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(model, selector, timeout, additionalProperties)
+            Objects.hash(model, selector, timeout, variables, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Options{model=$model, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
+            "Options{model=$model, selector=$selector, timeout=$timeout, variables=$variables, additionalProperties=$additionalProperties}"
     }
 
     /** Whether to stream the response via SSE */
