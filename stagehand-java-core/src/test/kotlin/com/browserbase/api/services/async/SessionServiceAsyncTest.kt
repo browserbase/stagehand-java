@@ -50,6 +50,15 @@ internal class SessionServiceAsyncTest {
                             .variables(
                                 SessionActParams.Options.Variables.builder()
                                     .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                                    .putAdditionalProperty(
+                                        "password",
+                                        JsonValue.from(
+                                            mapOf(
+                                                "value" to "secret123",
+                                                "description" to "The login password",
+                                            )
+                                        ),
+                                    )
                                     .build()
                             )
                             .build()
@@ -93,6 +102,15 @@ internal class SessionServiceAsyncTest {
                             .variables(
                                 SessionActParams.Options.Variables.builder()
                                     .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                                    .putAdditionalProperty(
+                                        "password",
+                                        JsonValue.from(
+                                            mapOf(
+                                                "value" to "secret123",
+                                                "description" to "The login password",
+                                            )
+                                        ),
+                                    )
                                     .build()
                             )
                             .build()
@@ -175,6 +193,8 @@ internal class SessionServiceAsyncTest {
                             )
                             .highlightCursor(true)
                             .maxSteps(20.0)
+                            .toolTimeout(30000.0)
+                            .useSearch(true)
                             .build()
                     )
                     .frameId("frameId")
@@ -233,6 +253,8 @@ internal class SessionServiceAsyncTest {
                             )
                             .highlightCursor(true)
                             .maxSteps(20.0)
+                            .toolTimeout(30000.0)
+                            .useSearch(true)
                             .build()
                     )
                     .frameId("frameId")
@@ -397,6 +419,20 @@ internal class SessionServiceAsyncTest {
                             )
                             .selector("nav")
                             .timeout(30000.0)
+                            .variables(
+                                SessionObserveParams.Options.Variables.builder()
+                                    .putAdditionalProperty(
+                                        "username",
+                                        JsonValue.from(
+                                            mapOf(
+                                                "value" to "john@example.com",
+                                                "description" to "The login email",
+                                            )
+                                        ),
+                                    )
+                                    .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                                    .build()
+                            )
                             .build()
                     )
                     .build()
@@ -436,6 +472,20 @@ internal class SessionServiceAsyncTest {
                             )
                             .selector("nav")
                             .timeout(30000.0)
+                            .variables(
+                                SessionObserveParams.Options.Variables.builder()
+                                    .putAdditionalProperty(
+                                        "username",
+                                        JsonValue.from(
+                                            mapOf(
+                                                "value" to "john@example.com",
+                                                "description" to "The login email",
+                                            )
+                                        ),
+                                    )
+                                    .putAdditionalProperty("rememberMe", JsonValue.from(true))
+                                    .build()
+                            )
                             .build()
                     )
                     .build()

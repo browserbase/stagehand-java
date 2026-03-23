@@ -30,6 +30,15 @@ internal class SessionActParamsTest {
                     .variables(
                         SessionActParams.Options.Variables.builder()
                             .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                            .putAdditionalProperty(
+                                "password",
+                                JsonValue.from(
+                                    mapOf(
+                                        "value" to "secret123",
+                                        "description" to "The login password",
+                                    )
+                                ),
+                            )
                             .build()
                     )
                     .build()
@@ -72,6 +81,15 @@ internal class SessionActParamsTest {
                         .variables(
                             SessionActParams.Options.Variables.builder()
                                 .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                                .putAdditionalProperty(
+                                    "password",
+                                    JsonValue.from(
+                                        mapOf(
+                                            "value" to "secret123",
+                                            "description" to "The login password",
+                                        )
+                                    ),
+                                )
                                 .build()
                         )
                         .build()
@@ -118,6 +136,15 @@ internal class SessionActParamsTest {
                         .variables(
                             SessionActParams.Options.Variables.builder()
                                 .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                                .putAdditionalProperty(
+                                    "password",
+                                    JsonValue.from(
+                                        mapOf(
+                                            "value" to "secret123",
+                                            "description" to "The login password",
+                                        )
+                                    ),
+                                )
                                 .build()
                         )
                         .build()
@@ -144,6 +171,15 @@ internal class SessionActParamsTest {
                     .variables(
                         SessionActParams.Options.Variables.builder()
                             .putAdditionalProperty("username", JsonValue.from("john_doe"))
+                            .putAdditionalProperty(
+                                "password",
+                                JsonValue.from(
+                                    mapOf(
+                                        "value" to "secret123",
+                                        "description" to "The login password",
+                                    )
+                                ),
+                            )
                             .build()
                     )
                     .build()
