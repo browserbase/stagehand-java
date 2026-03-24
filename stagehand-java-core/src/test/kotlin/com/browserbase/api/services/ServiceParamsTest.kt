@@ -229,6 +229,11 @@ internal class ServiceParamsTest {
                                 .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
+                                .headers(
+                                    ModelConfig.Headers.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .provider(ModelConfig.Provider.OPENAI)
                                 .build()
                         )

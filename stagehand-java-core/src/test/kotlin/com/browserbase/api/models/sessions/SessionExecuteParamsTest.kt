@@ -2,6 +2,7 @@
 
 package com.browserbase.api.models.sessions
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -21,6 +22,11 @@ internal class SessionExecuteParamsTest {
                             .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
+                            .headers(
+                                ModelConfig.Headers.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .provider(ModelConfig.Provider.OPENAI)
                             .build()
                     )
@@ -30,6 +36,11 @@ internal class SessionExecuteParamsTest {
                             .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
+                            .headers(
+                                ModelConfig.Headers.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .provider(ModelConfig.Provider.OPENAI)
                             .build()
                     )
@@ -87,6 +98,11 @@ internal class SessionExecuteParamsTest {
                                 .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
+                                .headers(
+                                    ModelConfig.Headers.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .provider(ModelConfig.Provider.OPENAI)
                                 .build()
                         )
@@ -96,6 +112,11 @@ internal class SessionExecuteParamsTest {
                                 .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
+                                .headers(
+                                    ModelConfig.Headers.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .provider(ModelConfig.Provider.OPENAI)
                                 .build()
                         )
@@ -157,6 +178,11 @@ internal class SessionExecuteParamsTest {
                                 .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
+                                .headers(
+                                    ModelConfig.Headers.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .provider(ModelConfig.Provider.OPENAI)
                                 .build()
                         )
@@ -166,6 +192,11 @@ internal class SessionExecuteParamsTest {
                                 .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
+                                .headers(
+                                    ModelConfig.Headers.builder()
+                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .build()
+                                )
                                 .provider(ModelConfig.Provider.OPENAI)
                                 .build()
                         )
@@ -199,6 +230,11 @@ internal class SessionExecuteParamsTest {
                             .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
+                            .headers(
+                                ModelConfig.Headers.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .provider(ModelConfig.Provider.OPENAI)
                             .build()
                     )
@@ -208,6 +244,11 @@ internal class SessionExecuteParamsTest {
                             .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
+                            .headers(
+                                ModelConfig.Headers.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .provider(ModelConfig.Provider.OPENAI)
                             .build()
                     )
