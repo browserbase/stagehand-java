@@ -2,10 +2,12 @@
 
 package com.browserbase.api.core.handlers
 
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.HttpResponse
 import com.browserbase.api.core.http.SseMessage
 import com.browserbase.api.core.jsonMapper
+import com.browserbase.api.errors.SseException
 import java.io.InputStream
 import java.util.stream.Collectors.toList
 import org.assertj.core.api.Assertions.assertThat
@@ -21,64 +23,105 @@ internal class SseHandlerTest {
         internal val expectedMessages: List<SseMessage>? = null,
         internal val expectedException: Exception? = null,
     ) {
-        DATA_MISSING_EVENT(
+        EVENT_AND_DATA(
             buildString {
+                append("event: starting\n")
                 append("data: {\"foo\":true}\n")
                 append("\n")
             },
-            listOf(sseMessageBuilder().data("{\"foo\":true}").build()),
+            listOf(sseMessageBuilder().event("starting").data("{\"foo\":true}").build()),
         ),
-        MULTIPLE_DATA_MISSING_EVENT(
+        EVENT_MISSING_DATA(
             buildString {
+                append("event: starting\n")
+                append("\n")
+            },
+            listOf(sseMessageBuilder().event("starting").build()),
+        ),
+        MULTIPLE_EVENTS_AND_DATA(
+            buildString {
+                append("event: starting\n")
                 append("data: {\"foo\":true}\n")
                 append("\n")
+                append("event: connected\n")
                 append("data: {\"bar\":false}\n")
                 append("\n")
             },
             listOf(
-                sseMessageBuilder().data("{\"foo\":true}").build(),
-                sseMessageBuilder().data("{\"bar\":false}").build(),
+                sseMessageBuilder().event("starting").data("{\"foo\":true}").build(),
+                sseMessageBuilder().event("connected").data("{\"bar\":false}").build(),
+            ),
+        ),
+        MULTIPLE_EVENTS_MISSING_DATA(
+            buildString {
+                append("event: starting\n")
+                append("\n")
+                append("event: connected\n")
+                append("\n")
+            },
+            listOf(
+                sseMessageBuilder().event("starting").build(),
+                sseMessageBuilder().event("connected").build(),
             ),
         ),
         DATA_JSON_ESCAPED_DOUBLE_NEW_LINE(
             buildString {
+                append("event: starting\n")
                 append("data: {\n")
                 append("data: \"foo\":\n")
                 append("data: true}\n")
                 append("\n\n")
             },
-            listOf(sseMessageBuilder().data("{\n\"foo\":\ntrue}").build()),
+            listOf(sseMessageBuilder().event("starting").data("{\n\"foo\":\ntrue}").build()),
         ),
         MULTIPLE_DATA_LINES(
             buildString {
+                append("event: starting\n")
                 append("data: {\n")
                 append("data: \"foo\":\n")
                 append("data: true}\n")
                 append("\n\n")
             },
-            listOf(sseMessageBuilder().data("{\n\"foo\":\ntrue}").build()),
+            listOf(sseMessageBuilder().event("starting").data("{\n\"foo\":\ntrue}").build()),
         ),
         SPECIAL_NEW_LINE_CHARACTER(
             buildString {
+                append("event: starting\n")
                 append("data: {\"content\":\" culpa\"}\n")
                 append("\n")
+                append("event: connected\n")
                 append("data: {\"content\":\" \u2028\"}\n")
                 append("\n")
+                append("event: starting\n")
                 append("data: {\"content\":\"foo\"}\n")
                 append("\n")
             },
             listOf(
-                sseMessageBuilder().data("{\"content\":\" culpa\"}").build(),
-                sseMessageBuilder().data("{\"content\":\" \u2028\"}").build(),
-                sseMessageBuilder().data("{\"content\":\"foo\"}").build(),
+                sseMessageBuilder().event("starting").data("{\"content\":\" culpa\"}").build(),
+                sseMessageBuilder().event("connected").data("{\"content\":\" \u2028\"}").build(),
+                sseMessageBuilder().event("starting").data("{\"content\":\"foo\"}").build(),
             ),
         ),
         MULTI_BYTE_CHARACTER(
             buildString {
+                append("event: starting\n")
                 append("data: {\"content\":\"\u0438\u0437\u0432\u0435\u0441\u0442\u043d\u0438\"}\n")
                 append("\n")
             },
-            listOf(sseMessageBuilder().data("{\"content\":\"известни\"}").build()),
+            listOf(sseMessageBuilder().event("starting").data("{\"content\":\"известни\"}").build()),
+        ),
+        ERROR_EVENT(
+            buildString {
+                append("event: error\n")
+                append("data: {\"errorProperty\":\"42\"}\n")
+                append("\n")
+            },
+            expectedException =
+                SseException.builder()
+                    .statusCode(0)
+                    .headers(Headers.builder().build())
+                    .body(JsonValue.from(mapOf("errorProperty" to "42")))
+                    .build(),
         ),
     }
 
