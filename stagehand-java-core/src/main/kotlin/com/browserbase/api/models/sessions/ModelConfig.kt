@@ -8,6 +8,7 @@ import com.browserbase.api.core.JsonField
 import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.checkRequired
+import com.browserbase.api.core.toImmutable
 import com.browserbase.api.errors.StagehandInvalidDataException
 import com.fasterxml.jackson.annotation.JsonAnyGetter
 import com.fasterxml.jackson.annotation.JsonAnySetter
@@ -24,6 +25,7 @@ private constructor(
     private val modelName: JsonField<String>,
     private val apiKey: JsonField<String>,
     private val baseUrl: JsonField<String>,
+    private val headers: JsonField<Headers>,
     private val provider: JsonField<Provider>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -33,8 +35,9 @@ private constructor(
         @JsonProperty("modelName") @ExcludeMissing modelName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
         @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
         @JsonProperty("provider") @ExcludeMissing provider: JsonField<Provider> = JsonMissing.of(),
-    ) : this(modelName, apiKey, baseUrl, provider, mutableMapOf())
+    ) : this(modelName, apiKey, baseUrl, headers, provider, mutableMapOf())
 
     /**
      * Model name string with provider prefix (e.g., 'openai/gpt-5-nano')
@@ -59,6 +62,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun baseUrl(): Optional<String> = baseUrl.getOptional("baseURL")
+
+    /**
+     * Custom headers sent with every request to the model provider
+     *
+     * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun headers(): Optional<Headers> = headers.getOptional("headers")
 
     /**
      * AI provider for the model (or provide a baseURL endpoint instead)
@@ -88,6 +99,13 @@ private constructor(
      * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
      */
     @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+    /**
+     * Returns the raw JSON value of [headers].
+     *
+     * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
 
     /**
      * Returns the raw JSON value of [provider].
@@ -127,6 +145,7 @@ private constructor(
         private var modelName: JsonField<String>? = null
         private var apiKey: JsonField<String> = JsonMissing.of()
         private var baseUrl: JsonField<String> = JsonMissing.of()
+        private var headers: JsonField<Headers> = JsonMissing.of()
         private var provider: JsonField<Provider> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -135,6 +154,7 @@ private constructor(
             modelName = modelConfig.modelName
             apiKey = modelConfig.apiKey
             baseUrl = modelConfig.baseUrl
+            headers = modelConfig.headers
             provider = modelConfig.provider
             additionalProperties = modelConfig.additionalProperties.toMutableMap()
         }
@@ -172,6 +192,17 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+        /** Custom headers sent with every request to the model provider */
+        fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+        /**
+         * Sets [Builder.headers] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.headers] with a well-typed [Headers] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
 
         /** AI provider for the model (or provide a baseURL endpoint instead) */
         fun provider(provider: Provider) = provider(JsonField.of(provider))
@@ -221,6 +252,7 @@ private constructor(
                 checkRequired("modelName", modelName),
                 apiKey,
                 baseUrl,
+                headers,
                 provider,
                 additionalProperties.toMutableMap(),
             )
@@ -236,6 +268,7 @@ private constructor(
         modelName()
         apiKey()
         baseUrl()
+        headers().ifPresent { it.validate() }
         provider().ifPresent { it.validate() }
         validated = true
     }
@@ -258,7 +291,108 @@ private constructor(
         (if (modelName.asKnown().isPresent) 1 else 0) +
             (if (apiKey.asKnown().isPresent) 1 else 0) +
             (if (baseUrl.asKnown().isPresent) 1 else 0) +
+            (headers.asKnown().getOrNull()?.validity() ?: 0) +
             (provider.asKnown().getOrNull()?.validity() ?: 0)
+
+    /** Custom headers sent with every request to the model provider */
+    class Headers
+    @JsonCreator
+    private constructor(
+        @com.fasterxml.jackson.annotation.JsonValue
+        private val additionalProperties: Map<String, JsonValue>
+    ) {
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /** Returns a mutable builder for constructing an instance of [Headers]. */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [Headers]. */
+        class Builder internal constructor() {
+
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(headers: Headers) = apply {
+                additionalProperties = headers.additionalProperties.toMutableMap()
+            }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [Headers].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             */
+            fun build(): Headers = Headers(additionalProperties.toImmutable())
+        }
+
+        private var validated: Boolean = false
+
+        fun validate(): Headers = apply {
+            if (validated) {
+                return@apply
+            }
+
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is Headers && additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+    }
 
     /** AI provider for the model (or provide a baseURL endpoint instead) */
     class Provider @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -415,16 +549,17 @@ private constructor(
             modelName == other.modelName &&
             apiKey == other.apiKey &&
             baseUrl == other.baseUrl &&
+            headers == other.headers &&
             provider == other.provider &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(modelName, apiKey, baseUrl, provider, additionalProperties)
+        Objects.hash(modelName, apiKey, baseUrl, headers, provider, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "ModelConfig{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, provider=$provider, additionalProperties=$additionalProperties}"
+        "ModelConfig{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, provider=$provider, additionalProperties=$additionalProperties}"
 }
