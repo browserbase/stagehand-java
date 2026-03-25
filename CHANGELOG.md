@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.18.0 (2026-03-25)
+
+Full Changelog: [v0.7.1...v3.18.0](https://github.com/browserbase/stagehand-java/compare/v0.7.1...v3.18.0)
+
+### Features
+
+* [STG-1607] Yield finished SSE event instead of silently dropping it ([72fa653](https://github.com/browserbase/stagehand-java/commit/72fa6531d9996c0653fa610b5b05e8027c3a450b))
+* Add explicit SSE event names for local v3 streaming ([6f7efad](https://github.com/browserbase/stagehand-java/commit/6f7efad3e19a4fdb911b2c478afb02ad2b63f8e9))
+* Add missing cdpHeaders field to v3 server openapi spec ([5a9506d](https://github.com/browserbase/stagehand-java/commit/5a9506d5dfeb1ae172834941aad3bbd9e96f2973))
+* Include LLM headers in ModelConfig ([dbf7424](https://github.com/browserbase/stagehand-java/commit/dbf74248557129e0e82067e7ce44bcbc4813174c))
+* Revert broken finished SSE yield config ([f404196](https://github.com/browserbase/stagehand-java/commit/f4041968aefba0e64380ca1d14ff20e5f93f9494))
+* variables for observe ([b10e2ad](https://github.com/browserbase/stagehand-java/commit/b10e2ad429ebac12464ac332eb32c2d11035c1ff))
+
+
+### Bug Fixes
+
+* **client:** allow updating header/query affecting fields in `toBuilder()` ([173adb9](https://github.com/browserbase/stagehand-java/commit/173adb9d14281cf3cb1eccedd850f5da1f95f41f))
+* **client:** incorrect `Retry-After` parsing ([76ea3fc](https://github.com/browserbase/stagehand-java/commit/76ea3fc583bfe9ca7295856db85378b44d765b0f))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([db9534f](https://github.com/browserbase/stagehand-java/commit/db9534f195b6045ad9679b08243c36d55340569b))
+* **ci:** skip uploading artifacts on stainless-internal branches ([4a1399c](https://github.com/browserbase/stagehand-java/commit/4a1399c7a535d9bf8934e9d142878e57a1537b8d))
+* **internal:** bump ktfmt ([d6758da](https://github.com/browserbase/stagehand-java/commit/d6758da0fe85d048b4f8fcd740be7c37901bb253))
+* **internal:** bump palantir-java-format ([3bf036a](https://github.com/browserbase/stagehand-java/commit/3bf036aed5ba8fb90fe4bf5bc6b62a49f09f7dcc))
+* **internal:** codegen related update ([f94c8c9](https://github.com/browserbase/stagehand-java/commit/f94c8c9a86af4592fba5c42645ccc1099a8ab1fe))
+* **internal:** tweak CI branches ([1d88e38](https://github.com/browserbase/stagehand-java/commit/1d88e3802216d33841d3595d3d9fa024189dfc28))
+* **internal:** update gitignore ([690533c](https://github.com/browserbase/stagehand-java/commit/690533ceee3c5d482a17d67c36a7bceb62a63ec2))
+* **internal:** update retry delay tests ([53bdc6b](https://github.com/browserbase/stagehand-java/commit/53bdc6ba4804aca38996fe28d5eeff412a10d189))
+
 ## 0.7.1 (2026-03-04)
 
 Full Changelog: [v0.7.0...v0.7.1](https://github.com/browserbase/stagehand-java/compare/v0.7.0...v0.7.1)
