@@ -13,7 +13,7 @@ internal class SessionStartParamsTest {
     fun create() {
         SessionStartParams.builder()
             .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-            .modelName("openai/gpt-4o")
+            .modelName("openai/gpt-5.4-mini")
             .actTimeoutMs(0.0)
             .browser(
                 SessionStartParams.Browser.builder()
@@ -164,7 +164,7 @@ internal class SessionStartParamsTest {
         val params =
             SessionStartParams.builder()
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("openai/gpt-4o")
+                .modelName("openai/gpt-5.4-mini")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -320,7 +320,7 @@ internal class SessionStartParamsTest {
 
     @Test
     fun headersWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-5.4-mini").build()
 
         val headers = params._headers()
 
@@ -332,7 +332,7 @@ internal class SessionStartParamsTest {
         val params =
             SessionStartParams.builder()
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("openai/gpt-4o")
+                .modelName("openai/gpt-5.4-mini")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -483,7 +483,7 @@ internal class SessionStartParamsTest {
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-5.4-mini")
         assertThat(body.actTimeoutMs()).contains(0.0)
         assertThat(body.browser())
             .contains(
@@ -632,10 +632,10 @@ internal class SessionStartParamsTest {
 
     @Test
     fun bodyWithoutOptionalFields() {
-        val params = SessionStartParams.builder().modelName("openai/gpt-4o").build()
+        val params = SessionStartParams.builder().modelName("openai/gpt-5.4-mini").build()
 
         val body = params._body()
 
-        assertThat(body.modelName()).isEqualTo("openai/gpt-4o")
+        assertThat(body.modelName()).isEqualTo("openai/gpt-5.4-mini")
     }
 }

@@ -297,7 +297,7 @@ import com.browserbase.api.models.sessions.SessionStartParams;
 import com.browserbase.api.models.sessions.SessionStartResponse;
 
 SessionStartParams params = SessionStartParams.builder()
-    .modelName("openai/gpt-5-nano")
+    .modelName("openai/gpt-5.4-mini")
     .build();
 HttpResponseFor<SessionStartResponse> response = client.sessions().withRawResponse().start(params);
 

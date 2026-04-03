@@ -49,7 +49,7 @@ internal class ServiceParamsTest {
         sessionService.start(
             SessionStartParams.builder()
                 .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                .modelName("openai/gpt-4o")
+                .modelName("openai/gpt-5.4-mini")
                 .actTimeoutMs(0.0)
                 .browser(
                     SessionStartParams.Browser.builder()
@@ -226,7 +226,7 @@ internal class ServiceParamsTest {
                     SessionActParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5-nano")
+                                .modelName("openai/gpt-5.4-mini")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
