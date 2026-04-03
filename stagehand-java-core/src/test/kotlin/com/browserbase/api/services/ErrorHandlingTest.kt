@@ -75,7 +75,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -261,7 +261,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -447,7 +447,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -633,7 +633,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -819,7 +819,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1005,7 +1005,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1191,7 +1191,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1377,7 +1377,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1563,7 +1563,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1749,7 +1749,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -1935,7 +1935,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2121,7 +2121,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2307,7 +2307,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2493,7 +2493,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2679,7 +2679,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -2865,7 +2865,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
@@ -3049,7 +3049,7 @@ internal class ErrorHandlingTest {
                 sessionService.start(
                     SessionStartParams.builder()
                         .xStreamResponse(SessionStartParams.XStreamResponse.TRUE)
-                        .modelName("openai/gpt-4o")
+                        .modelName("openai/gpt-5.4-mini")
                         .actTimeoutMs(0.0)
                         .browser(
                             SessionStartParams.Browser.builder()
