@@ -20,7 +20,7 @@ internal class SessionObserveParamsTest {
                 SessionObserveParams.Options.builder()
                     .model(
                         ModelConfig.builder()
-                            .modelName("openai/gpt-5-nano")
+                            .modelName("openai/gpt-5.4-mini")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
                             .headers(
@@ -74,7 +74,7 @@ internal class SessionObserveParamsTest {
                     SessionObserveParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5-nano")
+                                .modelName("openai/gpt-5.4-mini")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
@@ -132,7 +132,7 @@ internal class SessionObserveParamsTest {
                     SessionObserveParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5-nano")
+                                .modelName("openai/gpt-5.4-mini")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
@@ -172,7 +172,7 @@ internal class SessionObserveParamsTest {
                 SessionObserveParams.Options.builder()
                     .model(
                         ModelConfig.builder()
-                            .modelName("openai/gpt-5-nano")
+                            .modelName("openai/gpt-5.4-mini")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
                             .headers(
