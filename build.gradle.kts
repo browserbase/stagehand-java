@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "com.browserbase.api"
-    version = "3.18.0" // x-release-please-version
+    version = "3.19.3" // x-release-please-version
 }
 
 subprojects {

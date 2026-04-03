@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.19.3 (2026-04-03)
+
+Full Changelog: [v3.18.0...v3.19.3](https://github.com/browserbase/stagehand-java/compare/v3.18.0...v3.19.3)
+
+### Features
+
+* Replace default model used in server-v3 api spec examples ([aec2bf3](https://github.com/browserbase/stagehand-java/commit/aec2bf3d0ab203f15e06940e174478bfa30bf70b))
+
 ## 3.18.0 (2026-03-25)
 
 Full Changelog: [v0.7.1...v3.18.0](https://github.com/browserbase/stagehand-java/compare/v0.7.1...v3.18.0)
