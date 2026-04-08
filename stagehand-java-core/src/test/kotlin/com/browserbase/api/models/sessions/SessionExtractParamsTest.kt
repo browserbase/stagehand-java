@@ -20,15 +20,24 @@ internal class SessionExtractParamsTest {
                 SessionExtractParams.Options.builder()
                     .model(
                         ModelConfig.builder()
-                            .modelName("openai/gpt-5.4-mini")
+                            .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
                             .headers(
                                 ModelConfig.Headers.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .putAdditionalProperty(
+                                        "X-Custom-Header",
+                                        JsonValue.from("value"),
+                                    )
                                     .build()
                             )
                             .provider(ModelConfig.Provider.OPENAI)
+                            .providerOptions(
+                                ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions.builder()
+                                    .region("us-east-1")
+                                    .build()
+                            )
+                            .skipApiKeyFallback(true)
                             .build()
                     )
                     .selector("#main-content")
@@ -65,15 +74,25 @@ internal class SessionExtractParamsTest {
                     SessionExtractParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5.4-mini")
+                                .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
                                     ModelConfig.Headers.builder()
-                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .putAdditionalProperty(
+                                            "X-Custom-Header",
+                                            JsonValue.from("value"),
+                                        )
                                         .build()
                                 )
                                 .provider(ModelConfig.Provider.OPENAI)
+                                .providerOptions(
+                                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
+                                        .builder()
+                                        .region("us-east-1")
+                                        .build()
+                                )
+                                .skipApiKeyFallback(true)
                                 .build()
                         )
                         .selector("#main-content")
@@ -114,15 +133,25 @@ internal class SessionExtractParamsTest {
                     SessionExtractParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5.4-mini")
+                                .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
                                     ModelConfig.Headers.builder()
-                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .putAdditionalProperty(
+                                            "X-Custom-Header",
+                                            JsonValue.from("value"),
+                                        )
                                         .build()
                                 )
                                 .provider(ModelConfig.Provider.OPENAI)
+                                .providerOptions(
+                                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
+                                        .builder()
+                                        .region("us-east-1")
+                                        .build()
+                                )
+                                .skipApiKeyFallback(true)
                                 .build()
                         )
                         .selector("#main-content")
@@ -146,15 +175,24 @@ internal class SessionExtractParamsTest {
                 SessionExtractParams.Options.builder()
                     .model(
                         ModelConfig.builder()
-                            .modelName("openai/gpt-5.4-mini")
+                            .modelName("openai/gpt-5-nano")
                             .apiKey("sk-some-openai-api-key")
                             .baseUrl("https://api.openai.com/v1")
                             .headers(
                                 ModelConfig.Headers.builder()
-                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .putAdditionalProperty(
+                                        "X-Custom-Header",
+                                        JsonValue.from("value"),
+                                    )
                                     .build()
                             )
                             .provider(ModelConfig.Provider.OPENAI)
+                            .providerOptions(
+                                ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions.builder()
+                                    .region("us-east-1")
+                                    .build()
+                            )
+                            .skipApiKeyFallback(true)
                             .build()
                     )
                     .selector("#main-content")

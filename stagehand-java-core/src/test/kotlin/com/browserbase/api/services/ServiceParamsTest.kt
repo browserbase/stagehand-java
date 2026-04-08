@@ -192,6 +192,27 @@ internal class ServiceParamsTest {
                 .browserbaseSessionId("browserbaseSessionID")
                 .domSettleTimeoutMs(5000.0)
                 .experimental(true)
+                .modelClientOptions(
+                    SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions.builder()
+                        .apiKey("bedrock-short-term-api-key")
+                        .providerOptions(
+                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
+                                .ProviderOptions
+                                .builder()
+                                .region("us-east-1")
+                                .build()
+                        )
+                        .baseUrl("https://api.openai.com/v1")
+                        .headers(
+                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
+                                .Headers
+                                .builder()
+                                .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
+                                .build()
+                        )
+                        .skipApiKeyFallback(true)
+                        .build()
+                )
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
                 .verbose(SessionStartParams.Verbose._1)
@@ -226,15 +247,25 @@ internal class ServiceParamsTest {
                     SessionActParams.Options.builder()
                         .model(
                             ModelConfig.builder()
-                                .modelName("openai/gpt-5.4-mini")
+                                .modelName("openai/gpt-5-nano")
                                 .apiKey("sk-some-openai-api-key")
                                 .baseUrl("https://api.openai.com/v1")
                                 .headers(
                                     ModelConfig.Headers.builder()
-                                        .putAdditionalProperty("foo", JsonValue.from("string"))
+                                        .putAdditionalProperty(
+                                            "X-Custom-Header",
+                                            JsonValue.from("value"),
+                                        )
                                         .build()
                                 )
                                 .provider(ModelConfig.Provider.OPENAI)
+                                .providerOptions(
+                                    ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
+                                        .builder()
+                                        .region("us-east-1")
+                                        .build()
+                                )
+                                .skipApiKeyFallback(true)
                                 .build()
                         )
                         .timeout(30000.0)
