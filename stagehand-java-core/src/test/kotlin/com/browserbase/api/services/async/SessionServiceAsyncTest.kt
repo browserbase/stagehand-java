@@ -40,25 +40,15 @@ internal class SessionServiceAsyncTest {
                         SessionActParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -107,25 +97,15 @@ internal class SessionServiceAsyncTest {
                         SessionActParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -197,49 +177,29 @@ internal class SessionServiceAsyncTest {
                             .cua(true)
                             .executionModel(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -253,6 +213,8 @@ internal class SessionServiceAsyncTest {
                             )
                             .highlightCursor(true)
                             .maxSteps(20.0)
+                            .toolTimeout(30000.0)
+                            .useSearch(true)
                             .build()
                     )
                     .frameId("frameId")
@@ -285,49 +247,29 @@ internal class SessionServiceAsyncTest {
                             .cua(true)
                             .executionModel(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -341,6 +283,8 @@ internal class SessionServiceAsyncTest {
                             )
                             .highlightCursor(true)
                             .maxSteps(20.0)
+                            .toolTimeout(30000.0)
+                            .useSearch(true)
                             .build()
                     )
                     .frameId("frameId")
@@ -375,25 +319,15 @@ internal class SessionServiceAsyncTest {
                         SessionExtractParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .selector("#main-content")
@@ -434,25 +368,15 @@ internal class SessionServiceAsyncTest {
                         SessionExtractParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .selector("#main-content")
@@ -527,25 +451,15 @@ internal class SessionServiceAsyncTest {
                         SessionObserveParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .selector("nav")
@@ -595,25 +509,15 @@ internal class SessionServiceAsyncTest {
                         SessionObserveParams.Options.builder()
                             .model(
                                 ModelConfig.builder()
-                                    .modelName("openai/gpt-5-nano")
+                                    .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
                                         ModelConfig.Headers.builder()
-                                            .putAdditionalProperty(
-                                                "X-Custom-Header",
-                                                JsonValue.from("value"),
-                                            )
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
                                     .provider(ModelConfig.Provider.OPENAI)
-                                    .providerOptions(
-                                        ModelConfig.ProviderOptions.BedrockApiKeyProviderOptions
-                                            .builder()
-                                            .region("us-east-1")
-                                            .build()
-                                    )
-                                    .skipApiKeyFallback(true)
                                     .build()
                             )
                             .selector("nav")
@@ -836,33 +740,6 @@ internal class SessionServiceAsyncTest {
                     .browserbaseSessionId("browserbaseSessionID")
                     .domSettleTimeoutMs(5000.0)
                     .experimental(true)
-                    .modelClientOptions(
-                        SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                            .builder()
-                            .apiKey("bedrock-short-term-api-key")
-                            .providerOptions(
-                                SessionStartParams.ModelClientOptions
-                                    .BedrockApiKeyModelClientOptions
-                                    .ProviderOptions
-                                    .builder()
-                                    .region("us-east-1")
-                                    .build()
-                            )
-                            .baseUrl("https://api.openai.com/v1")
-                            .headers(
-                                SessionStartParams.ModelClientOptions
-                                    .BedrockApiKeyModelClientOptions
-                                    .Headers
-                                    .builder()
-                                    .putAdditionalProperty(
-                                        "X-Custom-Header",
-                                        JsonValue.from("value"),
-                                    )
-                                    .build()
-                            )
-                            .skipApiKeyFallback(true)
-                            .build()
-                    )
                     .selfHeal(true)
                     .systemPrompt("systemPrompt")
                     .verbose(SessionStartParams.Verbose._1)
