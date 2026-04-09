@@ -30,8 +30,8 @@ import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 /**
- * Server-Sent Event emitted during streaming responses. Events are sent as `data: <JSON>\n\n`. Key
- * order: data (with status first), type, id.
+ * Server-Sent Event emitted during streaming responses. Events are sent as `event: <status>\ndata:
+ * <JSON>\n\n`, where the JSON payload has the shape `{ data, type, id }`.
  */
 class StreamEvent
 @JsonCreator(mode = JsonCreator.Mode.DISABLED)

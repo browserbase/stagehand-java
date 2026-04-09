@@ -159,27 +159,6 @@ internal class SessionStartParamsTest {
             .browserbaseSessionId("browserbaseSessionID")
             .domSettleTimeoutMs(5000.0)
             .experimental(true)
-            .modelClientOptions(
-                SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions.builder()
-                    .apiKey("bedrock-short-term-api-key")
-                    .providerOptions(
-                        SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                            .ProviderOptions
-                            .builder()
-                            .region("us-east-1")
-                            .build()
-                    )
-                    .baseUrl("https://api.openai.com/v1")
-                    .headers(
-                        SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                            .Headers
-                            .builder()
-                            .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
-                            .build()
-                    )
-                    .skipApiKeyFallback(true)
-                    .build()
-            )
             .selfHeal(true)
             .systemPrompt("systemPrompt")
             .verbose(SessionStartParams.Verbose._1)
@@ -344,27 +323,6 @@ internal class SessionStartParamsTest {
                 .browserbaseSessionId("browserbaseSessionID")
                 .domSettleTimeoutMs(5000.0)
                 .experimental(true)
-                .modelClientOptions(
-                    SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions.builder()
-                        .apiKey("bedrock-short-term-api-key")
-                        .providerOptions(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .ProviderOptions
-                                .builder()
-                                .region("us-east-1")
-                                .build()
-                        )
-                        .baseUrl("https://api.openai.com/v1")
-                        .headers(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .Headers
-                                .builder()
-                                .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
-                                .build()
-                        )
-                        .skipApiKeyFallback(true)
-                        .build()
-                )
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
                 .verbose(SessionStartParams.Verbose._1)
@@ -542,27 +500,6 @@ internal class SessionStartParamsTest {
                 .browserbaseSessionId("browserbaseSessionID")
                 .domSettleTimeoutMs(5000.0)
                 .experimental(true)
-                .modelClientOptions(
-                    SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions.builder()
-                        .apiKey("bedrock-short-term-api-key")
-                        .providerOptions(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .ProviderOptions
-                                .builder()
-                                .region("us-east-1")
-                                .build()
-                        )
-                        .baseUrl("https://api.openai.com/v1")
-                        .headers(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .Headers
-                                .builder()
-                                .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
-                                .build()
-                        )
-                        .skipApiKeyFallback(true)
-                        .build()
-                )
                 .selfHeal(true)
                 .systemPrompt("systemPrompt")
                 .verbose(SessionStartParams.Verbose._1)
@@ -719,30 +656,6 @@ internal class SessionStartParamsTest {
         assertThat(body.browserbaseSessionId()).contains("browserbaseSessionID")
         assertThat(body.domSettleTimeoutMs()).contains(5000.0)
         assertThat(body.experimental()).contains(true)
-        assertThat(body.modelClientOptions())
-            .contains(
-                SessionStartParams.ModelClientOptions.ofBedrockApiKey(
-                    SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions.builder()
-                        .apiKey("bedrock-short-term-api-key")
-                        .providerOptions(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .ProviderOptions
-                                .builder()
-                                .region("us-east-1")
-                                .build()
-                        )
-                        .baseUrl("https://api.openai.com/v1")
-                        .headers(
-                            SessionStartParams.ModelClientOptions.BedrockApiKeyModelClientOptions
-                                .Headers
-                                .builder()
-                                .putAdditionalProperty("X-Custom-Header", JsonValue.from("value"))
-                                .build()
-                        )
-                        .skipApiKeyFallback(true)
-                        .build()
-                )
-            )
         assertThat(body.selfHeal()).contains(true)
         assertThat(body.systemPrompt()).contains("systemPrompt")
         assertThat(body.verbose()).contains(SessionStartParams.Verbose._1)
