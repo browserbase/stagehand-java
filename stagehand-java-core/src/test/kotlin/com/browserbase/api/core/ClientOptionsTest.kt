@@ -48,6 +48,40 @@ internal class ClientOptionsTest {
     }
 
     @Test
+    fun fromEnv_prefersStagehandApiUrl() {
+        val env =
+            mapOf(
+                "STAGEHAND_API_URL" to "https://example.com/from-api-env",
+                "STAGEHAND_BASE_URL" to "https://example.com/from-base-env",
+            )
+        val clientOptions =
+            ClientOptions.builder()
+                .httpClient(httpClient)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .fromEnv(env::get)
+                .build()
+
+        assertThat(clientOptions.baseUrl()).isEqualTo("https://example.com/from-api-env")
+    }
+
+    @Test
+    fun fromEnv_usesLegacyStagehandBaseUrl() {
+        val env = mapOf("STAGEHAND_BASE_URL" to "https://example.com/from-base-env")
+        val clientOptions =
+            ClientOptions.builder()
+                .httpClient(httpClient)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .fromEnv(env::get)
+                .build()
+
+        assertThat(clientOptions.baseUrl()).isEqualTo("https://example.com/from-base-env")
+    }
+
+    @Test
     fun toBuilder_whenOriginalClientOptionsGarbageCollected_doesNotCloseOriginalClient() {
         var clientOptions =
             ClientOptions.builder()

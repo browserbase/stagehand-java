@@ -416,24 +416,26 @@ private constructor(
          * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
          * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                        |
          * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
-         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com"`|
+         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_API_URL`     |true    |`"https://api.stagehand.browserbase.com"`|
          *
          * System properties take precedence over environment variables.
          */
-        fun fromEnv() = apply {
-            (System.getProperty("stagehand.baseUrl") ?: System.getenv("STAGEHAND_BASE_URL"))?.let {
-                baseUrl(it)
-            }
-            (System.getProperty("stagehand.browserbaseApiKey")
-                    ?: System.getenv("BROWSERBASE_API_KEY"))
+        fun fromEnv() = fromEnv(System::getenv)
+
+        internal fun fromEnv(getEnv: (String) -> String?) = apply {
+            (System.getProperty("stagehand.baseUrl")
+                    ?: getEnv("STAGEHAND_API_URL")
+                    ?: getEnv("STAGEHAND_BASE_URL"))
+                ?.let { baseUrl(it) }
+            (System.getProperty("stagehand.browserbaseApiKey") ?: getEnv("BROWSERBASE_API_KEY"))
                 ?.let { browserbaseApiKey(it) }
             (System.getProperty("stagehand.browserbaseProjectId")
-                    ?: System.getenv("BROWSERBASE_PROJECT_ID"))
+                    ?: getEnv("BROWSERBASE_PROJECT_ID"))
                 ?.let { browserbaseProjectId(it) }
-            (System.getProperty("stagehand.modelApiKey") ?: System.getenv("MODEL_API_KEY"))?.let {
+            (System.getProperty("stagehand.modelApiKey") ?: getEnv("MODEL_API_KEY"))?.let {
                 modelApiKey(it)
             }
-            System.getenv("STAGEHAND_CUSTOM_HEADERS")?.let { customHeadersEnv ->
+            getEnv("STAGEHAND_CUSTOM_HEADERS")?.let { customHeadersEnv ->
                 for (line in customHeadersEnv.split("\n")) {
                     val colon = line.indexOf(':')
                     if (colon >= 0) {
