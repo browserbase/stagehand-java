@@ -136,6 +136,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -200,8 +202,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -322,6 +331,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -386,8 +397,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -508,6 +526,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -572,8 +592,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -694,6 +721,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -758,8 +787,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -880,6 +916,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -944,8 +982,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1066,6 +1111,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1130,8 +1177,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1252,6 +1306,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1316,8 +1372,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1438,6 +1501,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1502,8 +1567,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1624,6 +1696,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1688,8 +1762,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1810,6 +1891,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1874,8 +1957,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -1996,6 +2086,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2060,8 +2152,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2182,6 +2281,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2246,8 +2347,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2368,6 +2476,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2432,8 +2542,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2554,6 +2671,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2618,8 +2737,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2740,6 +2866,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2804,8 +2932,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2926,6 +3061,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -2990,8 +3127,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -3110,6 +3254,8 @@ internal class ErrorHandlingTest {
                                         .builder()
                                         .advancedStealth(true)
                                         .blockAds(true)
+                                        .captchaImageSelector("captchaImageSelector")
+                                        .captchaInputSelector("captchaInputSelector")
                                         .context(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings
@@ -3174,8 +3320,15 @@ internal class ErrorHandlingTest {
                                                 .build()
                                         )
                                         .logSession(true)
+                                        .os(
+                                            SessionStartParams.BrowserbaseSessionCreateParams
+                                                .BrowserSettings
+                                                .Os
+                                                .WINDOWS
+                                        )
                                         .recordSession(true)
                                         .solveCaptchas(true)
+                                        .verified(true)
                                         .viewport(
                                             SessionStartParams.BrowserbaseSessionCreateParams
                                                 .BrowserSettings

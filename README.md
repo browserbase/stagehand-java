@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/3.19.3)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/3.19.3/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.19.3)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/3.20.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/3.20.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.20.0)
 
 <!-- x-release-please-end -->
 
@@ -85,7 +85,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:3.19.3")
+implementation("com.browserbase.api:stagehand-java:3.20.0")
 ```
 
 ### Maven
@@ -94,7 +94,7 @@ implementation("com.browserbase.api:stagehand-java:3.19.3")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>3.19.3</version>
+  <version>3.20.0</version>
 </dependency>
 ```
 
@@ -259,7 +259,7 @@ import com.browserbase.api.client.StagehandClient;
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 
 // Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_API_URL` environment variables
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 ```
 
@@ -284,7 +284,7 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 
 StagehandClient client = StagehandOkHttpClient.builder()
     // Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-    // Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+    // Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_API_URL` environment variables
     .fromEnv()
     .browserbaseApiKey("My Browserbase API Key")
     .build();
@@ -297,7 +297,7 @@ See this table for the available options:
 | `browserbaseApiKey`    | `stagehand.browserbaseApiKey`    | `BROWSERBASE_API_KEY`    | true     | -                                         |
 | `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | true     | -                                         |
 | `modelApiKey`          | `stagehand.modelApiKey`          | `MODEL_API_KEY`          | true     | -                                         |
-| `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_BASE_URL`     | true     | `"https://api.stagehand.browserbase.com"` |
+| `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_API_URL`     | true     | `"https://api.stagehand.browserbase.com"` |
 
 System properties take precedence over environment variables.
 
@@ -346,7 +346,7 @@ import com.browserbase.api.models.sessions.SessionActResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_API_URL` environment variables
 StagehandClient client = StagehandOkHttpClient.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
@@ -366,7 +366,7 @@ import com.browserbase.api.models.sessions.SessionActResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `stagehand.browserbaseApiKey`, `stagehand.browserbaseProjectId`, `stagehand.modelApiKey` and `stagehand.baseUrl` system properties
-// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_BASE_URL` environment variables
+// Or configures using the `BROWSERBASE_API_KEY`, `BROWSERBASE_PROJECT_ID`, `MODEL_API_KEY` and `STAGEHAND_API_URL` environment variables
 StagehandClientAsync client = StagehandOkHttpClientAsync.fromEnv();
 
 SessionActParams params = SessionActParams.builder()
