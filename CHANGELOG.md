@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.20.0 (2026-04-30)
+
+Full Changelog: [v3.19.3...v3.20.0](https://github.com/browserbase/stagehand-java/compare/v3.19.3...v3.20.0)
+
+### Features
+
+* [STG-1798] feat: support Browserbase verified sessions ([59ee151](https://github.com/browserbase/stagehand-java/commit/59ee1516eb17d6b8474b12d2722ff4627fa2557c))
+* Bedrock auth passthrough ([7d5037a](https://github.com/browserbase/stagehand-java/commit/7d5037abacedbee829f0fe238565ed81c211eba9))
+* Revert "[STG-1573] Add providerOptions for extensible model auth ([#1822](https://github.com/browserbase/stagehand-java/issues/1822))" ([c337e61](https://github.com/browserbase/stagehand-java/commit/c337e61dd9b2cc366bceec0e7119874acdc3b069))
+* support setting headers via env ([ab67768](https://github.com/browserbase/stagehand-java/commit/ab677681d664219c7f006c72b49b723922280a26))
+
 ## 3.19.3 (2026-04-03)
 
 Full Changelog: [v3.18.0...v3.19.3](https://github.com/browserbase/stagehand-java/compare/v3.18.0...v3.19.3)

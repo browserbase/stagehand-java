@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/3.19.3)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/3.19.3/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.19.3)
+[![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/3.20.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/3.20.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.20.0)
 
 <!-- x-release-please-end -->
 
@@ -85,7 +85,7 @@ Most existing browser automation tools either require you to write low-level cod
 ### Gradle
 
 ```kotlin
-implementation("com.browserbase.api:stagehand-java:3.19.3")
+implementation("com.browserbase.api:stagehand-java:3.20.0")
 ```
 
 ### Maven
@@ -94,7 +94,7 @@ implementation("com.browserbase.api:stagehand-java:3.19.3")
 <dependency>
   <groupId>com.browserbase.api</groupId>
   <artifactId>stagehand-java</artifactId>
-  <version>3.19.3</version>
+  <version>3.20.0</version>
 </dependency>
 ```
 
