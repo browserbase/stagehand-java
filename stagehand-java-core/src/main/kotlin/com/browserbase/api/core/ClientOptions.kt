@@ -112,8 +112,7 @@ private constructor(
     @get:JvmName("maxRetries") val maxRetries: Int,
     /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
     @get:JvmName("browserbaseApiKey") val browserbaseApiKey: String,
-    /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-    @get:JvmName("browserbaseProjectId") val browserbaseProjectId: String,
+    private val browserbaseProjectId: String?,
     /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
     @get:JvmName("modelApiKey") val modelApiKey: String,
 ) {
@@ -131,6 +130,11 @@ private constructor(
      */
     fun baseUrl(): String = baseUrl ?: PRODUCTION_URL
 
+    /**
+     * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer required.
+     */
+    fun browserbaseProjectId(): Optional<String> = Optional.ofNullable(browserbaseProjectId)
+
     fun toBuilder() = Builder().from(this)
 
     companion object {
@@ -144,7 +148,6 @@ private constructor(
          * ```java
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          */
@@ -322,10 +325,20 @@ private constructor(
             this.browserbaseApiKey = browserbaseApiKey
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             this.browserbaseProjectId = browserbaseProjectId
         }
+
+        /**
+         * Alias for calling [Builder.browserbaseProjectId] with
+         * `browserbaseProjectId.orElse(null)`.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: Optional<String>) =
+            browserbaseProjectId(browserbaseProjectId.getOrNull())
 
         /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
         fun modelApiKey(modelApiKey: String) = apply { this.modelApiKey = modelApiKey }
@@ -420,7 +433,7 @@ private constructor(
          * |Setter                |System property                 |Environment variable    |Required|Default value                            |
          * |----------------------|--------------------------------|------------------------|--------|-----------------------------------------|
          * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
-         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|true    |-                                        |
+         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|false   |-                                        |
          * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
          * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_BASE_URL`    |true    |`"https://api.stagehand.browserbase.com"`|
          *
@@ -458,7 +471,6 @@ private constructor(
          * ```java
          * .httpClient()
          * .browserbaseApiKey()
-         * .browserbaseProjectId()
          * .modelApiKey()
          * ```
          *
@@ -486,7 +498,6 @@ private constructor(
                     )
             val sleeper = sleeper ?: PhantomReachableSleeper(DefaultSleeper())
             val browserbaseApiKey = checkRequired("browserbaseApiKey", browserbaseApiKey)
-            val browserbaseProjectId = checkRequired("browserbaseProjectId", browserbaseProjectId)
             val modelApiKey = checkRequired("modelApiKey", modelApiKey)
 
             val headers = Headers.builder()
@@ -507,7 +518,7 @@ private constructor(
                     headers.replace("x-bb-api-key", it)
                 }
             }
-            browserbaseProjectId.let {
+            browserbaseProjectId?.let {
                 if (!it.isEmpty()) {
                     headers.replace("x-bb-project-id", it)
                 }
