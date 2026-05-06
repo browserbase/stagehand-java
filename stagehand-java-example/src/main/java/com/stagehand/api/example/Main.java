@@ -24,14 +24,13 @@ import java.util.Optional;
  *
  * Required environment variables:
  * - BROWSERBASE_API_KEY: Your Browserbase API key
- * - BROWSERBASE_PROJECT_ID: Your Browserbase project ID
  * - MODEL_API_KEY: Your OpenAI API key
  */
 public class Main {
     public static void main(String[] args) {
         Env.load();
         // Create client using environment variables
-        // BROWSERBASE_API_KEY, BROWSERBASE_PROJECT_ID, MODEL_API_KEY
+        // BROWSERBASE_API_KEY and MODEL_API_KEY
         StagehandClient client = StagehandOkHttpClient.builder().fromEnv().build();
 
         // Start a new browser session

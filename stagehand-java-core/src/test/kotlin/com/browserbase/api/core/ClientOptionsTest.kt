@@ -48,6 +48,19 @@ internal class ClientOptionsTest {
     }
 
     @Test
+    fun browserbaseProjectId_isNoOp() {
+        val clientOptions =
+            ClientOptions.builder()
+                .httpClient(httpClient)
+                .browserbaseApiKey("My Browserbase API Key")
+                .browserbaseProjectId("My Browserbase Project ID")
+                .modelApiKey("My Model API Key")
+                .build()
+
+        assertThat(clientOptions.headers.values("x-bb-project-id")).isEmpty()
+    }
+
+    @Test
     fun fromEnv_prefersStagehandApiUrl() {
         val env =
             mapOf(

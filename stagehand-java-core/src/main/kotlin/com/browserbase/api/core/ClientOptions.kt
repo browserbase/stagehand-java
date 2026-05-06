@@ -327,7 +327,7 @@ private constructor(
 
         /**
          * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
-         * required.
+         * required. Accepted for backwards compatibility; it is ignored.
          */
         fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             this.browserbaseProjectId = browserbaseProjectId
@@ -430,12 +430,11 @@ private constructor(
          *
          * See this table for the available options:
          *
-         * |Setter                |System property                 |Environment variable    |Required|Default value                            |
-         * |----------------------|--------------------------------|------------------------|--------|-----------------------------------------|
-         * |`browserbaseApiKey`   |`stagehand.browserbaseApiKey`   |`BROWSERBASE_API_KEY`   |true    |-                                        |
-         * |`browserbaseProjectId`|`stagehand.browserbaseProjectId`|`BROWSERBASE_PROJECT_ID`|false   |-                                        |
-         * |`modelApiKey`         |`stagehand.modelApiKey`         |`MODEL_API_KEY`         |true    |-                                        |
-         * |`baseUrl`             |`stagehand.baseUrl`             |`STAGEHAND_API_URL`     |true    |`"https://api.stagehand.browserbase.com"`|
+         * |Setter             |System property              |Environment variable |Required|Default value                            |
+         * |-------------------|-----------------------------|---------------------|--------|-----------------------------------------|
+         * |`browserbaseApiKey`|`stagehand.browserbaseApiKey`|`BROWSERBASE_API_KEY`|true    |-                                        |
+         * |`modelApiKey`      |`stagehand.modelApiKey`      |`MODEL_API_KEY`      |true    |-                                        |
+         * |`baseUrl`          |`stagehand.baseUrl`          |`STAGEHAND_API_URL`  |false   |`"https://api.stagehand.browserbase.com"`|
          *
          * System properties take precedence over environment variables.
          */
@@ -448,9 +447,6 @@ private constructor(
                 ?.let { baseUrl(it) }
             (System.getProperty("stagehand.browserbaseApiKey") ?: getEnv("BROWSERBASE_API_KEY"))
                 ?.let { browserbaseApiKey(it) }
-            (System.getProperty("stagehand.browserbaseProjectId")
-                    ?: getEnv("BROWSERBASE_PROJECT_ID"))
-                ?.let { browserbaseProjectId(it) }
             (System.getProperty("stagehand.modelApiKey") ?: getEnv("MODEL_API_KEY"))?.let {
                 modelApiKey(it)
             }
@@ -518,11 +514,6 @@ private constructor(
             browserbaseApiKey.let {
                 if (!it.isEmpty()) {
                     headers.replace("x-bb-api-key", it)
-                }
-            }
-            browserbaseProjectId?.let {
-                if (!it.isEmpty()) {
-                    headers.replace("x-bb-project-id", it)
                 }
             }
             modelApiKey.let {

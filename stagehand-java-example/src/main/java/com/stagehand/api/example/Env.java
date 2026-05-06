@@ -7,7 +7,7 @@ import java.util.List;
 
 final class Env {
     private static final String[] REQUIRED_KEYS = {
-        "STAGEHAND_API_URL", "MODEL_API_KEY", "BROWSERBASE_API_KEY", "BROWSERBASE_PROJECT_ID",
+        "MODEL_API_KEY", "BROWSERBASE_API_KEY",
     };
 
     private Env() {}
@@ -34,14 +34,16 @@ final class Env {
                     case "BROWSERBASE_API_KEY":
                         System.setProperty("stagehand.browserbaseApiKey", value);
                         break;
-                    case "BROWSERBASE_PROJECT_ID":
-                        System.setProperty("stagehand.browserbaseProjectId", value);
-                        break;
                     case "MODEL_API_KEY":
                         System.setProperty("stagehand.modelApiKey", value);
                         break;
                     case "STAGEHAND_API_URL":
                         System.setProperty("stagehand.baseUrl", value);
+                        break;
+                    case "STAGEHAND_BASE_URL":
+                        if (System.getProperty("stagehand.baseUrl") == null) {
+                            System.setProperty("stagehand.baseUrl", value);
+                        }
                         break;
                     default:
                         break;
@@ -67,8 +69,6 @@ final class Env {
         switch (key) {
             case "BROWSERBASE_API_KEY":
                 return "stagehand.browserbaseApiKey";
-            case "BROWSERBASE_PROJECT_ID":
-                return "stagehand.browserbaseProjectId";
             case "MODEL_API_KEY":
                 return "stagehand.modelApiKey";
             case "STAGEHAND_API_URL":

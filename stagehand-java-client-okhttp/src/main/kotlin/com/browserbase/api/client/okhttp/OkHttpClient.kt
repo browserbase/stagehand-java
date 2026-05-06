@@ -103,7 +103,6 @@ internal constructor(@JvmSynthetic internal val okHttpClient: okhttp3.OkHttpClie
             clientBuilder.addNetworkInterceptor(
                 HttpLoggingInterceptor().setLevel(logLevel).apply {
                     redactHeader("x-bb-api-key")
-                    redactHeader("x-bb-project-id")
                     redactHeader("x-model-api-key")
                 }
             )
