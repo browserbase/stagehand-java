@@ -295,10 +295,20 @@ class StagehandOkHttpClientAsync private constructor() {
             clientOptions.browserbaseApiKey(browserbaseApiKey)
         }
 
-        /** Your [Browserbase Project ID](https://www.browserbase.com/settings) */
-        fun browserbaseProjectId(browserbaseProjectId: String) = apply {
+        /**
+         * Deprecated. Browserbase API keys are now project-scoped, so this value is no longer
+         * required.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: String?) = apply {
             clientOptions.browserbaseProjectId(browserbaseProjectId)
         }
+
+        /**
+         * Alias for calling [Builder.browserbaseProjectId] with
+         * `browserbaseProjectId.orElse(null)`.
+         */
+        fun browserbaseProjectId(browserbaseProjectId: Optional<String>) =
+            browserbaseProjectId(browserbaseProjectId.getOrNull())
 
         /** Your LLM provider API key (e.g. OPENAI_API_KEY, ANTHROPIC_API_KEY, etc.) */
         fun modelApiKey(modelApiKey: String) = apply { clientOptions.modelApiKey(modelApiKey) }

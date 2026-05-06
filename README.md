@@ -295,7 +295,7 @@ See this table for the available options:
 | Setter                 | System property                  | Environment variable     | Required | Default value                             |
 | ---------------------- | -------------------------------- | ------------------------ | -------- | ----------------------------------------- |
 | `browserbaseApiKey`    | `stagehand.browserbaseApiKey`    | `BROWSERBASE_API_KEY`    | true     | -                                         |
-| `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | true     | -                                         |
+| `browserbaseProjectId` | `stagehand.browserbaseProjectId` | `BROWSERBASE_PROJECT_ID` | false    | -                                         |
 | `modelApiKey`          | `stagehand.modelApiKey`          | `MODEL_API_KEY`          | true     | -                                         |
 | `baseUrl`              | `stagehand.baseUrl`              | `STAGEHAND_API_URL`     | true     | `"https://api.stagehand.browserbase.com"` |
 
