@@ -11,6 +11,7 @@ import com.browserbase.api.core.JsonMissing
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.Params
 import com.browserbase.api.core.allMaxBy
+import com.browserbase.api.core.checkKnown
 import com.browserbase.api.core.getOrThrow
 import com.browserbase.api.core.http.Headers
 import com.browserbase.api.core.http.QueryParams
@@ -573,6 +574,7 @@ private constructor(
     class Options
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
+        private val ignoreSelectors: JsonField<List<String>>,
         private val model: JsonField<Model>,
         private val selector: JsonField<String>,
         private val timeout: JsonField<Double>,
@@ -582,6 +584,9 @@ private constructor(
 
         @JsonCreator
         private constructor(
+            @JsonProperty("ignoreSelectors")
+            @ExcludeMissing
+            ignoreSelectors: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
             @JsonProperty("selector")
             @ExcludeMissing
@@ -590,7 +595,16 @@ private constructor(
             @JsonProperty("variables")
             @ExcludeMissing
             variables: JsonField<Variables> = JsonMissing.of(),
-        ) : this(model, selector, timeout, variables, mutableMapOf())
+        ) : this(ignoreSelectors, model, selector, timeout, variables, mutableMapOf())
+
+        /**
+         * Selectors for elements and subtrees that should be excluded from observation
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun ignoreSelectors(): Optional<List<String>> =
+            ignoreSelectors.getOptional("ignoreSelectors")
 
         /**
          * Model configuration object or model name string (e.g., 'openai/gpt-5-nano')
@@ -625,6 +639,16 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun variables(): Optional<Variables> = variables.getOptional("variables")
+
+        /**
+         * Returns the raw JSON value of [ignoreSelectors].
+         *
+         * Unlike [ignoreSelectors], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("ignoreSelectors")
+        @ExcludeMissing
+        fun _ignoreSelectors(): JsonField<List<String>> = ignoreSelectors
 
         /**
          * Returns the raw JSON value of [model].
@@ -677,6 +701,7 @@ private constructor(
         /** A builder for [Options]. */
         class Builder internal constructor() {
 
+            private var ignoreSelectors: JsonField<MutableList<String>>? = null
             private var model: JsonField<Model> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
             private var timeout: JsonField<Double> = JsonMissing.of()
@@ -685,11 +710,39 @@ private constructor(
 
             @JvmSynthetic
             internal fun from(options: Options) = apply {
+                ignoreSelectors = options.ignoreSelectors.map { it.toMutableList() }
                 model = options.model
                 selector = options.selector
                 timeout = options.timeout
                 variables = options.variables
                 additionalProperties = options.additionalProperties.toMutableMap()
+            }
+
+            /** Selectors for elements and subtrees that should be excluded from observation */
+            fun ignoreSelectors(ignoreSelectors: List<String>) =
+                ignoreSelectors(JsonField.of(ignoreSelectors))
+
+            /**
+             * Sets [Builder.ignoreSelectors] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.ignoreSelectors] with a well-typed `List<String>`
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun ignoreSelectors(ignoreSelectors: JsonField<List<String>>) = apply {
+                this.ignoreSelectors = ignoreSelectors.map { it.toMutableList() }
+            }
+
+            /**
+             * Adds a single [String] to [ignoreSelectors].
+             *
+             * @throws IllegalStateException if the field was previously set to a non-list.
+             */
+            fun addIgnoreSelector(ignoreSelector: String) = apply {
+                ignoreSelectors =
+                    (ignoreSelectors ?: JsonField.of(mutableListOf())).also {
+                        checkKnown("ignoreSelectors", it).add(ignoreSelector)
+                    }
             }
 
             /** Model configuration object or model name string (e.g., 'openai/gpt-5-nano') */
@@ -775,7 +828,14 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Options =
-                Options(model, selector, timeout, variables, additionalProperties.toMutableMap())
+                Options(
+                    (ignoreSelectors ?: JsonMissing.of()).map { it.toImmutable() },
+                    model,
+                    selector,
+                    timeout,
+                    variables,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -794,6 +854,7 @@ private constructor(
                 return@apply
             }
 
+            ignoreSelectors()
             model().ifPresent { it.validate() }
             selector()
             timeout()
@@ -817,7 +878,8 @@ private constructor(
          */
         @JvmSynthetic
         internal fun validity(): Int =
-            (model.asKnown().getOrNull()?.validity() ?: 0) +
+            (ignoreSelectors.asKnown().getOrNull()?.size ?: 0) +
+                (model.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (selector.asKnown().isPresent) 1 else 0) +
                 (if (timeout.asKnown().isPresent) 1 else 0) +
                 (variables.asKnown().getOrNull()?.validity() ?: 0)
@@ -1157,6 +1219,7 @@ private constructor(
             }
 
             return other is Options &&
+                ignoreSelectors == other.ignoreSelectors &&
                 model == other.model &&
                 selector == other.selector &&
                 timeout == other.timeout &&
@@ -1165,13 +1228,13 @@ private constructor(
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(model, selector, timeout, variables, additionalProperties)
+            Objects.hash(ignoreSelectors, model, selector, timeout, variables, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Options{model=$model, selector=$selector, timeout=$timeout, variables=$variables, additionalProperties=$additionalProperties}"
+            "Options{ignoreSelectors=$ignoreSelectors, model=$model, selector=$selector, timeout=$timeout, variables=$variables, additionalProperties=$additionalProperties}"
     }
 
     /** Whether to stream the response via SSE */
