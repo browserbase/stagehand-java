@@ -5,6 +5,7 @@ package com.browserbase.api.client.okhttp
 import com.browserbase.api.client.StagehandClient
 import com.browserbase.api.client.StagehandClientImpl
 import com.browserbase.api.core.ClientOptions
+import com.browserbase.api.core.LogLevel
 import com.browserbase.api.core.Sleeper
 import com.browserbase.api.core.Timeout
 import com.browserbase.api.core.http.AsyncStreamResponse
@@ -289,6 +290,15 @@ class StagehandOkHttpClient private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         /** Your [Browserbase API Key](https://www.browserbase.com/settings) */
         fun browserbaseApiKey(browserbaseApiKey: String) = apply {

@@ -342,8 +342,6 @@ The SDK throws custom unchecked exception types:
 
 ## Logging
 
-The SDK uses the standard [OkHttp logging interceptor](https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor).
-
 Enable logging by setting the `STAGEHAND_LOG` environment variable to `info`:
 
 ```sh
@@ -354,6 +352,19 @@ Or to `debug` for more verbose logging:
 
 ```sh
 export STAGEHAND_LOG=debug
+```
+
+Or configure the client manually using the `logLevel` method:
+
+```java
+import com.browserbase.api.client.StagehandClient;
+import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
+import com.browserbase.api.core.LogLevel;
+
+StagehandClient client = StagehandOkHttpClient.builder()
+    .fromEnv()
+    .logLevel(LogLevel.INFO)
+    .build();
 ```
 
 ## ProGuard and R8
