@@ -213,6 +213,11 @@ internal class SessionServiceTest {
                             .maxSteps(20.0)
                             .toolTimeout(30000.0)
                             .useSearch(true)
+                            .variables(
+                                SessionExecuteParams.ExecuteOptions.Variables.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .build()
                     )
                     .frameId("frameId")
@@ -282,6 +287,11 @@ internal class SessionServiceTest {
                             .maxSteps(20.0)
                             .toolTimeout(30000.0)
                             .useSearch(true)
+                            .variables(
+                                SessionExecuteParams.ExecuteOptions.Variables.builder()
+                                    .putAdditionalProperty("foo", JsonValue.from("string"))
+                                    .build()
+                            )
                             .build()
                     )
                     .frameId("frameId")
@@ -314,6 +324,7 @@ internal class SessionServiceTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
+                            .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
                                 ModelConfig.builder()
                                     .modelName("openai/gpt-5.4-mini")
@@ -362,6 +373,7 @@ internal class SessionServiceTest {
                     .instruction("Extract all product names and prices from the page")
                     .options(
                         SessionExtractParams.Options.builder()
+                            .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
                                 ModelConfig.builder()
                                     .modelName("openai/gpt-5.4-mini")
@@ -633,6 +645,8 @@ internal class SessionServiceTest {
                                     .builder()
                                     .advancedStealth(true)
                                     .blockAds(true)
+                                    .captchaImageSelector("captchaImageSelector")
+                                    .captchaInputSelector("captchaInputSelector")
                                     .context(
                                         SessionStartParams.BrowserbaseSessionCreateParams
                                             .BrowserSettings
@@ -692,8 +706,15 @@ internal class SessionServiceTest {
                                             .build()
                                     )
                                     .logSession(true)
+                                    .os(
+                                        SessionStartParams.BrowserbaseSessionCreateParams
+                                            .BrowserSettings
+                                            .Os
+                                            .WINDOWS
+                                    )
                                     .recordSession(true)
                                     .solveCaptchas(true)
+                                    .verified(true)
                                     .viewport(
                                         SessionStartParams.BrowserbaseSessionCreateParams
                                             .BrowserSettings

@@ -33,9 +33,8 @@ import java.util.Map;
  *
  * Required environment variables:
  * - BROWSERBASE_API_KEY: Your Browserbase API key
- * - BROWSERBASE_PROJECT_ID: Your Browserbase project ID
  * - MODEL_API_KEY: Your OpenAI API key
- * - STAGEHAND_API_URL: Local Stagehand server base URL
+ * Optional: STAGEHAND_API_URL or STAGEHAND_BASE_URL for a local Stagehand server base URL
  */
 public class LocalServerMultiregionBrowserExample {
     public static void main(String[] args) {
@@ -49,7 +48,6 @@ public class LocalServerMultiregionBrowserExample {
                                 .type(SessionStartParams.Browser.Type.BROWSERBASE)
                                 .build())
                         .browserbaseSessionCreateParams(SessionStartParams.BrowserbaseSessionCreateParams.builder()
-                                .projectId(System.getProperty("stagehand.browserbaseProjectId"))
                                 .region(SessionStartParams.BrowserbaseSessionCreateParams.Region.EU_CENTRAL_1)
                                 .build())
                         .build());

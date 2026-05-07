@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "com.browserbase.api"
-    version = "3.19.3" // x-release-please-version
+    version = "3.20.0" // x-release-please-version
 }
 
 subprojects {
@@ -21,7 +21,6 @@ subprojects {
         group = "Verification"
         description = "Verifies all source files are formatted."
     }
-    apply(plugin = "org.jetbrains.dokka")
 }
 
 subprojects {

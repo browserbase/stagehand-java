@@ -1,5 +1,37 @@
 # Changelog
 
+## 3.20.0 (2026-05-06)
+
+Full Changelog: [v3.19.3...v3.20.0](https://github.com/browserbase/stagehand-java/compare/v3.19.3...v3.20.0)
+
+### Features
+
+* [feat]: add `ignoreSelectors` to `extract()` ([ab25ab1](https://github.com/browserbase/stagehand-java/commit/ab25ab1c249cb689ea39cb2e3970927d616ddefd))
+* [STG-1798] feat: support Browserbase verified sessions ([59ee151](https://github.com/browserbase/stagehand-java/commit/59ee1516eb17d6b8474b12d2722ff4627fa2557c))
+* [STG-1808] Deprecate Browserbase project ID ([4700262](https://github.com/browserbase/stagehand-java/commit/47002629082ee0a602b2b4739be7b7b605337040))
+* Bedrock auth passthrough ([7d5037a](https://github.com/browserbase/stagehand-java/commit/7d5037abacedbee829f0fe238565ed81c211eba9))
+* **client:** more robust error parsing ([c7d063a](https://github.com/browserbase/stagehand-java/commit/c7d063aa513f6b62ca7e95d0031a5018516a114f))
+* **client:** support proxy authentication ([7572751](https://github.com/browserbase/stagehand-java/commit/7572751215d53839a93f8d0fc1dd303994813aca))
+* remove experimental requirement on agent variables ([#2079](https://github.com/browserbase/stagehand-java/issues/2079)) ([1a0a44c](https://github.com/browserbase/stagehand-java/commit/1a0a44c9d3d95f32df91a72ee3d1f42c7634aa6e))
+* Revert "[STG-1573] Add providerOptions for extensible model auth ([#1822](https://github.com/browserbase/stagehand-java/issues/1822))" ([c337e61](https://github.com/browserbase/stagehand-java/commit/c337e61dd9b2cc366bceec0e7119874acdc3b069))
+* support setting headers via env ([ab67768](https://github.com/browserbase/stagehand-java/commit/ab677681d664219c7f006c72b49b723922280a26))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([5f27b6b](https://github.com/browserbase/stagehand-java/commit/5f27b6bdce009ea88970dea1ce52cd1d29169c98))
+
+
+### Chores
+
+* remove duplicated dokka setup ([25bb04d](https://github.com/browserbase/stagehand-java/commit/25bb04d02c26e2929adf6b2e1ea0d37b2843880f))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([0463c65](https://github.com/browserbase/stagehand-java/commit/0463c65a44d0b165f9a6f850d0096cb6af207b97))
+* remove bad semicolon ([b3e9df1](https://github.com/browserbase/stagehand-java/commit/b3e9df1d14045e2a4ebc18bb16b75453856e6311))
+
 ## 3.19.3 (2026-04-03)
 
 Full Changelog: [v3.18.0...v3.19.3](https://github.com/browserbase/stagehand-java/compare/v3.18.0...v3.19.3)

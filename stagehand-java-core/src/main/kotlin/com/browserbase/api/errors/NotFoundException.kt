@@ -5,12 +5,16 @@ package com.browserbase.api.errors
 import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.checkRequired
 import com.browserbase.api.core.http.Headers
+import com.browserbase.api.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class NotFoundException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    StagehandServiceException("404: $body", cause) {
+    StagehandServiceException(
+        "404: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 404
 

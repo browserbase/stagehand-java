@@ -18,6 +18,7 @@ internal class SessionExtractParamsTest {
             .instruction("Extract all product names and prices from the page")
             .options(
                 SessionExtractParams.Options.builder()
+                    .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                     .model(
                         ModelConfig.builder()
                             .modelName("openai/gpt-5.4-mini")
@@ -63,6 +64,7 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
+                        .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                         .model(
                             ModelConfig.builder()
                                 .modelName("openai/gpt-5.4-mini")
@@ -112,6 +114,7 @@ internal class SessionExtractParamsTest {
                 .instruction("Extract all product names and prices from the page")
                 .options(
                     SessionExtractParams.Options.builder()
+                        .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                         .model(
                             ModelConfig.builder()
                                 .modelName("openai/gpt-5.4-mini")
@@ -144,6 +147,7 @@ internal class SessionExtractParamsTest {
         assertThat(body.options())
             .contains(
                 SessionExtractParams.Options.builder()
+                    .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                     .model(
                         ModelConfig.builder()
                             .modelName("openai/gpt-5.4-mini")
