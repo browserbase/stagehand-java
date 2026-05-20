@@ -43,11 +43,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -100,11 +128,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -180,11 +236,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -194,11 +278,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -255,11 +367,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -269,11 +409,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -333,11 +501,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -383,11 +579,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -467,11 +691,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
@@ -526,11 +778,39 @@ internal class SessionServiceAsyncTest {
                                     .modelName("openai/gpt-5.4-mini")
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
+                                    .googleAuthOptions(
+                                        ModelConfig.GoogleAuthOptions.builder()
+                                            .credentials(
+                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .headers(
                                         ModelConfig.Headers.builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
                                     .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
