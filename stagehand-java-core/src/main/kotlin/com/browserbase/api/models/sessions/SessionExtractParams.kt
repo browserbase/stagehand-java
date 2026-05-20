@@ -635,6 +635,7 @@ private constructor(
     private constructor(
         private val ignoreSelectors: JsonField<List<String>>,
         private val model: JsonField<Model>,
+        private val screenshot: JsonField<Boolean>,
         private val selector: JsonField<String>,
         private val timeout: JsonField<Double>,
         private val additionalProperties: MutableMap<String, JsonValue>,
@@ -646,11 +647,14 @@ private constructor(
             @ExcludeMissing
             ignoreSelectors: JsonField<List<String>> = JsonMissing.of(),
             @JsonProperty("model") @ExcludeMissing model: JsonField<Model> = JsonMissing.of(),
+            @JsonProperty("screenshot")
+            @ExcludeMissing
+            screenshot: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("selector")
             @ExcludeMissing
             selector: JsonField<String> = JsonMissing.of(),
             @JsonProperty("timeout") @ExcludeMissing timeout: JsonField<Double> = JsonMissing.of(),
-        ) : this(ignoreSelectors, model, selector, timeout, mutableMapOf())
+        ) : this(ignoreSelectors, model, screenshot, selector, timeout, mutableMapOf())
 
         /**
          * Selectors for elements and subtrees that should be excluded from extraction
@@ -668,6 +672,15 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun model(): Optional<Model> = model.getOptional("model")
+
+        /**
+         * When true, include a screenshot of the current viewport in the extraction LLM call.
+         * Defaults to false.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun screenshot(): Optional<Boolean> = screenshot.getOptional("screenshot")
 
         /**
          * CSS selector to scope extraction to a specific element
@@ -701,6 +714,15 @@ private constructor(
          * Unlike [model], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("model") @ExcludeMissing fun _model(): JsonField<Model> = model
+
+        /**
+         * Returns the raw JSON value of [screenshot].
+         *
+         * Unlike [screenshot], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("screenshot")
+        @ExcludeMissing
+        fun _screenshot(): JsonField<Boolean> = screenshot
 
         /**
          * Returns the raw JSON value of [selector].
@@ -739,6 +761,7 @@ private constructor(
 
             private var ignoreSelectors: JsonField<MutableList<String>>? = null
             private var model: JsonField<Model> = JsonMissing.of()
+            private var screenshot: JsonField<Boolean> = JsonMissing.of()
             private var selector: JsonField<String> = JsonMissing.of()
             private var timeout: JsonField<Double> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -747,6 +770,7 @@ private constructor(
             internal fun from(options: Options) = apply {
                 ignoreSelectors = options.ignoreSelectors.map { it.toMutableList() }
                 model = options.model
+                screenshot = options.screenshot
                 selector = options.selector
                 timeout = options.timeout
                 additionalProperties = options.additionalProperties.toMutableMap()
@@ -796,6 +820,21 @@ private constructor(
 
             /** Alias for calling [model] with `Model.ofString(string)`. */
             fun model(string: String) = model(Model.ofString(string))
+
+            /**
+             * When true, include a screenshot of the current viewport in the extraction LLM call.
+             * Defaults to false.
+             */
+            fun screenshot(screenshot: Boolean) = screenshot(JsonField.of(screenshot))
+
+            /**
+             * Sets [Builder.screenshot] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.screenshot] with a well-typed [Boolean] value
+             * instead. This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun screenshot(screenshot: JsonField<Boolean>) = apply { this.screenshot = screenshot }
 
             /** CSS selector to scope extraction to a specific element */
             fun selector(selector: String) = selector(JsonField.of(selector))
@@ -849,6 +888,7 @@ private constructor(
                 Options(
                     (ignoreSelectors ?: JsonMissing.of()).map { it.toImmutable() },
                     model,
+                    screenshot,
                     selector,
                     timeout,
                     additionalProperties.toMutableMap(),
@@ -873,6 +913,7 @@ private constructor(
 
             ignoreSelectors()
             model().ifPresent { it.validate() }
+            screenshot()
             selector()
             timeout()
             validated = true
@@ -896,6 +937,7 @@ private constructor(
         internal fun validity(): Int =
             (ignoreSelectors.asKnown().getOrNull()?.size ?: 0) +
                 (model.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (screenshot.asKnown().isPresent) 1 else 0) +
                 (if (selector.asKnown().isPresent) 1 else 0) +
                 (if (timeout.asKnown().isPresent) 1 else 0)
 
@@ -1119,19 +1161,27 @@ private constructor(
             return other is Options &&
                 ignoreSelectors == other.ignoreSelectors &&
                 model == other.model &&
+                screenshot == other.screenshot &&
                 selector == other.selector &&
                 timeout == other.timeout &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(ignoreSelectors, model, selector, timeout, additionalProperties)
+            Objects.hash(
+                ignoreSelectors,
+                model,
+                screenshot,
+                selector,
+                timeout,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Options{ignoreSelectors=$ignoreSelectors, model=$model, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
+            "Options{ignoreSelectors=$ignoreSelectors, model=$model, screenshot=$screenshot, selector=$selector, timeout=$timeout, additionalProperties=$additionalProperties}"
     }
 
     /** JSON Schema defining the structure of data to extract */
