@@ -4,7 +4,6 @@ package com.browserbase.api.services.blocking
 
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
@@ -39,14 +38,16 @@ internal class SessionServiceTest {
                     .options(
                         SessionActParams.Options.builder()
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionActParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionActParams.Options.Model.VertexModelConfigObject.Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -57,7 +58,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -69,14 +73,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -123,14 +159,16 @@ internal class SessionServiceTest {
                     .options(
                         SessionActParams.Options.builder()
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionActParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionActParams.Options.Model.VertexModelConfigObject.Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -141,7 +179,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -153,14 +194,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -230,14 +303,20 @@ internal class SessionServiceTest {
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
                             .executionModel(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                    .VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -248,7 +327,11 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -260,26 +343,66 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExecuteParams.AgentConfig.Model.VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -290,7 +413,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -302,14 +428,48 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -360,14 +520,20 @@ internal class SessionServiceTest {
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
                             .executionModel(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                    .VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -378,7 +544,11 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -390,26 +560,66 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExecuteParams.AgentConfig.Model.VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -420,7 +630,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -432,14 +645,48 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -494,14 +741,17 @@ internal class SessionServiceTest {
                         SessionExtractParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExtractParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -512,7 +762,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -524,14 +777,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .screenshot(false)
@@ -572,14 +857,17 @@ internal class SessionServiceTest {
                         SessionExtractParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionExtractParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -590,7 +878,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -602,14 +893,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .screenshot(false)
@@ -684,14 +1007,17 @@ internal class SessionServiceTest {
                         SessionObserveParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionObserveParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -702,7 +1028,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -714,14 +1043,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .selector("nav")
@@ -770,14 +1131,17 @@ internal class SessionServiceTest {
                         SessionObserveParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
-                                    .modelName("openai/gpt-5.4-mini")
-                                    .apiKey("sk-some-openai-api-key")
-                                    .baseUrl("https://api.openai.com/v1")
-                                    .googleAuthOptions(
-                                        ModelConfig.GoogleAuthOptions.builder()
+                                SessionObserveParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
                                             .credentials(
-                                                ModelConfig.GoogleAuthOptions.Credentials.builder()
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
                                                     .clientEmail("client_email")
                                                     .privateKey("private_key")
                                                     .authProviderX509CertUrl("https://example.com")
@@ -788,7 +1152,10 @@ internal class SessionServiceTest {
                                                     .projectId("project_id")
                                                     .tokenUri("https://example.com")
                                                     .type(
-                                                        ModelConfig.GoogleAuthOptions.Credentials
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
                                                             .Type
                                                             .SERVICE_ACCOUNT
                                                     )
@@ -800,14 +1167,46 @@ internal class SessionServiceTest {
                                             .universeDomain("universeDomain")
                                             .build()
                                     )
+                                    .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
+                                    .apiKey("sk-some-openai-api-key")
+                                    .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .location("us-central1")
-                                    .project("my-gcp-project")
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .selector("nav")
