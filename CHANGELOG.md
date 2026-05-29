@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.21.0 (2026-05-29)
+
+Full Changelog: [v3.20.0...v3.21.0](https://github.com/browserbase/stagehand-java/compare/v3.20.0...v3.21.0)
+
+### Features
+
+* [feat]: add `ignoreSelectors` to `observe()` ([aa7ad0c](https://github.com/browserbase/stagehand-java/commit/aa7ad0c2033478107f3944b625d1b172b8f39e83))
+* [STG-1756] forward Vertex model config ([b37b827](https://github.com/browserbase/stagehand-java/commit/b37b827f38cc168d12e0d3a355f25a137796f5d7))
+* Add `screenshot` option to Extract ([043d138](https://github.com/browserbase/stagehand-java/commit/043d138a98a8caab6bc2c59c2abb0a864019c3c5))
+* **client:** improve logging ([1d84566](https://github.com/browserbase/stagehand-java/commit/1d845661917baf3d12a97286cf760e0d0fda0218))
+* STG-1756 add Vertex auth params to Stagehand spec ([f072067](https://github.com/browserbase/stagehand-java/commit/f072067e7adef04886423e1232e6b7e42e5f8a28))
+
+
+### Bug Fixes
+
+* **java:** update model config examples ([991a894](https://github.com/browserbase/stagehand-java/commit/991a894f6c93371eaf18a5878a41a4e27928adc8))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([ce7e1d2](https://github.com/browserbase/stagehand-java/commit/ce7e1d278d5f7a9ceda6bc3108ed8d097f9b313d))
+
 ## 3.20.0 (2026-05-06)
 
 Full Changelog: [v3.19.3...v3.20.0](https://github.com/browserbase/stagehand-java/compare/v3.19.3...v3.20.0)
