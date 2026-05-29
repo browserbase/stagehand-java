@@ -136,10 +136,12 @@ public class Main {
                                             .maxSteps(15.0)
                                             .build())
                                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
-                                            .model(ModelConfig.builder()
-                                                    .modelName("anthropic/claude-opus-4-6")
-                                                    .apiKey(System.getProperty("stagehand.modelApiKey"))
-                                                    .build())
+                                            .model(
+                                                    SessionExecuteParams.AgentConfig.Model.GenericModelConfigObject
+                                                            .builder()
+                                                            .modelName("anthropic/claude-opus-4-6")
+                                                            .apiKey(System.getProperty("stagehand.modelApiKey"))
+                                                            .build())
                                             .cua(false)
                                             .build())
                                     .build(),

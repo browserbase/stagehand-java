@@ -3,8 +3,10 @@
 package com.browserbase.api.proguard
 
 import com.browserbase.api.client.okhttp.StagehandOkHttpClient
+import com.browserbase.api.core.JsonValue
 import com.browserbase.api.core.jsonMapper
 import com.browserbase.api.models.sessions.Action
+import com.browserbase.api.models.sessions.ModelConfig
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
@@ -71,5 +73,74 @@ internal class ProGuardCompatibilityTest {
             jsonMapper.readValue(jsonMapper.writeValueAsString(action), jacksonTypeRef<Action>())
 
         assertThat(roundtrippedAction).isEqualTo(action)
+    }
+
+    @Test
+    fun modelConfigRoundtrip() {
+        val jsonMapper = jsonMapper()
+        val modelConfig =
+            ModelConfig.ofVertexModelConfigObject(
+                ModelConfig.VertexModelConfigObject.builder()
+                    .auth(
+                        ModelConfig.VertexModelConfigObject.Auth.builder()
+                            .credentials(
+                                ModelConfig.VertexModelConfigObject.Auth.Credentials.builder()
+                                    .clientEmail("client_email")
+                                    .privateKey("private_key")
+                                    .authProviderX509CertUrl("https://example.com")
+                                    .authUri("https://example.com")
+                                    .clientId("client_id")
+                                    .clientX509CertUrl("https://example.com")
+                                    .privateKeyId("private_key_id")
+                                    .projectId("project_id")
+                                    .tokenUri("https://example.com")
+                                    .type(
+                                        ModelConfig.VertexModelConfigObject.Auth.Credentials.Type
+                                            .SERVICE_ACCOUNT
+                                    )
+                                    .universeDomain("universe_domain")
+                                    .build()
+                            )
+                            .projectId("projectId")
+                            .scopes("string")
+                            .universeDomain("universeDomain")
+                            .build()
+                    )
+                    .modelName("openai/gpt-5.4-mini")
+                    .providerOptions(
+                        ModelConfig.VertexModelConfigObject.ProviderOptions.builder()
+                            .vertex(
+                                ModelConfig.VertexModelConfigObject.ProviderOptions.Vertex.builder()
+                                    .location("us-central1")
+                                    .project("my-gcp-project")
+                                    .baseUrl("https://example.com")
+                                    .headers(
+                                        ModelConfig.VertexModelConfigObject.ProviderOptions.Vertex
+                                            .Headers
+                                            .builder()
+                                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                                            .build()
+                                    )
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .apiKey("sk-some-openai-api-key")
+                    .baseUrl("https://api.openai.com/v1")
+                    .headers(
+                        ModelConfig.VertexModelConfigObject.Headers.builder()
+                            .putAdditionalProperty("foo", JsonValue.from("string"))
+                            .build()
+                    )
+                    .build()
+            )
+
+        val roundtrippedModelConfig =
+            jsonMapper.readValue(
+                jsonMapper.writeValueAsString(modelConfig),
+                jacksonTypeRef<ModelConfig>(),
+            )
+
+        assertThat(roundtrippedModelConfig).isEqualTo(modelConfig)
     }
 }

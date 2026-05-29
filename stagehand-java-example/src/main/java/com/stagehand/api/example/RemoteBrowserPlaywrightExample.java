@@ -5,7 +5,6 @@ import com.browserbase.api.client.okhttp.StagehandOkHttpClient;
 import com.browserbase.api.core.JsonValue;
 import com.browserbase.api.core.RequestOptions;
 import com.browserbase.api.core.http.StreamResponse;
-import com.browserbase.api.models.sessions.ModelConfig;
 import com.browserbase.api.models.sessions.SessionActParams;
 import com.browserbase.api.models.sessions.SessionEndParams;
 import com.browserbase.api.models.sessions.SessionExecuteParams;
@@ -125,7 +124,7 @@ public class RemoteBrowserPlaywrightExample {
                             .maxSteps(15.0)
                             .build())
                     .agentConfig(SessionExecuteParams.AgentConfig.builder()
-                            .model(ModelConfig.builder()
+                            .model(SessionExecuteParams.AgentConfig.Model.GenericModelConfigObject.builder()
                                     .modelName("anthropic/claude-opus-4-6")
                                     .apiKey(System.getProperty("stagehand.modelApiKey"))
                                     .build())

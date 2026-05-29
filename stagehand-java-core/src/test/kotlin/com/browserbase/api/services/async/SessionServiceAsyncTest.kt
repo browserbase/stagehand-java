@@ -4,7 +4,6 @@ package com.browserbase.api.services.async
 
 import com.browserbase.api.client.okhttp.StagehandOkHttpClientAsync
 import com.browserbase.api.core.JsonValue
-import com.browserbase.api.models.sessions.ModelConfig
 import com.browserbase.api.models.sessions.SessionActParams
 import com.browserbase.api.models.sessions.SessionEndParams
 import com.browserbase.api.models.sessions.SessionExecuteParams
@@ -39,16 +38,81 @@ internal class SessionServiceAsyncTest {
                     .options(
                         SessionActParams.Options.builder()
                             .model(
-                                ModelConfig.builder()
+                                SessionActParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionActParams.Options.Model.VertexModelConfigObject.Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -96,16 +160,81 @@ internal class SessionServiceAsyncTest {
                     .options(
                         SessionActParams.Options.builder()
                             .model(
-                                ModelConfig.builder()
+                                SessionActParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionActParams.Options.Model.VertexModelConfigObject.Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionActParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionActParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionActParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .timeout(30000.0)
@@ -176,30 +305,173 @@ internal class SessionServiceAsyncTest {
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
                             .executionModel(
-                                ModelConfig.builder()
+                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                    .VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
-                                ModelConfig.builder()
+                                SessionExecuteParams.AgentConfig.Model.VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -251,30 +523,173 @@ internal class SessionServiceAsyncTest {
                         SessionExecuteParams.AgentConfig.builder()
                             .cua(true)
                             .executionModel(
-                                ModelConfig.builder()
+                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                    .VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.ExecutionModel
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig
+                                                            .ExecutionModel
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.ExecutionModel
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .mode(SessionExecuteParams.AgentConfig.Mode.CUA)
                             .model(
-                                ModelConfig.builder()
+                                SessionExecuteParams.AgentConfig.Model.VertexModelConfigObject
+                                    .builder()
+                                    .auth(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExecuteParams.AgentConfig.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExecuteParams.AgentConfig.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExecuteParams.AgentConfig.Model
+                                            .VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .provider(SessionExecuteParams.AgentConfig.Provider.OPENAI)
@@ -329,18 +744,85 @@ internal class SessionServiceAsyncTest {
                         SessionExtractParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
+                                SessionExtractParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
+                            .screenshot(false)
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -379,18 +861,85 @@ internal class SessionServiceAsyncTest {
                         SessionExtractParams.Options.builder()
                             .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
+                                SessionExtractParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionExtractParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionExtractParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionExtractParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
+                            .screenshot(false)
                             .selector("#main-content")
                             .timeout(30000.0)
                             .build()
@@ -461,17 +1010,84 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
+                            .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
+                                SessionObserveParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .selector("nav")
@@ -519,17 +1135,84 @@ internal class SessionServiceAsyncTest {
                     .instruction("Find all clickable navigation links")
                     .options(
                         SessionObserveParams.Options.builder()
+                            .ignoreSelectors(listOf("nav", ".cookie-banner", "#sidebar-ads"))
                             .model(
-                                ModelConfig.builder()
+                                SessionObserveParams.Options.Model.VertexModelConfigObject.builder()
+                                    .auth(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Auth
+                                            .builder()
+                                            .credentials(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .Auth
+                                                    .Credentials
+                                                    .builder()
+                                                    .clientEmail("client_email")
+                                                    .privateKey("private_key")
+                                                    .authProviderX509CertUrl("https://example.com")
+                                                    .authUri("https://example.com")
+                                                    .clientId("client_id")
+                                                    .clientX509CertUrl("https://example.com")
+                                                    .privateKeyId("private_key_id")
+                                                    .projectId("project_id")
+                                                    .tokenUri("https://example.com")
+                                                    .type(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .Auth
+                                                            .Credentials
+                                                            .Type
+                                                            .SERVICE_ACCOUNT
+                                                    )
+                                                    .universeDomain("universe_domain")
+                                                    .build()
+                                            )
+                                            .projectId("projectId")
+                                            .scopes("string")
+                                            .universeDomain("universeDomain")
+                                            .build()
+                                    )
                                     .modelName("openai/gpt-5.4-mini")
+                                    .providerOptions(
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .ProviderOptions
+                                            .builder()
+                                            .vertex(
+                                                SessionObserveParams.Options.Model
+                                                    .VertexModelConfigObject
+                                                    .ProviderOptions
+                                                    .Vertex
+                                                    .builder()
+                                                    .location("us-central1")
+                                                    .project("my-gcp-project")
+                                                    .baseUrl("https://example.com")
+                                                    .headers(
+                                                        SessionObserveParams.Options.Model
+                                                            .VertexModelConfigObject
+                                                            .ProviderOptions
+                                                            .Vertex
+                                                            .Headers
+                                                            .builder()
+                                                            .putAdditionalProperty(
+                                                                "foo",
+                                                                JsonValue.from("string"),
+                                                            )
+                                                            .build()
+                                                    )
+                                                    .build()
+                                            )
+                                            .build()
+                                    )
                                     .apiKey("sk-some-openai-api-key")
                                     .baseUrl("https://api.openai.com/v1")
                                     .headers(
-                                        ModelConfig.Headers.builder()
+                                        SessionObserveParams.Options.Model.VertexModelConfigObject
+                                            .Headers
+                                            .builder()
                                             .putAdditionalProperty("foo", JsonValue.from("string"))
                                             .build()
                                     )
-                                    .provider(ModelConfig.Provider.OPENAI)
                                     .build()
                             )
                             .selector("nav")
