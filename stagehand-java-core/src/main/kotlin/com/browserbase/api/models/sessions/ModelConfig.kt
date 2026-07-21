@@ -5245,6 +5245,7 @@ private constructor(
         private val apiKey: JsonField<String>,
         private val baseUrl: JsonField<String>,
         private val headers: JsonField<Headers>,
+        private val openaiEndpointFormat: JsonField<OpenAIEndpointFormat>,
         private val provider: JsonField<Provider>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -5257,10 +5258,21 @@ private constructor(
             @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
             @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+            @JsonProperty("openaiEndpointFormat")
+            @ExcludeMissing
+            openaiEndpointFormat: JsonField<OpenAIEndpointFormat> = JsonMissing.of(),
             @JsonProperty("provider")
             @ExcludeMissing
             provider: JsonField<Provider> = JsonMissing.of(),
-        ) : this(modelName, apiKey, baseUrl, headers, provider, mutableMapOf())
+        ) : this(
+            modelName,
+            apiKey,
+            baseUrl,
+            headers,
+            openaiEndpointFormat,
+            provider,
+            mutableMapOf(),
+        )
 
         /**
          * Model name string with provider prefix (e.g., 'openai/gpt-5-nano')
@@ -5293,6 +5305,16 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+        /**
+         * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+         * chat for Chat Completions-only endpoints.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun openaiEndpointFormat(): Optional<OpenAIEndpointFormat> =
+            openaiEndpointFormat.getOptional("openaiEndpointFormat")
 
         /**
          * AI provider for the model (or provide a baseURL endpoint instead)
@@ -5329,6 +5351,16 @@ private constructor(
          * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+        /**
+         * Returns the raw JSON value of [openaiEndpointFormat].
+         *
+         * Unlike [openaiEndpointFormat], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("openaiEndpointFormat")
+        @ExcludeMissing
+        fun _openaiEndpointFormat(): JsonField<OpenAIEndpointFormat> = openaiEndpointFormat
 
         /**
          * Returns the raw JSON value of [provider].
@@ -5369,6 +5401,7 @@ private constructor(
             private var apiKey: JsonField<String> = JsonMissing.of()
             private var baseUrl: JsonField<String> = JsonMissing.of()
             private var headers: JsonField<Headers> = JsonMissing.of()
+            private var openaiEndpointFormat: JsonField<OpenAIEndpointFormat> = JsonMissing.of()
             private var provider: JsonField<Provider> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -5378,6 +5411,7 @@ private constructor(
                 apiKey = genericModelConfigObject.apiKey
                 baseUrl = genericModelConfigObject.baseUrl
                 headers = genericModelConfigObject.headers
+                openaiEndpointFormat = genericModelConfigObject.openaiEndpointFormat
                 provider = genericModelConfigObject.provider
                 additionalProperties = genericModelConfigObject.additionalProperties.toMutableMap()
             }
@@ -5430,6 +5464,25 @@ private constructor(
              */
             fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
 
+            /**
+             * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+             * chat for Chat Completions-only endpoints.
+             */
+            fun openaiEndpointFormat(openaiEndpointFormat: OpenAIEndpointFormat) =
+                openaiEndpointFormat(JsonField.of(openaiEndpointFormat))
+
+            /**
+             * Sets [Builder.openaiEndpointFormat] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.openaiEndpointFormat] with a well-typed
+             * [OpenAIEndpointFormat] value instead. This method is primarily for setting the field
+             * to an undocumented or not yet supported value.
+             */
+            fun openaiEndpointFormat(openaiEndpointFormat: JsonField<OpenAIEndpointFormat>) =
+                apply {
+                    this.openaiEndpointFormat = openaiEndpointFormat
+                }
+
             /** AI provider for the model (or provide a baseURL endpoint instead) */
             fun provider(provider: Provider) = provider(JsonField.of(provider))
 
@@ -5479,6 +5532,7 @@ private constructor(
                     apiKey,
                     baseUrl,
                     headers,
+                    openaiEndpointFormat,
                     provider,
                     additionalProperties.toMutableMap(),
                 )
@@ -5504,6 +5558,7 @@ private constructor(
             apiKey()
             baseUrl()
             headers().ifPresent { it.validate() }
+            openaiEndpointFormat().ifPresent { it.validate() }
             provider().ifPresent { it.validate() }
             validated = true
         }
@@ -5528,6 +5583,7 @@ private constructor(
                 (if (apiKey.asKnown().isPresent) 1 else 0) +
                 (if (baseUrl.asKnown().isPresent) 1 else 0) +
                 (headers.asKnown().getOrNull()?.validity() ?: 0) +
+                (openaiEndpointFormat.asKnown().getOrNull()?.validity() ?: 0) +
                 (provider.asKnown().getOrNull()?.validity() ?: 0)
 
         /** Custom headers sent with every request to the model provider */
@@ -5641,6 +5697,155 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+        }
+
+        /**
+         * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+         * chat for Chat Completions-only endpoints.
+         */
+        class OpenAIEndpointFormat
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val RESPONSES = of("responses")
+
+                @JvmField val CHAT = of("chat")
+
+                @JvmStatic fun of(value: String) = OpenAIEndpointFormat(JsonField.of(value))
+            }
+
+            /** An enum containing [OpenAIEndpointFormat]'s known values. */
+            enum class Known {
+                RESPONSES,
+                CHAT,
+            }
+
+            /**
+             * An enum containing [OpenAIEndpointFormat]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [OpenAIEndpointFormat] can contain an unknown value in a couple of
+             * cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                RESPONSES,
+                CHAT,
+                /**
+                 * An enum member indicating that [OpenAIEndpointFormat] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    RESPONSES -> Value.RESPONSES
+                    CHAT -> Value.CHAT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    RESPONSES -> Known.RESPONSES
+                    CHAT -> Known.CHAT
+                    else ->
+                        throw StagehandInvalidDataException("Unknown OpenAIEndpointFormat: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StagehandInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): OpenAIEndpointFormat = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is OpenAIEndpointFormat && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
         }
 
         /** AI provider for the model (or provide a baseURL endpoint instead) */
@@ -5812,17 +6017,26 @@ private constructor(
                 apiKey == other.apiKey &&
                 baseUrl == other.baseUrl &&
                 headers == other.headers &&
+                openaiEndpointFormat == other.openaiEndpointFormat &&
                 provider == other.provider &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(modelName, apiKey, baseUrl, headers, provider, additionalProperties)
+            Objects.hash(
+                modelName,
+                apiKey,
+                baseUrl,
+                headers,
+                openaiEndpointFormat,
+                provider,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "GenericModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, provider=$provider, additionalProperties=$additionalProperties}"
+            "GenericModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, openaiEndpointFormat=$openaiEndpointFormat, provider=$provider, additionalProperties=$additionalProperties}"
     }
 }
