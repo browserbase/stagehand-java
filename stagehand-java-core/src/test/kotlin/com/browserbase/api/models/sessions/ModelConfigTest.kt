@@ -337,6 +337,9 @@ internal class ModelConfigTest {
                         .putAdditionalProperty("foo", JsonValue.from("string"))
                         .build()
                 )
+                .openaiEndpointFormat(
+                    ModelConfig.GenericModelConfigObject.OpenAIEndpointFormat.CHAT
+                )
                 .provider(ModelConfig.GenericModelConfigObject.Provider.OPENAI)
                 .build()
 
@@ -361,6 +364,9 @@ internal class ModelConfigTest {
                         ModelConfig.GenericModelConfigObject.Headers.builder()
                             .putAdditionalProperty("foo", JsonValue.from("string"))
                             .build()
+                    )
+                    .openaiEndpointFormat(
+                        ModelConfig.GenericModelConfigObject.OpenAIEndpointFormat.CHAT
                     )
                     .provider(ModelConfig.GenericModelConfigObject.Provider.OPENAI)
                     .build()
