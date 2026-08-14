@@ -3,7 +3,7 @@
 <!-- x-release-please-start-version -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.browserbase.api/stagehand-java)](https://central.sonatype.com/artifact/com.browserbase.api/stagehand-java/3.21.0)
-[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/3.21.0/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.21.0)
+[![javadoc](https://javadoc.io/badge2/com.browserbase.api/stagehand-java/javadoc.svg)](https://javadoc.io/doc/com.browserbase.api/stagehand-java/3.21.0)
 
 <!-- x-release-please-end -->
 
