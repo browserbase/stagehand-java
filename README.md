@@ -1,4 +1,13 @@
+
+
+
 # Stagehand Java API Library
+
+> **⚠️ No longer maintained**
+>
+> The Stagehand Java SDK is no longer maintained and will not receive updates, bug fixes, or security patches.
+>
+> For current Stagehand options, see the [Stagehand documentation](https://docs.stagehand.dev).
 
 <!-- x-release-please-start-version -->
 
