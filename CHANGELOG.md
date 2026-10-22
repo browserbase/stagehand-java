@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.22.0 (2026-08-14)
+
+Full Changelog: [v3.21.0...v3.22.0](https://github.com/browserbase/stagehand-java/compare/v3.21.0...v3.22.0)
+
+### Features
+
+* [STG-2090] Add Azure Entra model auth support ([3f3c1fa](https://github.com/browserbase/stagehand-java/commit/3f3c1fa68b001bf721eceefe6f34ad4384662294))
+* **server-v3:** expose OpenAI endpoint format ([b8aaaba](https://github.com/browserbase/stagehand-java/commit/b8aaabae25124a1e0d3fcd482b92ed887c8f0cea))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([2bf4f25](https://github.com/browserbase/stagehand-java/commit/2bf4f25bac7de5052a759afc0236fdea8774302c))
+
+
+### Bug Fixes
+
+* **docs:** link the javadoc badge so the version stays current after release ([ca86bdb](https://github.com/browserbase/stagehand-java/commit/ca86bdb3c73f7183eb56346931e530e59da5158b))
+
+
+### Chores
+
+* **internal:** codegen related update ([f643c26](https://github.com/browserbase/stagehand-java/commit/f643c26557b390ec505064c2fae039463389bc3f))
+
 ## 3.21.0 (2026-05-29)
 
 Full Changelog: [v3.20.0...v3.21.0](https://github.com/browserbase/stagehand-java/compare/v3.20.0...v3.21.0)

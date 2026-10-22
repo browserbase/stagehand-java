@@ -35,6 +35,8 @@ import kotlin.jvm.optionals.getOrNull
 class ModelConfig
 private constructor(
     private val vertexModelConfigObject: VertexModelConfigObject? = null,
+    private val azureEntraModelConfigObject: AzureEntraModelConfigObject? = null,
+    private val azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject? = null,
     private val genericModelConfigObject: GenericModelConfigObject? = null,
     private val _json: JsonValue? = null,
 ) {
@@ -42,15 +44,31 @@ private constructor(
     fun vertexModelConfigObject(): Optional<VertexModelConfigObject> =
         Optional.ofNullable(vertexModelConfigObject)
 
+    fun azureEntraModelConfigObject(): Optional<AzureEntraModelConfigObject> =
+        Optional.ofNullable(azureEntraModelConfigObject)
+
+    fun azureApiKeyModelConfigObject(): Optional<AzureApiKeyModelConfigObject> =
+        Optional.ofNullable(azureApiKeyModelConfigObject)
+
     fun genericModelConfigObject(): Optional<GenericModelConfigObject> =
         Optional.ofNullable(genericModelConfigObject)
 
     fun isVertexModelConfigObject(): Boolean = vertexModelConfigObject != null
 
+    fun isAzureEntraModelConfigObject(): Boolean = azureEntraModelConfigObject != null
+
+    fun isAzureApiKeyModelConfigObject(): Boolean = azureApiKeyModelConfigObject != null
+
     fun isGenericModelConfigObject(): Boolean = genericModelConfigObject != null
 
     fun asVertexModelConfigObject(): VertexModelConfigObject =
         vertexModelConfigObject.getOrThrow("vertexModelConfigObject")
+
+    fun asAzureEntraModelConfigObject(): AzureEntraModelConfigObject =
+        azureEntraModelConfigObject.getOrThrow("azureEntraModelConfigObject")
+
+    fun asAzureApiKeyModelConfigObject(): AzureApiKeyModelConfigObject =
+        azureApiKeyModelConfigObject.getOrThrow("azureApiKeyModelConfigObject")
 
     fun asGenericModelConfigObject(): GenericModelConfigObject =
         genericModelConfigObject.getOrThrow("genericModelConfigObject")
@@ -90,6 +108,10 @@ private constructor(
         when {
             vertexModelConfigObject != null ->
                 visitor.visitVertexModelConfigObject(vertexModelConfigObject)
+            azureEntraModelConfigObject != null ->
+                visitor.visitAzureEntraModelConfigObject(azureEntraModelConfigObject)
+            azureApiKeyModelConfigObject != null ->
+                visitor.visitAzureApiKeyModelConfigObject(azureApiKeyModelConfigObject)
             genericModelConfigObject != null ->
                 visitor.visitGenericModelConfigObject(genericModelConfigObject)
             else -> visitor.unknown(_json)
@@ -116,6 +138,18 @@ private constructor(
                     vertexModelConfigObject: VertexModelConfigObject
                 ) {
                     vertexModelConfigObject.validate()
+                }
+
+                override fun visitAzureEntraModelConfigObject(
+                    azureEntraModelConfigObject: AzureEntraModelConfigObject
+                ) {
+                    azureEntraModelConfigObject.validate()
+                }
+
+                override fun visitAzureApiKeyModelConfigObject(
+                    azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject
+                ) {
+                    azureApiKeyModelConfigObject.validate()
                 }
 
                 override fun visitGenericModelConfigObject(
@@ -149,6 +183,14 @@ private constructor(
                     vertexModelConfigObject: VertexModelConfigObject
                 ) = vertexModelConfigObject.validity()
 
+                override fun visitAzureEntraModelConfigObject(
+                    azureEntraModelConfigObject: AzureEntraModelConfigObject
+                ) = azureEntraModelConfigObject.validity()
+
+                override fun visitAzureApiKeyModelConfigObject(
+                    azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject
+                ) = azureApiKeyModelConfigObject.validity()
+
                 override fun visitGenericModelConfigObject(
                     genericModelConfigObject: GenericModelConfigObject
                 ) = genericModelConfigObject.validity()
@@ -164,15 +206,27 @@ private constructor(
 
         return other is ModelConfig &&
             vertexModelConfigObject == other.vertexModelConfigObject &&
+            azureEntraModelConfigObject == other.azureEntraModelConfigObject &&
+            azureApiKeyModelConfigObject == other.azureApiKeyModelConfigObject &&
             genericModelConfigObject == other.genericModelConfigObject
     }
 
-    override fun hashCode(): Int = Objects.hash(vertexModelConfigObject, genericModelConfigObject)
+    override fun hashCode(): Int =
+        Objects.hash(
+            vertexModelConfigObject,
+            azureEntraModelConfigObject,
+            azureApiKeyModelConfigObject,
+            genericModelConfigObject,
+        )
 
     override fun toString(): String =
         when {
             vertexModelConfigObject != null ->
                 "ModelConfig{vertexModelConfigObject=$vertexModelConfigObject}"
+            azureEntraModelConfigObject != null ->
+                "ModelConfig{azureEntraModelConfigObject=$azureEntraModelConfigObject}"
+            azureApiKeyModelConfigObject != null ->
+                "ModelConfig{azureApiKeyModelConfigObject=$azureApiKeyModelConfigObject}"
             genericModelConfigObject != null ->
                 "ModelConfig{genericModelConfigObject=$genericModelConfigObject}"
             _json != null -> "ModelConfig{_unknown=$_json}"
@@ -186,6 +240,16 @@ private constructor(
             ModelConfig(vertexModelConfigObject = vertexModelConfigObject)
 
         @JvmStatic
+        fun ofAzureEntraModelConfigObject(
+            azureEntraModelConfigObject: AzureEntraModelConfigObject
+        ) = ModelConfig(azureEntraModelConfigObject = azureEntraModelConfigObject)
+
+        @JvmStatic
+        fun ofAzureApiKeyModelConfigObject(
+            azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject
+        ) = ModelConfig(azureApiKeyModelConfigObject = azureApiKeyModelConfigObject)
+
+        @JvmStatic
         fun ofGenericModelConfigObject(genericModelConfigObject: GenericModelConfigObject) =
             ModelConfig(genericModelConfigObject = genericModelConfigObject)
     }
@@ -196,6 +260,14 @@ private constructor(
     interface Visitor<out T> {
 
         fun visitVertexModelConfigObject(vertexModelConfigObject: VertexModelConfigObject): T
+
+        fun visitAzureEntraModelConfigObject(
+            azureEntraModelConfigObject: AzureEntraModelConfigObject
+        ): T
+
+        fun visitAzureApiKeyModelConfigObject(
+            azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject
+        ): T
 
         fun visitGenericModelConfigObject(genericModelConfigObject: GenericModelConfigObject): T
 
@@ -222,6 +294,12 @@ private constructor(
                 sequenceOf(
                         tryDeserialize(node, jacksonTypeRef<VertexModelConfigObject>())?.let {
                             ModelConfig(vertexModelConfigObject = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<AzureEntraModelConfigObject>())?.let {
+                            ModelConfig(azureEntraModelConfigObject = it, _json = json)
+                        },
+                        tryDeserialize(node, jacksonTypeRef<AzureApiKeyModelConfigObject>())?.let {
+                            ModelConfig(azureApiKeyModelConfigObject = it, _json = json)
                         },
                         tryDeserialize(node, jacksonTypeRef<GenericModelConfigObject>())?.let {
                             ModelConfig(genericModelConfigObject = it, _json = json)
@@ -252,6 +330,10 @@ private constructor(
             when {
                 value.vertexModelConfigObject != null ->
                     generator.writeObject(value.vertexModelConfigObject)
+                value.azureEntraModelConfigObject != null ->
+                    generator.writeObject(value.azureEntraModelConfigObject)
+                value.azureApiKeyModelConfigObject != null ->
+                    generator.writeObject(value.azureApiKeyModelConfigObject)
                 value.genericModelConfigObject != null ->
                     generator.writeObject(value.genericModelConfigObject)
                 value._json != null -> generator.writeObject(value._json)
@@ -2689,6 +2771,2473 @@ private constructor(
             "VertexModelConfigObject{auth=$auth, modelName=$modelName, provider=$provider, providerOptions=$providerOptions, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, additionalProperties=$additionalProperties}"
     }
 
+    class AzureEntraModelConfigObject
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val auth: JsonField<Auth>,
+        private val modelName: JsonField<String>,
+        private val provider: JsonValue,
+        private val providerOptions: JsonField<ProviderOptions>,
+        private val baseUrl: JsonField<String>,
+        private val headers: JsonField<Headers>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("auth") @ExcludeMissing auth: JsonField<Auth> = JsonMissing.of(),
+            @JsonProperty("modelName")
+            @ExcludeMissing
+            modelName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("provider") @ExcludeMissing provider: JsonValue = JsonMissing.of(),
+            @JsonProperty("providerOptions")
+            @ExcludeMissing
+            providerOptions: JsonField<ProviderOptions> = JsonMissing.of(),
+            @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+        ) : this(auth, modelName, provider, providerOptions, baseUrl, headers, mutableMapOf())
+
+        /**
+         * Azure provider authentication configuration
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun auth(): Auth = auth.getRequired("auth")
+
+        /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano')
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun modelName(): String = modelName.getRequired("modelName")
+
+        /**
+         * Azure OpenAI model provider
+         *
+         * Expected to always return the following:
+         * ```java
+         * JsonValue.from("azure")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
+         */
+        @JsonProperty("provider") @ExcludeMissing fun _provider(): JsonValue = provider
+
+        /**
+         * Azure provider-specific model configuration
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun providerOptions(): ProviderOptions = providerOptions.getRequired("providerOptions")
+
+        /**
+         * Base URL for the model provider
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun baseUrl(): Optional<String> = baseUrl.getOptional("baseURL")
+
+        /**
+         * Custom headers sent with every request to the model provider
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+        /**
+         * Returns the raw JSON value of [auth].
+         *
+         * Unlike [auth], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("auth") @ExcludeMissing fun _auth(): JsonField<Auth> = auth
+
+        /**
+         * Returns the raw JSON value of [modelName].
+         *
+         * Unlike [modelName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("modelName") @ExcludeMissing fun _modelName(): JsonField<String> = modelName
+
+        /**
+         * Returns the raw JSON value of [providerOptions].
+         *
+         * Unlike [providerOptions], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("providerOptions")
+        @ExcludeMissing
+        fun _providerOptions(): JsonField<ProviderOptions> = providerOptions
+
+        /**
+         * Returns the raw JSON value of [baseUrl].
+         *
+         * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+        /**
+         * Returns the raw JSON value of [headers].
+         *
+         * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of
+             * [AzureEntraModelConfigObject].
+             *
+             * The following fields are required:
+             * ```java
+             * .auth()
+             * .modelName()
+             * .providerOptions()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [AzureEntraModelConfigObject]. */
+        class Builder internal constructor() {
+
+            private var auth: JsonField<Auth>? = null
+            private var modelName: JsonField<String>? = null
+            private var provider: JsonValue = JsonValue.from("azure")
+            private var providerOptions: JsonField<ProviderOptions>? = null
+            private var baseUrl: JsonField<String> = JsonMissing.of()
+            private var headers: JsonField<Headers> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(azureEntraModelConfigObject: AzureEntraModelConfigObject) = apply {
+                auth = azureEntraModelConfigObject.auth
+                modelName = azureEntraModelConfigObject.modelName
+                provider = azureEntraModelConfigObject.provider
+                providerOptions = azureEntraModelConfigObject.providerOptions
+                baseUrl = azureEntraModelConfigObject.baseUrl
+                headers = azureEntraModelConfigObject.headers
+                additionalProperties =
+                    azureEntraModelConfigObject.additionalProperties.toMutableMap()
+            }
+
+            /** Azure provider authentication configuration */
+            fun auth(auth: Auth) = auth(JsonField.of(auth))
+
+            /**
+             * Sets [Builder.auth] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.auth] with a well-typed [Auth] value instead. This
+             * method is primarily for setting the field to an undocumented or not yet supported
+             * value.
+             */
+            fun auth(auth: JsonField<Auth>) = apply { this.auth = auth }
+
+            /** Model name string with provider prefix (e.g., 'openai/gpt-5-nano') */
+            fun modelName(modelName: String) = modelName(JsonField.of(modelName))
+
+            /**
+             * Sets [Builder.modelName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.modelName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun modelName(modelName: JsonField<String>) = apply { this.modelName = modelName }
+
+            /**
+             * Sets the field to an arbitrary JSON value.
+             *
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```java
+             * JsonValue.from("azure")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun provider(provider: JsonValue) = apply { this.provider = provider }
+
+            /** Azure provider-specific model configuration */
+            fun providerOptions(providerOptions: ProviderOptions) =
+                providerOptions(JsonField.of(providerOptions))
+
+            /**
+             * Sets [Builder.providerOptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.providerOptions] with a well-typed [ProviderOptions]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun providerOptions(providerOptions: JsonField<ProviderOptions>) = apply {
+                this.providerOptions = providerOptions
+            }
+
+            /** Base URL for the model provider */
+            fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+            /**
+             * Sets [Builder.baseUrl] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.baseUrl] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+            /** Custom headers sent with every request to the model provider */
+            fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+            /**
+             * Sets [Builder.headers] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.headers] with a well-typed [Headers] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [AzureEntraModelConfigObject].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .auth()
+             * .modelName()
+             * .providerOptions()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): AzureEntraModelConfigObject =
+                AzureEntraModelConfigObject(
+                    checkRequired("auth", auth),
+                    checkRequired("modelName", modelName),
+                    provider,
+                    checkRequired("providerOptions", providerOptions),
+                    baseUrl,
+                    headers,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): AzureEntraModelConfigObject = apply {
+            if (validated) {
+                return@apply
+            }
+
+            auth().validate()
+            modelName()
+            _provider().let {
+                if (it != JsonValue.from("azure")) {
+                    throw StagehandInvalidDataException("'provider' is invalid, received $it")
+                }
+            }
+            providerOptions().validate()
+            baseUrl()
+            headers().ifPresent { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (auth.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (modelName.asKnown().isPresent) 1 else 0) +
+                provider.let { if (it == JsonValue.from("azure")) 1 else 0 } +
+                (providerOptions.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (baseUrl.asKnown().isPresent) 1 else 0) +
+                (headers.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Azure provider authentication configuration */
+        class Auth
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val token: JsonField<String>,
+            private val type: JsonValue,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("token") @ExcludeMissing token: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("type") @ExcludeMissing type: JsonValue = JsonMissing.of(),
+            ) : this(token, type, mutableMapOf())
+
+            /**
+             * Microsoft Entra ID bearer token for Azure OpenAI
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun token(): String = token.getRequired("token")
+
+            /**
+             * Use a Microsoft Entra ID bearer token for authentication
+             *
+             * Expected to always return the following:
+             * ```java
+             * JsonValue.from("azureEntraId")
+             * ```
+             *
+             * However, this method can be useful for debugging and logging (e.g. if the server
+             * responded with an unexpected value).
+             */
+            @JsonProperty("type") @ExcludeMissing fun _type(): JsonValue = type
+
+            /**
+             * Returns the raw JSON value of [token].
+             *
+             * Unlike [token], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("token") @ExcludeMissing fun _token(): JsonField<String> = token
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [Auth].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .token()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Auth]. */
+            class Builder internal constructor() {
+
+                private var token: JsonField<String>? = null
+                private var type: JsonValue = JsonValue.from("azureEntraId")
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(auth: Auth) = apply {
+                    token = auth.token
+                    type = auth.type
+                    additionalProperties = auth.additionalProperties.toMutableMap()
+                }
+
+                /** Microsoft Entra ID bearer token for Azure OpenAI */
+                fun token(token: String) = token(JsonField.of(token))
+
+                /**
+                 * Sets [Builder.token] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.token] with a well-typed [String] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun token(token: JsonField<String>) = apply { this.token = token }
+
+                /**
+                 * Sets the field to an arbitrary JSON value.
+                 *
+                 * It is usually unnecessary to call this method because the field defaults to the
+                 * following:
+                 * ```java
+                 * JsonValue.from("azureEntraId")
+                 * ```
+                 *
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun type(type: JsonValue) = apply { this.type = type }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Auth].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .token()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): Auth =
+                    Auth(checkRequired("token", token), type, additionalProperties.toMutableMap())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): Auth = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                token()
+                _type().let {
+                    if (it != JsonValue.from("azureEntraId")) {
+                        throw StagehandInvalidDataException("'type' is invalid, received $it")
+                    }
+                }
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (if (token.asKnown().isPresent) 1 else 0) +
+                    type.let { if (it == JsonValue.from("azureEntraId")) 1 else 0 }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Auth &&
+                    token == other.token &&
+                    type == other.type &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(token, type, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Auth{token=$token, type=$type, additionalProperties=$additionalProperties}"
+        }
+
+        /** Azure provider-specific model configuration */
+        class ProviderOptions
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val azure: JsonField<Azure>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("azure") @ExcludeMissing azure: JsonField<Azure> = JsonMissing.of()
+            ) : this(azure, mutableMapOf())
+
+            /**
+             * Azure OpenAI provider-specific settings
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun azure(): Azure = azure.getRequired("azure")
+
+            /**
+             * Returns the raw JSON value of [azure].
+             *
+             * Unlike [azure], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("azure") @ExcludeMissing fun _azure(): JsonField<Azure> = azure
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [ProviderOptions].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .azure()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [ProviderOptions]. */
+            class Builder internal constructor() {
+
+                private var azure: JsonField<Azure>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(providerOptions: ProviderOptions) = apply {
+                    azure = providerOptions.azure
+                    additionalProperties = providerOptions.additionalProperties.toMutableMap()
+                }
+
+                /** Azure OpenAI provider-specific settings */
+                fun azure(azure: Azure) = azure(JsonField.of(azure))
+
+                /**
+                 * Sets [Builder.azure] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.azure] with a well-typed [Azure] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun azure(azure: JsonField<Azure>) = apply { this.azure = azure }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [ProviderOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .azure()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): ProviderOptions =
+                    ProviderOptions(
+                        checkRequired("azure", azure),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): ProviderOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                azure().validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int = (azure.asKnown().getOrNull()?.validity() ?: 0)
+
+            /** Azure OpenAI provider-specific settings */
+            class Azure
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val apiVersion: JsonField<String>,
+                private val baseUrl: JsonField<String>,
+                private val headers: JsonField<Headers>,
+                private val resourceName: JsonField<String>,
+                private val useDeploymentBasedUrls: JsonField<Boolean>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("apiVersion")
+                    @ExcludeMissing
+                    apiVersion: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("baseURL")
+                    @ExcludeMissing
+                    baseUrl: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("headers")
+                    @ExcludeMissing
+                    headers: JsonField<Headers> = JsonMissing.of(),
+                    @JsonProperty("resourceName")
+                    @ExcludeMissing
+                    resourceName: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("useDeploymentBasedUrls")
+                    @ExcludeMissing
+                    useDeploymentBasedUrls: JsonField<Boolean> = JsonMissing.of(),
+                ) : this(
+                    apiVersion,
+                    baseUrl,
+                    headers,
+                    resourceName,
+                    useDeploymentBasedUrls,
+                    mutableMapOf(),
+                )
+
+                /**
+                 * Azure OpenAI API version
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun apiVersion(): Optional<String> = apiVersion.getOptional("apiVersion")
+
+                /**
+                 * Base URL for the Azure OpenAI provider
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun baseUrl(): Optional<String> = baseUrl.getOptional("baseURL")
+
+                /**
+                 * Custom headers sent with every request to the Azure OpenAI provider
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+                /**
+                 * Azure OpenAI resource name
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun resourceName(): Optional<String> = resourceName.getOptional("resourceName")
+
+                /**
+                 * Whether to use deployment-based Azure OpenAI URLs
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun useDeploymentBasedUrls(): Optional<Boolean> =
+                    useDeploymentBasedUrls.getOptional("useDeploymentBasedUrls")
+
+                /**
+                 * Returns the raw JSON value of [apiVersion].
+                 *
+                 * Unlike [apiVersion], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("apiVersion")
+                @ExcludeMissing
+                fun _apiVersion(): JsonField<String> = apiVersion
+
+                /**
+                 * Returns the raw JSON value of [baseUrl].
+                 *
+                 * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+                /**
+                 * Returns the raw JSON value of [headers].
+                 *
+                 * Unlike [headers], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("headers")
+                @ExcludeMissing
+                fun _headers(): JsonField<Headers> = headers
+
+                /**
+                 * Returns the raw JSON value of [resourceName].
+                 *
+                 * Unlike [resourceName], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("resourceName")
+                @ExcludeMissing
+                fun _resourceName(): JsonField<String> = resourceName
+
+                /**
+                 * Returns the raw JSON value of [useDeploymentBasedUrls].
+                 *
+                 * Unlike [useDeploymentBasedUrls], this method doesn't throw if the JSON field has
+                 * an unexpected type.
+                 */
+                @JsonProperty("useDeploymentBasedUrls")
+                @ExcludeMissing
+                fun _useDeploymentBasedUrls(): JsonField<Boolean> = useDeploymentBasedUrls
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Azure]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Azure]. */
+                class Builder internal constructor() {
+
+                    private var apiVersion: JsonField<String> = JsonMissing.of()
+                    private var baseUrl: JsonField<String> = JsonMissing.of()
+                    private var headers: JsonField<Headers> = JsonMissing.of()
+                    private var resourceName: JsonField<String> = JsonMissing.of()
+                    private var useDeploymentBasedUrls: JsonField<Boolean> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(azure: Azure) = apply {
+                        apiVersion = azure.apiVersion
+                        baseUrl = azure.baseUrl
+                        headers = azure.headers
+                        resourceName = azure.resourceName
+                        useDeploymentBasedUrls = azure.useDeploymentBasedUrls
+                        additionalProperties = azure.additionalProperties.toMutableMap()
+                    }
+
+                    /** Azure OpenAI API version */
+                    fun apiVersion(apiVersion: String) = apiVersion(JsonField.of(apiVersion))
+
+                    /**
+                     * Sets [Builder.apiVersion] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.apiVersion] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun apiVersion(apiVersion: JsonField<String>) = apply {
+                        this.apiVersion = apiVersion
+                    }
+
+                    /** Base URL for the Azure OpenAI provider */
+                    fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+                    /**
+                     * Sets [Builder.baseUrl] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.baseUrl] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+                    /** Custom headers sent with every request to the Azure OpenAI provider */
+                    fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                    /**
+                     * Sets [Builder.headers] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.headers] with a well-typed [Headers] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                    /** Azure OpenAI resource name */
+                    fun resourceName(resourceName: String) =
+                        resourceName(JsonField.of(resourceName))
+
+                    /**
+                     * Sets [Builder.resourceName] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.resourceName] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun resourceName(resourceName: JsonField<String>) = apply {
+                        this.resourceName = resourceName
+                    }
+
+                    /** Whether to use deployment-based Azure OpenAI URLs */
+                    fun useDeploymentBasedUrls(useDeploymentBasedUrls: Boolean) =
+                        useDeploymentBasedUrls(JsonField.of(useDeploymentBasedUrls))
+
+                    /**
+                     * Sets [Builder.useDeploymentBasedUrls] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.useDeploymentBasedUrls] with a well-typed
+                     * [Boolean] value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun useDeploymentBasedUrls(useDeploymentBasedUrls: JsonField<Boolean>) = apply {
+                        this.useDeploymentBasedUrls = useDeploymentBasedUrls
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Azure].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Azure =
+                        Azure(
+                            apiVersion,
+                            baseUrl,
+                            headers,
+                            resourceName,
+                            useDeploymentBasedUrls,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): Azure = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    apiVersion()
+                    baseUrl()
+                    headers().ifPresent { it.validate() }
+                    resourceName()
+                    useDeploymentBasedUrls()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (apiVersion.asKnown().isPresent) 1 else 0) +
+                        (if (baseUrl.asKnown().isPresent) 1 else 0) +
+                        (headers.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (resourceName.asKnown().isPresent) 1 else 0) +
+                        (if (useDeploymentBasedUrls.asKnown().isPresent) 1 else 0)
+
+                /** Custom headers sent with every request to the Azure OpenAI provider */
+                class Headers
+                @JsonCreator
+                private constructor(
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    private val additionalProperties: Map<String, JsonValue>
+                ) {
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /** Returns a mutable builder for constructing an instance of [Headers]. */
+                        @JvmStatic fun builder() = Builder()
+                    }
+
+                    /** A builder for [Headers]. */
+                    class Builder internal constructor() {
+
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        @JvmSynthetic
+                        internal fun from(headers: Headers) = apply {
+                            additionalProperties = headers.additionalProperties.toMutableMap()
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Headers].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         */
+                        fun build(): Headers = Headers(additionalProperties.toImmutable())
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Headers = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StagehandInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int =
+                        additionalProperties.count { (_, value) ->
+                            !value.isNull() && !value.isMissing()
+                        }
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Headers &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+                }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Azure &&
+                        apiVersion == other.apiVersion &&
+                        baseUrl == other.baseUrl &&
+                        headers == other.headers &&
+                        resourceName == other.resourceName &&
+                        useDeploymentBasedUrls == other.useDeploymentBasedUrls &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        apiVersion,
+                        baseUrl,
+                        headers,
+                        resourceName,
+                        useDeploymentBasedUrls,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Azure{apiVersion=$apiVersion, baseUrl=$baseUrl, headers=$headers, resourceName=$resourceName, useDeploymentBasedUrls=$useDeploymentBasedUrls, additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ProviderOptions &&
+                    azure == other.azure &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(azure, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "ProviderOptions{azure=$azure, additionalProperties=$additionalProperties}"
+        }
+
+        /** Custom headers sent with every request to the model provider */
+        class Headers
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Headers]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Headers]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(headers: Headers) = apply {
+                    additionalProperties = headers.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Headers].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Headers = Headers(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): Headers = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Headers && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is AzureEntraModelConfigObject &&
+                auth == other.auth &&
+                modelName == other.modelName &&
+                provider == other.provider &&
+                providerOptions == other.providerOptions &&
+                baseUrl == other.baseUrl &&
+                headers == other.headers &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                auth,
+                modelName,
+                provider,
+                providerOptions,
+                baseUrl,
+                headers,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "AzureEntraModelConfigObject{auth=$auth, modelName=$modelName, provider=$provider, providerOptions=$providerOptions, baseUrl=$baseUrl, headers=$headers, additionalProperties=$additionalProperties}"
+    }
+
+    class AzureApiKeyModelConfigObject
+    @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+    private constructor(
+        private val modelName: JsonField<String>,
+        private val provider: JsonValue,
+        private val providerOptions: JsonField<ProviderOptions>,
+        private val apiKey: JsonField<String>,
+        private val baseUrl: JsonField<String>,
+        private val headers: JsonField<Headers>,
+        private val additionalProperties: MutableMap<String, JsonValue>,
+    ) {
+
+        @JsonCreator
+        private constructor(
+            @JsonProperty("modelName")
+            @ExcludeMissing
+            modelName: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("provider") @ExcludeMissing provider: JsonValue = JsonMissing.of(),
+            @JsonProperty("providerOptions")
+            @ExcludeMissing
+            providerOptions: JsonField<ProviderOptions> = JsonMissing.of(),
+            @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
+            @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+        ) : this(modelName, provider, providerOptions, apiKey, baseUrl, headers, mutableMapOf())
+
+        /**
+         * Model name string with provider prefix (e.g., 'openai/gpt-5-nano')
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun modelName(): String = modelName.getRequired("modelName")
+
+        /**
+         * Azure OpenAI model provider
+         *
+         * Expected to always return the following:
+         * ```java
+         * JsonValue.from("azure")
+         * ```
+         *
+         * However, this method can be useful for debugging and logging (e.g. if the server
+         * responded with an unexpected value).
+         */
+        @JsonProperty("provider") @ExcludeMissing fun _provider(): JsonValue = provider
+
+        /**
+         * Azure provider-specific model configuration
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+         *   unexpectedly missing or null (e.g. if the server responded with an unexpected value).
+         */
+        fun providerOptions(): ProviderOptions = providerOptions.getRequired("providerOptions")
+
+        /**
+         * API key for the model provider
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun apiKey(): Optional<String> = apiKey.getOptional("apiKey")
+
+        /**
+         * Base URL for the model provider
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun baseUrl(): Optional<String> = baseUrl.getOptional("baseURL")
+
+        /**
+         * Custom headers sent with every request to the model provider
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+        /**
+         * Returns the raw JSON value of [modelName].
+         *
+         * Unlike [modelName], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("modelName") @ExcludeMissing fun _modelName(): JsonField<String> = modelName
+
+        /**
+         * Returns the raw JSON value of [providerOptions].
+         *
+         * Unlike [providerOptions], this method doesn't throw if the JSON field has an unexpected
+         * type.
+         */
+        @JsonProperty("providerOptions")
+        @ExcludeMissing
+        fun _providerOptions(): JsonField<ProviderOptions> = providerOptions
+
+        /**
+         * Returns the raw JSON value of [apiKey].
+         *
+         * Unlike [apiKey], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("apiKey") @ExcludeMissing fun _apiKey(): JsonField<String> = apiKey
+
+        /**
+         * Returns the raw JSON value of [baseUrl].
+         *
+         * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+        /**
+         * Returns the raw JSON value of [headers].
+         *
+         * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+        @JsonAnySetter
+        private fun putAdditionalProperty(key: String, value: JsonValue) {
+            additionalProperties.put(key, value)
+        }
+
+        @JsonAnyGetter
+        @ExcludeMissing
+        fun _additionalProperties(): Map<String, JsonValue> =
+            Collections.unmodifiableMap(additionalProperties)
+
+        fun toBuilder() = Builder().from(this)
+
+        companion object {
+
+            /**
+             * Returns a mutable builder for constructing an instance of
+             * [AzureApiKeyModelConfigObject].
+             *
+             * The following fields are required:
+             * ```java
+             * .modelName()
+             * .providerOptions()
+             * ```
+             */
+            @JvmStatic fun builder() = Builder()
+        }
+
+        /** A builder for [AzureApiKeyModelConfigObject]. */
+        class Builder internal constructor() {
+
+            private var modelName: JsonField<String>? = null
+            private var provider: JsonValue = JsonValue.from("azure")
+            private var providerOptions: JsonField<ProviderOptions>? = null
+            private var apiKey: JsonField<String> = JsonMissing.of()
+            private var baseUrl: JsonField<String> = JsonMissing.of()
+            private var headers: JsonField<Headers> = JsonMissing.of()
+            private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+            @JvmSynthetic
+            internal fun from(azureApiKeyModelConfigObject: AzureApiKeyModelConfigObject) = apply {
+                modelName = azureApiKeyModelConfigObject.modelName
+                provider = azureApiKeyModelConfigObject.provider
+                providerOptions = azureApiKeyModelConfigObject.providerOptions
+                apiKey = azureApiKeyModelConfigObject.apiKey
+                baseUrl = azureApiKeyModelConfigObject.baseUrl
+                headers = azureApiKeyModelConfigObject.headers
+                additionalProperties =
+                    azureApiKeyModelConfigObject.additionalProperties.toMutableMap()
+            }
+
+            /** Model name string with provider prefix (e.g., 'openai/gpt-5-nano') */
+            fun modelName(modelName: String) = modelName(JsonField.of(modelName))
+
+            /**
+             * Sets [Builder.modelName] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.modelName] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun modelName(modelName: JsonField<String>) = apply { this.modelName = modelName }
+
+            /**
+             * Sets the field to an arbitrary JSON value.
+             *
+             * It is usually unnecessary to call this method because the field defaults to the
+             * following:
+             * ```java
+             * JsonValue.from("azure")
+             * ```
+             *
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun provider(provider: JsonValue) = apply { this.provider = provider }
+
+            /** Azure provider-specific model configuration */
+            fun providerOptions(providerOptions: ProviderOptions) =
+                providerOptions(JsonField.of(providerOptions))
+
+            /**
+             * Sets [Builder.providerOptions] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.providerOptions] with a well-typed [ProviderOptions]
+             * value instead. This method is primarily for setting the field to an undocumented or
+             * not yet supported value.
+             */
+            fun providerOptions(providerOptions: JsonField<ProviderOptions>) = apply {
+                this.providerOptions = providerOptions
+            }
+
+            /** API key for the model provider */
+            fun apiKey(apiKey: String) = apiKey(JsonField.of(apiKey))
+
+            /**
+             * Sets [Builder.apiKey] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.apiKey] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun apiKey(apiKey: JsonField<String>) = apply { this.apiKey = apiKey }
+
+            /** Base URL for the model provider */
+            fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+            /**
+             * Sets [Builder.baseUrl] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.baseUrl] with a well-typed [String] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+            /** Custom headers sent with every request to the model provider */
+            fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+            /**
+             * Sets [Builder.headers] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.headers] with a well-typed [Headers] value instead.
+             * This method is primarily for setting the field to an undocumented or not yet
+             * supported value.
+             */
+            fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+            fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.clear()
+                putAllAdditionalProperties(additionalProperties)
+            }
+
+            fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                additionalProperties.put(key, value)
+            }
+
+            fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                this.additionalProperties.putAll(additionalProperties)
+            }
+
+            fun removeAdditionalProperty(key: String) = apply { additionalProperties.remove(key) }
+
+            fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                keys.forEach(::removeAdditionalProperty)
+            }
+
+            /**
+             * Returns an immutable instance of [AzureApiKeyModelConfigObject].
+             *
+             * Further updates to this [Builder] will not mutate the returned instance.
+             *
+             * The following fields are required:
+             * ```java
+             * .modelName()
+             * .providerOptions()
+             * ```
+             *
+             * @throws IllegalStateException if any required field is unset.
+             */
+            fun build(): AzureApiKeyModelConfigObject =
+                AzureApiKeyModelConfigObject(
+                    checkRequired("modelName", modelName),
+                    provider,
+                    checkRequired("providerOptions", providerOptions),
+                    apiKey,
+                    baseUrl,
+                    headers,
+                    additionalProperties.toMutableMap(),
+                )
+        }
+
+        private var validated: Boolean = false
+
+        /**
+         * Validates that the types of all values in this object match their expected types
+         * recursively.
+         *
+         * This method is _not_ forwards compatible with new types from the API for existing fields.
+         *
+         * @throws StagehandInvalidDataException if any value type in this object doesn't match its
+         *   expected type.
+         */
+        fun validate(): AzureApiKeyModelConfigObject = apply {
+            if (validated) {
+                return@apply
+            }
+
+            modelName()
+            _provider().let {
+                if (it != JsonValue.from("azure")) {
+                    throw StagehandInvalidDataException("'provider' is invalid, received $it")
+                }
+            }
+            providerOptions().validate()
+            apiKey()
+            baseUrl()
+            headers().ifPresent { it.validate() }
+            validated = true
+        }
+
+        fun isValid(): Boolean =
+            try {
+                validate()
+                true
+            } catch (e: StagehandInvalidDataException) {
+                false
+            }
+
+        /**
+         * Returns a score indicating how many valid values are contained in this object
+         * recursively.
+         *
+         * Used for best match union deserialization.
+         */
+        @JvmSynthetic
+        internal fun validity(): Int =
+            (if (modelName.asKnown().isPresent) 1 else 0) +
+                provider.let { if (it == JsonValue.from("azure")) 1 else 0 } +
+                (providerOptions.asKnown().getOrNull()?.validity() ?: 0) +
+                (if (apiKey.asKnown().isPresent) 1 else 0) +
+                (if (baseUrl.asKnown().isPresent) 1 else 0) +
+                (headers.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Azure provider-specific model configuration */
+        class ProviderOptions
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val azure: JsonField<Azure>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("azure") @ExcludeMissing azure: JsonField<Azure> = JsonMissing.of()
+            ) : this(azure, mutableMapOf())
+
+            /**
+             * Azure OpenAI provider-specific settings
+             *
+             * @throws StagehandInvalidDataException if the JSON field has an unexpected type or is
+             *   unexpectedly missing or null (e.g. if the server responded with an unexpected
+             *   value).
+             */
+            fun azure(): Azure = azure.getRequired("azure")
+
+            /**
+             * Returns the raw JSON value of [azure].
+             *
+             * Unlike [azure], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("azure") @ExcludeMissing fun _azure(): JsonField<Azure> = azure
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /**
+                 * Returns a mutable builder for constructing an instance of [ProviderOptions].
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .azure()
+                 * ```
+                 */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [ProviderOptions]. */
+            class Builder internal constructor() {
+
+                private var azure: JsonField<Azure>? = null
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(providerOptions: ProviderOptions) = apply {
+                    azure = providerOptions.azure
+                    additionalProperties = providerOptions.additionalProperties.toMutableMap()
+                }
+
+                /** Azure OpenAI provider-specific settings */
+                fun azure(azure: Azure) = azure(JsonField.of(azure))
+
+                /**
+                 * Sets [Builder.azure] to an arbitrary JSON value.
+                 *
+                 * You should usually call [Builder.azure] with a well-typed [Azure] value instead.
+                 * This method is primarily for setting the field to an undocumented or not yet
+                 * supported value.
+                 */
+                fun azure(azure: JsonField<Azure>) = apply { this.azure = azure }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [ProviderOptions].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 *
+                 * The following fields are required:
+                 * ```java
+                 * .azure()
+                 * ```
+                 *
+                 * @throws IllegalStateException if any required field is unset.
+                 */
+                fun build(): ProviderOptions =
+                    ProviderOptions(
+                        checkRequired("azure", azure),
+                        additionalProperties.toMutableMap(),
+                    )
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): ProviderOptions = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                azure().validate()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int = (azure.asKnown().getOrNull()?.validity() ?: 0)
+
+            /** Azure OpenAI provider-specific settings */
+            class Azure
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val apiVersion: JsonField<String>,
+                private val baseUrl: JsonField<String>,
+                private val headers: JsonField<Headers>,
+                private val resourceName: JsonField<String>,
+                private val useDeploymentBasedUrls: JsonField<Boolean>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("apiVersion")
+                    @ExcludeMissing
+                    apiVersion: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("baseURL")
+                    @ExcludeMissing
+                    baseUrl: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("headers")
+                    @ExcludeMissing
+                    headers: JsonField<Headers> = JsonMissing.of(),
+                    @JsonProperty("resourceName")
+                    @ExcludeMissing
+                    resourceName: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("useDeploymentBasedUrls")
+                    @ExcludeMissing
+                    useDeploymentBasedUrls: JsonField<Boolean> = JsonMissing.of(),
+                ) : this(
+                    apiVersion,
+                    baseUrl,
+                    headers,
+                    resourceName,
+                    useDeploymentBasedUrls,
+                    mutableMapOf(),
+                )
+
+                /**
+                 * Azure OpenAI API version
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun apiVersion(): Optional<String> = apiVersion.getOptional("apiVersion")
+
+                /**
+                 * Base URL for the Azure OpenAI provider
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun baseUrl(): Optional<String> = baseUrl.getOptional("baseURL")
+
+                /**
+                 * Custom headers sent with every request to the Azure OpenAI provider
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+                /**
+                 * Azure OpenAI resource name
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun resourceName(): Optional<String> = resourceName.getOptional("resourceName")
+
+                /**
+                 * Whether to use deployment-based Azure OpenAI URLs
+                 *
+                 * @throws StagehandInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun useDeploymentBasedUrls(): Optional<Boolean> =
+                    useDeploymentBasedUrls.getOptional("useDeploymentBasedUrls")
+
+                /**
+                 * Returns the raw JSON value of [apiVersion].
+                 *
+                 * Unlike [apiVersion], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("apiVersion")
+                @ExcludeMissing
+                fun _apiVersion(): JsonField<String> = apiVersion
+
+                /**
+                 * Returns the raw JSON value of [baseUrl].
+                 *
+                 * Unlike [baseUrl], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("baseURL") @ExcludeMissing fun _baseUrl(): JsonField<String> = baseUrl
+
+                /**
+                 * Returns the raw JSON value of [headers].
+                 *
+                 * Unlike [headers], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("headers")
+                @ExcludeMissing
+                fun _headers(): JsonField<Headers> = headers
+
+                /**
+                 * Returns the raw JSON value of [resourceName].
+                 *
+                 * Unlike [resourceName], this method doesn't throw if the JSON field has an
+                 * unexpected type.
+                 */
+                @JsonProperty("resourceName")
+                @ExcludeMissing
+                fun _resourceName(): JsonField<String> = resourceName
+
+                /**
+                 * Returns the raw JSON value of [useDeploymentBasedUrls].
+                 *
+                 * Unlike [useDeploymentBasedUrls], this method doesn't throw if the JSON field has
+                 * an unexpected type.
+                 */
+                @JsonProperty("useDeploymentBasedUrls")
+                @ExcludeMissing
+                fun _useDeploymentBasedUrls(): JsonField<Boolean> = useDeploymentBasedUrls
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Azure]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Azure]. */
+                class Builder internal constructor() {
+
+                    private var apiVersion: JsonField<String> = JsonMissing.of()
+                    private var baseUrl: JsonField<String> = JsonMissing.of()
+                    private var headers: JsonField<Headers> = JsonMissing.of()
+                    private var resourceName: JsonField<String> = JsonMissing.of()
+                    private var useDeploymentBasedUrls: JsonField<Boolean> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(azure: Azure) = apply {
+                        apiVersion = azure.apiVersion
+                        baseUrl = azure.baseUrl
+                        headers = azure.headers
+                        resourceName = azure.resourceName
+                        useDeploymentBasedUrls = azure.useDeploymentBasedUrls
+                        additionalProperties = azure.additionalProperties.toMutableMap()
+                    }
+
+                    /** Azure OpenAI API version */
+                    fun apiVersion(apiVersion: String) = apiVersion(JsonField.of(apiVersion))
+
+                    /**
+                     * Sets [Builder.apiVersion] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.apiVersion] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun apiVersion(apiVersion: JsonField<String>) = apply {
+                        this.apiVersion = apiVersion
+                    }
+
+                    /** Base URL for the Azure OpenAI provider */
+                    fun baseUrl(baseUrl: String) = baseUrl(JsonField.of(baseUrl))
+
+                    /**
+                     * Sets [Builder.baseUrl] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.baseUrl] with a well-typed [String] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun baseUrl(baseUrl: JsonField<String>) = apply { this.baseUrl = baseUrl }
+
+                    /** Custom headers sent with every request to the Azure OpenAI provider */
+                    fun headers(headers: Headers) = headers(JsonField.of(headers))
+
+                    /**
+                     * Sets [Builder.headers] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.headers] with a well-typed [Headers] value
+                     * instead. This method is primarily for setting the field to an undocumented or
+                     * not yet supported value.
+                     */
+                    fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
+
+                    /** Azure OpenAI resource name */
+                    fun resourceName(resourceName: String) =
+                        resourceName(JsonField.of(resourceName))
+
+                    /**
+                     * Sets [Builder.resourceName] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.resourceName] with a well-typed [String]
+                     * value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun resourceName(resourceName: JsonField<String>) = apply {
+                        this.resourceName = resourceName
+                    }
+
+                    /** Whether to use deployment-based Azure OpenAI URLs */
+                    fun useDeploymentBasedUrls(useDeploymentBasedUrls: Boolean) =
+                        useDeploymentBasedUrls(JsonField.of(useDeploymentBasedUrls))
+
+                    /**
+                     * Sets [Builder.useDeploymentBasedUrls] to an arbitrary JSON value.
+                     *
+                     * You should usually call [Builder.useDeploymentBasedUrls] with a well-typed
+                     * [Boolean] value instead. This method is primarily for setting the field to an
+                     * undocumented or not yet supported value.
+                     */
+                    fun useDeploymentBasedUrls(useDeploymentBasedUrls: JsonField<Boolean>) = apply {
+                        this.useDeploymentBasedUrls = useDeploymentBasedUrls
+                    }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /**
+                     * Returns an immutable instance of [Azure].
+                     *
+                     * Further updates to this [Builder] will not mutate the returned instance.
+                     */
+                    fun build(): Azure =
+                        Azure(
+                            apiVersion,
+                            baseUrl,
+                            headers,
+                            resourceName,
+                            useDeploymentBasedUrls,
+                            additionalProperties.toMutableMap(),
+                        )
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * This method is _not_ forwards compatible with new types from the API for existing
+                 * fields.
+                 *
+                 * @throws StagehandInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): Azure = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    apiVersion()
+                    baseUrl()
+                    headers().ifPresent { it.validate() }
+                    resourceName()
+                    useDeploymentBasedUrls()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: StagehandInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object
+                 * recursively.
+                 *
+                 * Used for best match union deserialization.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (apiVersion.asKnown().isPresent) 1 else 0) +
+                        (if (baseUrl.asKnown().isPresent) 1 else 0) +
+                        (headers.asKnown().getOrNull()?.validity() ?: 0) +
+                        (if (resourceName.asKnown().isPresent) 1 else 0) +
+                        (if (useDeploymentBasedUrls.asKnown().isPresent) 1 else 0)
+
+                /** Custom headers sent with every request to the Azure OpenAI provider */
+                class Headers
+                @JsonCreator
+                private constructor(
+                    @com.fasterxml.jackson.annotation.JsonValue
+                    private val additionalProperties: Map<String, JsonValue>
+                ) {
+
+                    @JsonAnyGetter
+                    @ExcludeMissing
+                    fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+                    fun toBuilder() = Builder().from(this)
+
+                    companion object {
+
+                        /** Returns a mutable builder for constructing an instance of [Headers]. */
+                        @JvmStatic fun builder() = Builder()
+                    }
+
+                    /** A builder for [Headers]. */
+                    class Builder internal constructor() {
+
+                        private var additionalProperties: MutableMap<String, JsonValue> =
+                            mutableMapOf()
+
+                        @JvmSynthetic
+                        internal fun from(headers: Headers) = apply {
+                            additionalProperties = headers.additionalProperties.toMutableMap()
+                        }
+
+                        fun additionalProperties(additionalProperties: Map<String, JsonValue>) =
+                            apply {
+                                this.additionalProperties.clear()
+                                putAllAdditionalProperties(additionalProperties)
+                            }
+
+                        fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                            additionalProperties.put(key, value)
+                        }
+
+                        fun putAllAdditionalProperties(
+                            additionalProperties: Map<String, JsonValue>
+                        ) = apply { this.additionalProperties.putAll(additionalProperties) }
+
+                        fun removeAdditionalProperty(key: String) = apply {
+                            additionalProperties.remove(key)
+                        }
+
+                        fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                            keys.forEach(::removeAdditionalProperty)
+                        }
+
+                        /**
+                         * Returns an immutable instance of [Headers].
+                         *
+                         * Further updates to this [Builder] will not mutate the returned instance.
+                         */
+                        fun build(): Headers = Headers(additionalProperties.toImmutable())
+                    }
+
+                    private var validated: Boolean = false
+
+                    /**
+                     * Validates that the types of all values in this object match their expected
+                     * types recursively.
+                     *
+                     * This method is _not_ forwards compatible with new types from the API for
+                     * existing fields.
+                     *
+                     * @throws StagehandInvalidDataException if any value type in this object
+                     *   doesn't match its expected type.
+                     */
+                    fun validate(): Headers = apply {
+                        if (validated) {
+                            return@apply
+                        }
+
+                        validated = true
+                    }
+
+                    fun isValid(): Boolean =
+                        try {
+                            validate()
+                            true
+                        } catch (e: StagehandInvalidDataException) {
+                            false
+                        }
+
+                    /**
+                     * Returns a score indicating how many valid values are contained in this object
+                     * recursively.
+                     *
+                     * Used for best match union deserialization.
+                     */
+                    @JvmSynthetic
+                    internal fun validity(): Int =
+                        additionalProperties.count { (_, value) ->
+                            !value.isNull() && !value.isMissing()
+                        }
+
+                    override fun equals(other: Any?): Boolean {
+                        if (this === other) {
+                            return true
+                        }
+
+                        return other is Headers &&
+                            additionalProperties == other.additionalProperties
+                    }
+
+                    private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+                    override fun hashCode(): Int = hashCode
+
+                    override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+                }
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Azure &&
+                        apiVersion == other.apiVersion &&
+                        baseUrl == other.baseUrl &&
+                        headers == other.headers &&
+                        resourceName == other.resourceName &&
+                        useDeploymentBasedUrls == other.useDeploymentBasedUrls &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(
+                        apiVersion,
+                        baseUrl,
+                        headers,
+                        resourceName,
+                        useDeploymentBasedUrls,
+                        additionalProperties,
+                    )
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Azure{apiVersion=$apiVersion, baseUrl=$baseUrl, headers=$headers, resourceName=$resourceName, useDeploymentBasedUrls=$useDeploymentBasedUrls, additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is ProviderOptions &&
+                    azure == other.azure &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(azure, additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "ProviderOptions{azure=$azure, additionalProperties=$additionalProperties}"
+        }
+
+        /** Custom headers sent with every request to the model provider */
+        class Headers
+        @JsonCreator
+        private constructor(
+            @com.fasterxml.jackson.annotation.JsonValue
+            private val additionalProperties: Map<String, JsonValue>
+        ) {
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> = additionalProperties
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Headers]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Headers]. */
+            class Builder internal constructor() {
+
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(headers: Headers) = apply {
+                    additionalProperties = headers.additionalProperties.toMutableMap()
+                }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /**
+                 * Returns an immutable instance of [Headers].
+                 *
+                 * Further updates to this [Builder] will not mutate the returned instance.
+                 */
+                fun build(): Headers = Headers(additionalProperties.toImmutable())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): Headers = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                additionalProperties.count { (_, value) -> !value.isNull() && !value.isMissing() }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Headers && additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy { Objects.hash(additionalProperties) }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) {
+                return true
+            }
+
+            return other is AzureApiKeyModelConfigObject &&
+                modelName == other.modelName &&
+                provider == other.provider &&
+                providerOptions == other.providerOptions &&
+                apiKey == other.apiKey &&
+                baseUrl == other.baseUrl &&
+                headers == other.headers &&
+                additionalProperties == other.additionalProperties
+        }
+
+        private val hashCode: Int by lazy {
+            Objects.hash(
+                modelName,
+                provider,
+                providerOptions,
+                apiKey,
+                baseUrl,
+                headers,
+                additionalProperties,
+            )
+        }
+
+        override fun hashCode(): Int = hashCode
+
+        override fun toString() =
+            "AzureApiKeyModelConfigObject{modelName=$modelName, provider=$provider, providerOptions=$providerOptions, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, additionalProperties=$additionalProperties}"
+    }
+
     class GenericModelConfigObject
     @JsonCreator(mode = JsonCreator.Mode.DISABLED)
     private constructor(
@@ -2696,6 +5245,7 @@ private constructor(
         private val apiKey: JsonField<String>,
         private val baseUrl: JsonField<String>,
         private val headers: JsonField<Headers>,
+        private val openaiEndpointFormat: JsonField<OpenAIEndpointFormat>,
         private val provider: JsonField<Provider>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
@@ -2708,10 +5258,21 @@ private constructor(
             @JsonProperty("apiKey") @ExcludeMissing apiKey: JsonField<String> = JsonMissing.of(),
             @JsonProperty("baseURL") @ExcludeMissing baseUrl: JsonField<String> = JsonMissing.of(),
             @JsonProperty("headers") @ExcludeMissing headers: JsonField<Headers> = JsonMissing.of(),
+            @JsonProperty("openaiEndpointFormat")
+            @ExcludeMissing
+            openaiEndpointFormat: JsonField<OpenAIEndpointFormat> = JsonMissing.of(),
             @JsonProperty("provider")
             @ExcludeMissing
             provider: JsonField<Provider> = JsonMissing.of(),
-        ) : this(modelName, apiKey, baseUrl, headers, provider, mutableMapOf())
+        ) : this(
+            modelName,
+            apiKey,
+            baseUrl,
+            headers,
+            openaiEndpointFormat,
+            provider,
+            mutableMapOf(),
+        )
 
         /**
          * Model name string with provider prefix (e.g., 'openai/gpt-5-nano')
@@ -2744,6 +5305,16 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun headers(): Optional<Headers> = headers.getOptional("headers")
+
+        /**
+         * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+         * chat for Chat Completions-only endpoints.
+         *
+         * @throws StagehandInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun openaiEndpointFormat(): Optional<OpenAIEndpointFormat> =
+            openaiEndpointFormat.getOptional("openaiEndpointFormat")
 
         /**
          * AI provider for the model (or provide a baseURL endpoint instead)
@@ -2780,6 +5351,16 @@ private constructor(
          * Unlike [headers], this method doesn't throw if the JSON field has an unexpected type.
          */
         @JsonProperty("headers") @ExcludeMissing fun _headers(): JsonField<Headers> = headers
+
+        /**
+         * Returns the raw JSON value of [openaiEndpointFormat].
+         *
+         * Unlike [openaiEndpointFormat], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("openaiEndpointFormat")
+        @ExcludeMissing
+        fun _openaiEndpointFormat(): JsonField<OpenAIEndpointFormat> = openaiEndpointFormat
 
         /**
          * Returns the raw JSON value of [provider].
@@ -2820,6 +5401,7 @@ private constructor(
             private var apiKey: JsonField<String> = JsonMissing.of()
             private var baseUrl: JsonField<String> = JsonMissing.of()
             private var headers: JsonField<Headers> = JsonMissing.of()
+            private var openaiEndpointFormat: JsonField<OpenAIEndpointFormat> = JsonMissing.of()
             private var provider: JsonField<Provider> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -2829,6 +5411,7 @@ private constructor(
                 apiKey = genericModelConfigObject.apiKey
                 baseUrl = genericModelConfigObject.baseUrl
                 headers = genericModelConfigObject.headers
+                openaiEndpointFormat = genericModelConfigObject.openaiEndpointFormat
                 provider = genericModelConfigObject.provider
                 additionalProperties = genericModelConfigObject.additionalProperties.toMutableMap()
             }
@@ -2881,6 +5464,25 @@ private constructor(
              */
             fun headers(headers: JsonField<Headers>) = apply { this.headers = headers }
 
+            /**
+             * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+             * chat for Chat Completions-only endpoints.
+             */
+            fun openaiEndpointFormat(openaiEndpointFormat: OpenAIEndpointFormat) =
+                openaiEndpointFormat(JsonField.of(openaiEndpointFormat))
+
+            /**
+             * Sets [Builder.openaiEndpointFormat] to an arbitrary JSON value.
+             *
+             * You should usually call [Builder.openaiEndpointFormat] with a well-typed
+             * [OpenAIEndpointFormat] value instead. This method is primarily for setting the field
+             * to an undocumented or not yet supported value.
+             */
+            fun openaiEndpointFormat(openaiEndpointFormat: JsonField<OpenAIEndpointFormat>) =
+                apply {
+                    this.openaiEndpointFormat = openaiEndpointFormat
+                }
+
             /** AI provider for the model (or provide a baseURL endpoint instead) */
             fun provider(provider: Provider) = provider(JsonField.of(provider))
 
@@ -2930,6 +5532,7 @@ private constructor(
                     apiKey,
                     baseUrl,
                     headers,
+                    openaiEndpointFormat,
                     provider,
                     additionalProperties.toMutableMap(),
                 )
@@ -2955,6 +5558,7 @@ private constructor(
             apiKey()
             baseUrl()
             headers().ifPresent { it.validate() }
+            openaiEndpointFormat().ifPresent { it.validate() }
             provider().ifPresent { it.validate() }
             validated = true
         }
@@ -2979,6 +5583,7 @@ private constructor(
                 (if (apiKey.asKnown().isPresent) 1 else 0) +
                 (if (baseUrl.asKnown().isPresent) 1 else 0) +
                 (headers.asKnown().getOrNull()?.validity() ?: 0) +
+                (openaiEndpointFormat.asKnown().getOrNull()?.validity() ?: 0) +
                 (provider.asKnown().getOrNull()?.validity() ?: 0)
 
         /** Custom headers sent with every request to the model provider */
@@ -3092,6 +5697,155 @@ private constructor(
             override fun hashCode(): Int = hashCode
 
             override fun toString() = "Headers{additionalProperties=$additionalProperties}"
+        }
+
+        /**
+         * Wire format used by an OpenAI-compatible endpoint. Defaults to the Responses API; use
+         * chat for Chat Completions-only endpoints.
+         */
+        class OpenAIEndpointFormat
+        @JsonCreator
+        private constructor(private val value: JsonField<String>) : Enum {
+
+            /**
+             * Returns this class instance's raw value.
+             *
+             * This is usually only useful if this instance was deserialized from data that doesn't
+             * match any known member, and you want to know that value. For example, if the SDK is
+             * on an older version than the API, then the API may respond with new members that the
+             * SDK is unaware of.
+             */
+            @com.fasterxml.jackson.annotation.JsonValue fun _value(): JsonField<String> = value
+
+            companion object {
+
+                @JvmField val RESPONSES = of("responses")
+
+                @JvmField val CHAT = of("chat")
+
+                @JvmStatic fun of(value: String) = OpenAIEndpointFormat(JsonField.of(value))
+            }
+
+            /** An enum containing [OpenAIEndpointFormat]'s known values. */
+            enum class Known {
+                RESPONSES,
+                CHAT,
+            }
+
+            /**
+             * An enum containing [OpenAIEndpointFormat]'s known values, as well as an [_UNKNOWN]
+             * member.
+             *
+             * An instance of [OpenAIEndpointFormat] can contain an unknown value in a couple of
+             * cases:
+             * - It was deserialized from data that doesn't match any known member. For example, if
+             *   the SDK is on an older version than the API, then the API may respond with new
+             *   members that the SDK is unaware of.
+             * - It was constructed with an arbitrary value using the [of] method.
+             */
+            enum class Value {
+                RESPONSES,
+                CHAT,
+                /**
+                 * An enum member indicating that [OpenAIEndpointFormat] was instantiated with an
+                 * unknown value.
+                 */
+                _UNKNOWN,
+            }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value, or
+             * [Value._UNKNOWN] if the class was instantiated with an unknown value.
+             *
+             * Use the [known] method instead if you're certain the value is always known or if you
+             * want to throw for the unknown case.
+             */
+            fun value(): Value =
+                when (this) {
+                    RESPONSES -> Value.RESPONSES
+                    CHAT -> Value.CHAT
+                    else -> Value._UNKNOWN
+                }
+
+            /**
+             * Returns an enum member corresponding to this class instance's value.
+             *
+             * Use the [value] method instead if you're uncertain the value is always known and
+             * don't want to throw for the unknown case.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value is a not a known
+             *   member.
+             */
+            fun known(): Known =
+                when (this) {
+                    RESPONSES -> Known.RESPONSES
+                    CHAT -> Known.CHAT
+                    else ->
+                        throw StagehandInvalidDataException("Unknown OpenAIEndpointFormat: $value")
+                }
+
+            /**
+             * Returns this class instance's primitive wire representation.
+             *
+             * This differs from the [toString] method because that method is primarily for
+             * debugging and generally doesn't throw.
+             *
+             * @throws StagehandInvalidDataException if this class instance's value does not have
+             *   the expected primitive type.
+             */
+            fun asString(): String =
+                _value().asString().orElseThrow {
+                    StagehandInvalidDataException("Value is not a String")
+                }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * This method is _not_ forwards compatible with new types from the API for existing
+             * fields.
+             *
+             * @throws StagehandInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): OpenAIEndpointFormat = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                known()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: StagehandInvalidDataException) {
+                    false
+                }
+
+            /**
+             * Returns a score indicating how many valid values are contained in this object
+             * recursively.
+             *
+             * Used for best match union deserialization.
+             */
+            @JvmSynthetic internal fun validity(): Int = if (value() == Value._UNKNOWN) 0 else 1
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is OpenAIEndpointFormat && value == other.value
+            }
+
+            override fun hashCode() = value.hashCode()
+
+            override fun toString() = value.toString()
         }
 
         /** AI provider for the model (or provide a baseURL endpoint instead) */
@@ -3263,17 +6017,26 @@ private constructor(
                 apiKey == other.apiKey &&
                 baseUrl == other.baseUrl &&
                 headers == other.headers &&
+                openaiEndpointFormat == other.openaiEndpointFormat &&
                 provider == other.provider &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(modelName, apiKey, baseUrl, headers, provider, additionalProperties)
+            Objects.hash(
+                modelName,
+                apiKey,
+                baseUrl,
+                headers,
+                openaiEndpointFormat,
+                provider,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "GenericModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, provider=$provider, additionalProperties=$additionalProperties}"
+            "GenericModelConfigObject{modelName=$modelName, apiKey=$apiKey, baseUrl=$baseUrl, headers=$headers, openaiEndpointFormat=$openaiEndpointFormat, provider=$provider, additionalProperties=$additionalProperties}"
     }
 }
